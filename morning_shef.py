@@ -1,7 +1,7 @@
 '''
 Author: IVAN H. NGUYEN USACE-MVS
 Last Updated: 05-22-2023
-Version: 1.0
+Version: 2.1
 Description: The purpose of this script is to import data from CWMS and other schema then convert them to SHEF file format.
 '''
 from ast                                        import IsNot
