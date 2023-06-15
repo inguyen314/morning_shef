@@ -37,6 +37,7 @@ import time,calendar,datetime
 import java.lang
 import os, sys, inspect, datetime, time, DBAPI
 
+# Oscar Test
 
 #import tkinter
 #from tkinter import filedialog as fd
@@ -66,10 +67,20 @@ class TextFileButton:
         string = ""
         length = len(object_list)
         for index,item in enumerate(object_list):
-            string += str(float(item.outflow)/1000)
+            string += "{:.2f}".format(float(item.outflow)/1000)
             if index < (length-1):
                 string += "/"
         self.text = self.first+string+self.last
+
+class TextFileMarkTwain:
+    
+    def __init__(self, object_list, today_date):
+        self.first = ": MARK TWAIN LAKE FLOW YESTERDAY"
+        self.second = ".E CDAM7 "+str(today_date)+" C DH0000/DC"+str(today_date)+"0000/QTD/DID1/"+"{:.2f}".format(float(object_list[0].outflow)/1000)
+        self.second_text = self.first+"\n"+self.second
+        self.third = ": MARK TWAIN LAKE FLOW TODAY + 5 DAYS"
+        self.fourth = ".E CDAM7 "+str(today_date[0:2])+str(int(today_date[2:4])+1)+" C DH0000/DC"+str(today_date)+"0630/QTDF/DID1/"+"{:.2f}".format(float(object_list[1].outflow)/1000)+"/"+"{:.2f}".format(float(object_list[2].outflow)/1000)+"/"+"{:.2f}".format(float(object_list[3].outflow)/1000)+"/"+"{:.2f}".format(float(object_list[4].outflow)/1000)+"/"+"{:.2f}".format(float(object_list[5].outflow)/1000)+"/"+"{:.2f}".format(float(object_list[6].outflow)/1000)
+        self.third_text = self.third+"\n"+self.fourth
 
 #def on_closing():
 #    root.destroy()
@@ -87,6 +98,7 @@ txt_file_name = "morning_shef"
 
 # Dictionary to hold the data for all lakes
 lake_dict = {}
+markTwain_list = []
 
 def retrieveCarlyle(conn):
     try :
@@ -405,7 +417,7 @@ def retrieveMarkTwain(conn):
 									    to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
 									    to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
 									    outflow,
-									    'MTMTT' as station
+									    'CDAM7' as station
 									from wm_mvs_lake.qlev_fcst 
 									where lake = 'MT'
 									    and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
@@ -415,39 +427,36 @@ def retrieveMarkTwain(conn):
         rs = stmt.executeQuery()
 
         # create object list to store the data (3 cols by 6 rows)
-        object_list = []
         while rs.next() : 
-           # loop and append which data col to object list
-           object_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
-           print "test"
-        lake_dict["MarkTwain"] = object_list
-        print lake_dict
-           
-	print object_list
+            # loop and append which data col to object list
+            markTwain_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
+            print "test"  
+             
+    	print markTwain_list
 
-	# create object for each row
-	day0 = object_list [0]
-	print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
-	
-	day1 = object_list [1]
-	print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
+    # create object for each row
+    #day0 = markTwain_list [0]
+    #print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
 
-	day2 = object_list [2]
-	print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
+	#day1 = markTwain_list [1]
+	#print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
 
-	day3 = object_list [3]
-	print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
+	#day2 = markTwain_list [2]
+	#print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
 
-	day4 = object_list [4]
-	print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
+	#day3 = markTwain_list [3]
+	#print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
 
-	day5 = object_list [5]
-	print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
-	
+	#day4 = markTwain_list [4]
+	#print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
+
+	#day5 = markTwain_list [5]
+	#print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
+
 	# check data type
-	print "lake type = " + str(type(day1.lake))
-	print "date_time type = " + str(type(day1.date_time))
-	print "outflow type = " + str(type(day1.outflow))
+	#print "lake type = " + str(type(day1.lake))
+	#print "date_time type = " + str(type(day1.date_time))
+	#print "outflow type = " + str(type(day1.outflow))
 
     # text_file = TextFile(today_date, object_list)
 			
@@ -509,8 +518,8 @@ try :
     print "Shelbyville" +  str(Shelbyville)
     
     # get MarkTwain data
-    #MarkTwain = retrieveMarkTwain(conn)
-    #print "MarkTwain" +  str(MarkTwain)
+    MarkTwain = retrieveMarkTwain(conn)
+    print "MarkTwain" +  str(MarkTwain)
 
     #Create Text File
     with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
@@ -521,7 +530,11 @@ try :
         end_text = ".END"
         text += data_text
         text += end_text
-        f.write(text)
+        text += "\n\n"
+        second_text = TextFileMarkTwain(markTwain_list, today_date).second_text
+        second_text += "\n\n"
+        third_text = TextFileMarkTwain(markTwain_list, today_date).third_text
+        f.write(text+second_text+third_text)
         print("Text file created")
     
         
