@@ -1,16 +1,12 @@
-# name=morning_shef
-# displayinmenu=true
-# displaytouser=true
-# displayinselector=true
 '''
 Author: IVAN H. NGUYEN USACE-MVS
 Last Updated: 05-22-2023
 Version: 1.0
 Description: The purpose of this script is to import data from CWMS and other schema then convert them to SHEF file format.
 '''
-from ast                                        	import IsNot
+from ast                                        import IsNot
 from decimal                                    import Decimal
-from hec.data.cwmsRating                      import RatingSet
+from hec.data.cwmsRating                      	import RatingSet
 from hec.script                                 import MessageBox, Constants, AxisMarker
 from hec.dataTable                              import HecDataTableToExcel      
 from hec.dssgui                                 import ListSelection
@@ -43,13 +39,55 @@ import os, sys, inspect, datetime, time, DBAPI
 
 
 
+#import tkinter
+#from tkinter import filedialog as fd
+
+
+
 class Object:
 
-	def __init__(self, lake, date_time, outflow):
+	def __init__(self, lake, date_time, outflow, station):
 		self.lake = lake
 		self.date_time = date_time
 		self.outflow = outflow
+		self.station = station
 
+class TextFileTop:
+    
+    def __init__(self, today_date):
+        self.line1 = ": TODAYS LAKE FLOW AND 5 DAY FORECAST"
+        self.line2 = ".B STL " + str(today_date) + " C DH0600/DC" + str(today_date) + "0600/QT/DRD+1/QTIF/DRD+2/QTIF/DRD+3/QTIF/DRD+4/QTIF/DRD+5/QTIF"
+        self.text = self.line1+"\n"+self.line2 
+
+class TextFileButton:
+    
+    def __init__(self, object_list):
+        self.first = str(object_list[0].station)+" "
+        self.last = " : "+str(object_list[0].lake)
+        string = ""
+        length = len(object_list)
+        for index,item in enumerate(object_list):
+            string += str(float(item.outflow)/1000)
+            if index < (length-1):
+                string += "/"
+        self.text = self.first+string+self.last
+
+#def on_closing():
+#    root.destroy()
+
+today_date = datetime.datetime.now().strftime('%m%d')
+
+# Name for the shef file
+txt_file_name = "morning_shef"
+
+## Pop-up and pick location to save ##
+# root = tkinter.Tk()
+# data_type = [('Shef file', '*.shef')]
+# dial_directory = fd.asksaveasfilename(title="Save As", filetypes=data_type, initialfile="Outflow_text_file", defaultextension=("Shef file",".shef"))
+#root.protocol("WM_DELETE_WINDOW", on_closing())
+
+# Dictionary to hold the data for all lakes
+lake_dict = {}
 
 def retrieveCarlyle(conn):
     try :
@@ -62,7 +100,8 @@ def retrieveCarlyle(conn):
                                         cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') as fcst_date_cst,
                                         to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
                                         to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
-                                        outflow
+                                        outflow,
+                                        'CAYI2' as station
                                     from wm_mvs_lake.qlev_fcst 
                                     where lake = 'CARLYLE'
                                         and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
@@ -75,42 +114,357 @@ def retrieveCarlyle(conn):
         object_list = []
         while rs.next() : 
            # loop and append which data col to object list
-	    object_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8) ) )
-            
-            print "test"
+           object_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
+                     
+           print "test"
+        
+        lake_dict["Carlyle"] = object_list
+        print lake_dict
+           
 	print object_list
 
+	
 	# create object for each row
 	day0 = object_list [0]
-	print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow)
+	print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
 	
 	day1 = object_list [1]
-	print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow)
+	print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
 
 	day2 = object_list [2]
-	print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow)
+	print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
 
 	day3 = object_list [3]
-	print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow)
+	print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
 
 	day4 = object_list [4]
-	print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow)
+	print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
 
 	day5 = object_list [5]
-	print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow)
+	print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
 	
 	# check data type
 	print "lake type = " + str(type(day1.lake))
 	print "date_time type = " + str(type(day1.date_time))
 	print "outflow type = " + str(type(day1.outflow))
 
-	
+	#text_file = TextFile(today_date, object_list)
+
+    #with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
+    #    f.write(text_file.text)
+    #    print("Text file created")
+
+	#C:\scripts\cwms\morning_shef		
+	## To save file in specific location
+	# with open(str(dial_directory), "w") as f:
+	#     f.write(text_file.text)
+	#     print("Text file created")
+	# root.destroy()
 
     finally :
         stmt.close()
         rs.close()
     return Carlyle
 
+
+def retrieveWappapello(conn):
+    try :
+        Wappapello = None
+        stmt = conn.prepareStatement('''
+                                    select lake, 
+									    date_time,
+									    cwms_util.change_timezone(date_time, 'UTC', 'US/Central') as date_time_cst,
+									    fcst_date,
+									    cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') as fcst_date_cst,
+									    to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
+									    to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
+									    outflow,
+									    'WPPM7' as station
+									from wm_mvs_lake.qlev_fcst 
+									where lake = 'WAPPAPELLO'
+									    and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
+									order by date_time asc
+									fetch next 6 row only
+                                    ''')
+        rs = stmt.executeQuery()
+
+        # create object list to store the data (3 cols by 6 rows)
+        object_list = []
+        while rs.next() : 
+           # loop and append which data col to object list
+           object_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
+           print "test"
+        lake_dict["Wappapello"] = object_list
+        print lake_dict
+           
+	print object_list
+    
+    
+	# create object for each row
+	day0 = object_list [0]
+	print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
+	
+	day1 = object_list [1]
+	print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
+
+	day2 = object_list [2]
+	print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
+
+	day3 = object_list [3]
+	print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
+
+	day4 = object_list [4]
+	print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
+
+	day5 = object_list [5]
+	print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
+	
+	# check data type
+	print "lake type = " + str(type(day1.lake))
+	print "date_time type = " + str(type(day1.date_time))
+	print "outflow type = " + str(type(day1.outflow))
+
+	#text_file = TextFile(today_date, object_list)
+
+	#with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
+    		#f.write(text_file.text)
+    		#print("Text file created")
+			
+	#C:\scripts\cwms\morning_shef		
+	## To save file in specific location
+	# with open(str(dial_directory), "w") as f:
+	#     f.write(text_file.text)
+	#     print("Text file created")
+	# root.destroy()
+
+    finally :
+        stmt.close()
+        rs.close()
+    return Wappapello
+
+
+def retrieveRend(conn):
+    try :
+        Rend = None
+        stmt = conn.prepareStatement('''
+                                    select lake, 
+									    date_time,
+									    cwms_util.change_timezone(date_time, 'UTC', 'US/Central') as date_time_cst,
+									    fcst_date,
+									    cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') as fcst_date_cst,
+									    to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
+									    to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
+									    outflow,
+									    'RNDI2' as station
+									from wm_mvs_lake.qlev_fcst 
+									where lake = 'REND'
+									    and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
+									order by date_time asc
+									fetch next 6 row only
+                                    ''')
+        rs = stmt.executeQuery()
+
+        # create object list to store the data (3 cols by 6 rows)
+        object_list = []
+        print "Rend Test"
+        while rs.next() : 
+           # loop and append which data col to object list
+           object_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
+           print "test"
+        lake_dict["Rend"] = object_list
+        print lake_dict
+           
+	print object_list
+
+	# create object for each row
+	day0 = object_list [0]
+	print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
+	
+	day1 = object_list [1]
+	print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
+
+	day2 = object_list [2]
+	print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
+
+	day3 = object_list [3]
+	print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
+
+	day4 = object_list [4]
+	print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
+
+	day5 = object_list [5]
+	print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
+	
+	# check data type
+	print "lake type = " + str(type(day1.lake))
+	print "date_time type = " + str(type(day1.date_time))
+	print "outflow type = " + str(type(day1.outflow))
+
+	#text_file = TextFile(today_date, object_list)
+
+	#with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
+    		#f.write(text_file.text)
+    		#print("Text file created")
+			
+	#C:\scripts\cwms\morning_shef		
+	## To save file in specific location
+	# with open(str(dial_directory), "w") as f:
+	#     f.write(text_file.text)
+	#     print("Text file created")
+	# root.destroy()
+
+    finally :
+        stmt.close()
+        rs.close()
+    return Rend
+
+
+def retrieveShelbyville(conn):
+    try :
+        Shelbyville = None
+        stmt = conn.prepareStatement('''
+                                    select lake, 
+									    date_time,
+									    cwms_util.change_timezone(date_time, 'UTC', 'US/Central') as date_time_cst,
+									    fcst_date,
+									    cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') as fcst_date_cst,
+									    to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
+									    to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
+									    outflow,
+									    'SBYI2' as station
+									from wm_mvs_lake.qlev_fcst 
+									where lake = 'SHELBYVILLE'
+									    and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
+									order by date_time asc
+									fetch next 6 row only
+                                    ''')
+        rs = stmt.executeQuery()
+
+        # create object list to store the data (3 cols by 6 rows)
+        object_list = []
+        while rs.next() : 
+           # loop and append which data col to object list
+           object_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
+           print "test"
+        lake_dict["Shelbyville"] = object_list
+        print lake_dict
+           
+	print object_list
+
+	# create object for each row
+	day0 = object_list [0]
+	print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
+	
+	day1 = object_list [1]
+	print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
+
+	day2 = object_list [2]
+	print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
+
+	day3 = object_list [3]
+	print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
+
+	day4 = object_list [4]
+	print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
+
+	day5 = object_list [5]
+	print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
+	
+	# check data type
+	print "lake type = " + str(type(day1.lake))
+	print "date_time type = " + str(type(day1.date_time))
+	print "outflow type = " + str(type(day1.outflow))
+
+	#text_file = TextFile(today_date, object_list)
+
+	#with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
+    		#f.write(text_file.text)
+    		#print("Text file created")
+			
+	#C:\scripts\cwms\morning_shef		
+	## To save file in specific location
+	# with open(str(dial_directory), "w") as f:
+	#     f.write(text_file.text)
+	#     print("Text file created")
+	# root.destroy()
+
+    finally :
+        stmt.close()
+        rs.close()
+    return Shelbyville
+
+
+def retrieveMarkTwain(conn):
+    try :
+        MarkTwain = None
+        stmt = conn.prepareStatement('''
+                                    select lake, 
+									    date_time,
+									    cwms_util.change_timezone(date_time, 'UTC', 'US/Central') as date_time_cst,
+									    fcst_date,
+									    cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') as fcst_date_cst,
+									    to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
+									    to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
+									    outflow,
+									    'MTMTT' as station
+									from wm_mvs_lake.qlev_fcst 
+									where lake = 'MT'
+									    and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
+									order by date_time asc
+									fetch next 7 row only
+                                    ''')
+        rs = stmt.executeQuery()
+
+        # create object list to store the data (3 cols by 6 rows)
+        object_list = []
+        while rs.next() : 
+           # loop and append which data col to object list
+           object_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
+           print "test"
+        lake_dict["MarkTwain"] = object_list
+        print lake_dict
+           
+	print object_list
+
+	# create object for each row
+	day0 = object_list [0]
+	print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
+	
+	day1 = object_list [1]
+	print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
+
+	day2 = object_list [2]
+	print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
+
+	day3 = object_list [3]
+	print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
+
+	day4 = object_list [4]
+	print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
+
+	day5 = object_list [5]
+	print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
+	
+	# check data type
+	print "lake type = " + str(type(day1.lake))
+	print "date_time type = " + str(type(day1.date_time))
+	print "outflow type = " + str(type(day1.outflow))
+
+    # text_file = TextFile(today_date, object_list)
+			
+	#C:\scripts\cwms\morning_shef		
+	## To save file in specific location
+	# with open(str(dial_directory), "w") as f:
+	#     f.write(text_file.text)
+	#     print("Text file created")
+	# root.destroy()
+
+    finally :
+        stmt.close()
+        rs.close()
+    return MarkTwain
+
+    
 
 
 try :    
@@ -136,14 +490,42 @@ try :
 
 
     print "test2"
+    print lake_dict
 
     
     # get Carlyle data
     Carlyle = retrieveCarlyle(conn)
     print "Carlyle" +  str(Carlyle)
 
+    # get Wappapello data
+    Wappapello = retrieveWappapello(conn)
+    print "Wappapello" +  str(Wappapello)
+    
+    # get Rend data
+    Rend = retrieveRend(conn)
+    print "Rend" +  str(Rend)
 
+    # get Shelbyville data
+    Shelbyville = retrieveShelbyville(conn)
+    print "Shelbyville" +  str(Shelbyville)
+    
+    # get MarkTwain data
+    #MarkTwain = retrieveMarkTwain(conn)
+    #print "MarkTwain" +  str(MarkTwain)
 
+    #Create Text File
+    with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
+        text = TextFileTop(today_date).text+"\n"
+        data_text = ""
+        for key, value in lake_dict.items():
+            data_text += TextFileButton(value).text+"\n"
+        end_text = ".END"
+        text += data_text
+        text += end_text
+        f.write(text)
+        print("Text file created")
+    
+        
     # close the database
     CwmsDb.close()
 
