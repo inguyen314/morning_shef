@@ -428,44 +428,37 @@ def retrieveMarkTwain(conn):
 
         # create object list to store the data (3 cols by 6 rows)
         while rs.next() : 
-            # loop and append which data col to object list
-            markTwain_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
-            print "test"  
+           # loop and append which data col to object list
+           markTwain_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
+           print "test"  
              
-    	print markTwain_list
+        print markTwain_list
 
-    # create object for each row
-    #day0 = markTwain_list [0]
-    #print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
+        # create object for each row
+        day0 = markTwain_list [0]
+        print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
 
-	#day1 = markTwain_list [1]
-	#print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
+        day1 = markTwain_list [1]
+        print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
 
-	#day2 = markTwain_list [2]
-	#print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
+        day2 = markTwain_list [2]
+        print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
 
-	#day3 = markTwain_list [3]
-	#print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
+        day3 = markTwain_list [3]
+        print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
 
-	#day4 = markTwain_list [4]
-	#print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
+        day4 = markTwain_list [4]
+        print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
 
-	#day5 = markTwain_list [5]
-	#print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
+        day5 = markTwain_list [5]
+        print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
 
-	# check data type
-	#print "lake type = " + str(type(day1.lake))
-	#print "date_time type = " + str(type(day1.date_time))
-	#print "outflow type = " + str(type(day1.outflow))
+	    # check data type
+	    #print "lake type = " + str(type(day1.lake))
+	    #print "date_time type = " + str(type(day1.date_time))
+	    #print "outflow type = " + str(type(day1.outflow))
 
-    # text_file = TextFile(today_date, object_list)
-			
-	#C:\scripts\cwms\morning_shef		
-	## To save file in specific location
-	# with open(str(dial_directory), "w") as f:
-	#     f.write(text_file.text)
-	#     print("Text file created")
-	# root.destroy()
+        # text_file = TextFile(today_date, object_list)
 
     finally :
         stmt.close()
