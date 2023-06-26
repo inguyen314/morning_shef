@@ -1,6 +1,6 @@
 '''
 Author: IVAN H. NGUYEN USACE-MVS
-Last Updated: 05-22-2023
+Last Updated: 06-26-2023
 Version: 1.0
 Description: The purpose of this script is to import data from CWMS and other schema then convert them to SHEF file format.
 '''
@@ -37,7 +37,7 @@ import time,calendar,datetime
 import java.lang
 import os, sys, inspect, datetime, time, DBAPI
 
-# Oscar Test
+# Oscar Test Test Test Test Test
 
 #import tkinter
 #from tkinter import filedialog as fd
@@ -466,7 +466,6 @@ def retrieveMarkTwain(conn):
     return MarkTwain
 
     
-
 
 try :    
     NowTw  = datetime.datetime.now()
