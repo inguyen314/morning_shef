@@ -110,6 +110,7 @@ lake_dict = {}
 markTwain_list = []
 
 def retrieveLD(conn):
+    print "Origin check"
     try :
         print "First check"
         LD = None
@@ -498,19 +499,6 @@ def retrieveShelbyville(conn):
 	print "date_time type = " + str(type(day1.date_time))
 	print "outflow type = " + str(type(day1.outflow))
 
-	#text_file = TextFile(today_date, object_list)
-
-	#with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
-    		#f.write(text_file.text)
-    		#print("Text file created")
-			
-	#C:\scripts\cwms\morning_shef		
-	## To save file in specific location
-	# with open(str(dial_directory), "w") as f:
-	#     f.write(text_file.text)
-	#     print("Text file created")
-	# root.destroy()
-
     finally :
         stmt.close()
         rs.close()
@@ -566,11 +554,9 @@ def retrieveMarkTwain(conn):
         print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
 
 	    # check data type
-	    #print "lake type = " + str(type(day1.lake))
-	    #print "date_time type = " + str(type(day1.date_time))
-	    #print "outflow type = " + str(type(day1.outflow))
-
-        # text_file = TextFile(today_date, object_list)
+        print "lake type = " + str(type(day1.lake))
+        print "date_time type = " + str(type(day1.date_time))
+        print "outflow type = " + str(type(day1.outflow))
 
     finally :
         stmt.close()
@@ -602,8 +588,15 @@ try :
 
 
     print "test2"
+    print "retrieveLD test2"
     print lake_dict
 
+
+    print "retrieveLD"
+    LD = retrieveLD(conn)
+    print "LD" +  str(LD)
+    print "END retrieveLD"
+    
     
     # get Carlyle data
     Carlyle = retrieveCarlyle(conn)
@@ -625,10 +618,8 @@ try :
     MarkTwain = retrieveMarkTwain(conn)
     print "MarkTwain" +  str(MarkTwain)
     
-    # get Current LD data
-    LD = retrieveLD(conn)
-    print "LD" +  str(LD)
 
+    
     #Create Text File
     with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
         text = TextFileTop(today_date).text+"\n"
@@ -659,6 +650,9 @@ try :
     print '='
     print '='
 
+except: 
+    print "error"
+ 
     
 finally :
     try : CwmsDb.done()
