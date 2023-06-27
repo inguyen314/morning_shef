@@ -146,8 +146,6 @@ def retrieveLD(conn):
                               order by location_id asc 
                               FETCH FIRST 3 ROWS ONLY),
                               
-                               
-                              
                               tainter as 
                               (select 'LD 24 Pool-Mississippi' as location_id, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time, value, unit_id, quality_code, 'CLKM7' as damlock
                               from cwms_v_tsv_dqu  tsv
@@ -181,9 +179,6 @@ def retrieveLD(conn):
                               order by location_id asc 
                               FETCH FIRST 3 ROWS ONLY)
                               
-                               
-                              
-                              
                               select cte_pool.location_id
                                   ,cte_pool.date_time
                                   ,cte_pool.value
@@ -199,15 +194,15 @@ def retrieveLD(conn):
         # create object list to store the data (3 cols by 6 rows)
         object_list_1 = []
         while rs.next() : 
-           # loop and append which data col to object list
-           object_list_1.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)))
+            # loop and append which data col to object list
+            object_list_1.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)))
                      
-           print "First table done"
+            print "First table done"
            
-	print object_list_1
-
-	for obj in object_list_1:
-        print obj.value1
+            print object_list_1
+            
+            for obj in object_list_1:
+                print obj.value1
 	
 
     finally :
@@ -627,6 +622,10 @@ try :
     # get MarkTwain data
     MarkTwain = retrieveMarkTwain(conn)
     print "MarkTwain" +  str(MarkTwain)
+    
+    # get Current LD data
+    LD = retrieveLD(conn)
+    print "LD" +  str(LD)
 
     #Create Text File
     with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
