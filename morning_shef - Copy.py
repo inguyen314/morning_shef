@@ -111,6 +111,7 @@ markTwain_list = []
 
 def retrieveLD(conn):
     try :
+        print "First check"
         LD = None
         stmt = conn.prepareStatement('''
                                     with cte_pool as 
@@ -190,10 +191,11 @@ def retrieveLD(conn):
                               left join tainter on cte_pool.location_id = tainter.location_id
                                     ''')
         rs = stmt.executeQuery()
-        
+        print "second check"
         # create object list to store the data (3 cols by 6 rows)
         object_list_1 = []
         while rs.next() : 
+            print "loop check"
             # loop and append which data col to object list
             object_list_1.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)))
                      
