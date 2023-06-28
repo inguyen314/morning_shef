@@ -726,9 +726,9 @@ try :
         third_text += "\n\n"
         
         # lock and dam current and forecast shef data block
-        fourth_text =  TextFileLD(object_list_1, object_list_2, object_list_3, today_date).line1+"\n"
-        fourth_text += TextFileLD(object_list_1, object_list_2, object_list_3, today_date).line2+"\n"
-        fourth_text += TextFileLD(object_list_1, object_list_2, object_list_3, today_date).body
+        fourth_text =  TextFileLD(dam_dict, today_date).line1+"\n"
+        fourth_text += TextFileLD(dam_dict, today_date).line2+"\n"
+        fourth_text += TextFileLD(dam_dict, today_date).body
         
         f.write(text+second_text+third_text+fourth_text)
         
