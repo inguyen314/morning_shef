@@ -120,41 +120,10 @@ txt_file_name = "morning_shef"
 lake_dict = {}
 markTwain_list = []
 
-def retrieveLD(conn):
+def retrieveLD_1(conn):
     try :
-        LD = None
-        stmt = conn.prepareStatement('''
-                                    select location_level_id, level_unit, constant_level, specified_level_id
-                                    from CWMS_20.AV_LOCATION_LEVEL 
-                                    where specified_level_id in ('Hinge Max','Hinge Min') 
-                                    and unit_system = 'EN' 
-                                    and location_id in ('Grafton-Mississippi','Louisiana-Mississippi','Mosier Ldg-Mississippi')
-                                    ''')
-        rs = stmt.executeQuery()
-        
-        # create object list to store the data (3 cols by 6 rows)
-        object_list_1 = []
-        while rs.next() : 
-            # loop and append which data col to object list
-            object_list_1.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),None,None,None))
-                     
-           
-        print object_list_1
-            
-        for obj in object_list_1:
-            print obj.value1
-	
-
-    finally :
-        stmt.close()
-        rs.close()
-    return LD
-
-
-def retrieveLD_2(conn):
-    try :
-        LD_2 = None
-        print "retrieveLD_222"
+        print "Query LD_1 Start"
+        LD_1 = None
         stmt = conn.prepareStatement('''
                                     with cte_pool as 
 (select 'LD 24 Pool-Mississippi' as location_id, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time, value, unit_id, quality_code, 'CLKM7' as damlock
@@ -237,11 +206,64 @@ select cte_pool.location_id
 from cte_pool
 left join tainter on cte_pool.location_id = tainter.location_id
                                     ''')
-        print "retrieveLD_2"
-        print stmt
+        
         rs = stmt.executeQuery()
         
-        print "retrieveLD_22"
+        
+        # create object list to store the data (3 cols by 6 rows)
+        object_list_1 = []
+        while rs.next() : 
+            # loop and append which data col to object list
+            object_list_1.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)))
+                     
+        print object_list_1
+        
+        for obj in object_list_1:
+            print obj.value1
+	
+    finally :
+        print "Query LD_1 End"
+        stmt.close()
+        rs.close()
+    return LD_1
+
+
+def retrieveLD_2(conn):
+    try :
+        print "Query LD_2 Start"
+        LD_2 = None
+        stmt = conn.prepareStatement('''
+                                    select upper(cwms_util.split_text(cwms_ts_id, 1, '.')) as location_id
+                                    ,date_time
+                                    ,value
+                                    ,quality_code
+                                    ,'CLKM7' as damlock
+                                from cwms_v_tsv_dqu
+                                where cwms_ts_id ='LD 24 Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-compv2' and unit_id = 'ft'
+                                and date_time > to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '0' DAY
+                                and date_time < to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '5' DAY
+                                union all
+                                select upper(cwms_util.split_text(cwms_ts_id, 1, '.')) as location_id
+                                    ,date_time
+                                    ,value
+                                    ,quality_code
+                                    ,'CAGM7' as damlock
+                                from cwms_v_tsv_dqu
+                                where cwms_ts_id ='LD 25 Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-compv2' and unit_id = 'ft'
+                                and date_time > to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '0' DAY
+                                and date_time < to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '5' DAY
+                                union all
+                                select upper(cwms_util.split_text(cwms_ts_id, 1, '.')) as location_id
+                                    ,date_time
+                                    ,value
+                                    ,quality_code
+                                    ,'ALNI2' as damlock
+                                from cwms_v_tsv_dqu
+                                where cwms_ts_id ='Mel Price Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-compv2' and unit_id = 'ft'
+                                and date_time > to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '0' DAY
+                                and date_time < to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '5' DAY
+                                    ''')
+        rs = stmt.executeQuery()
         
         # create object list to store the data (3 cols by 6 rows)
         object_list_2 = []
@@ -249,16 +271,51 @@ left join tainter on cte_pool.location_id = tainter.location_id
             # loop and append which data col to object list
             object_list_2.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),None,None))
                      
+           
         print object_list_2
-        
+            
         for obj in object_list_2:
-            print obj.value7
+            print obj.value1
 	
+
     finally :
+        print "Query LD_2 End"
         stmt.close()
         rs.close()
     return LD_2
 
+
+def retrieveLD_3(conn):
+    try :
+        print "Query LD_3 Start"
+        LD_3 = None
+        stmt = conn.prepareStatement('''
+                                    select location_level_id, level_unit, constant_level, specified_level_id
+                                    from CWMS_20.AV_LOCATION_LEVEL 
+                                    where specified_level_id in ('Hinge Max','Hinge Min') 
+                                    and unit_system = 'EN' 
+                                    and location_id in ('Grafton-Mississippi','Louisiana-Mississippi','Mosier Ldg-Mississippi')
+                                    ''')
+        rs = stmt.executeQuery()
+        
+        # create object list to store the data (3 cols by 6 rows)
+        object_list_3 = []
+        while rs.next() : 
+            # loop and append which data col to object list
+            object_list_3.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),None,None,None))
+                     
+           
+        print object_list_3
+            
+        for obj in object_list_3:
+            print obj.value1
+	
+
+    finally :
+        print "Query LD_3 End"
+        stmt.close()
+        rs.close()
+    return LD_3
 
 def retrieveCarlyle(conn):
     try :
@@ -602,12 +659,14 @@ try :
     print "retrieveLD test2"
     print lake_dict
 
+    LD = retrieveLD(conn)
+    print "LD" +  str(LD)
 
     LD_2 = retrieveLD_2(conn)
     print "LD_2" +  str(LD_2)
     
-    LD = retrieveLD(conn)
-    print "LD" +  str(LD)
+    LD_3 = retrieveLD_3(conn)
+    print "LD_3" +  str(LD_3)
     
     
     # get Carlyle data
