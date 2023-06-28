@@ -53,6 +53,17 @@ class Object_LD:
         self.value6 = value6
         self.value7 = value7
 
+class TextFileLD:
+    def __init__(self, object_1, object_2, object_3, date):
+        self.line1 = ": TODAYS OVSERVED POOL AND 5 DAY FORECAST ABOVE GAGE ZERO"
+        self.line2 = ".B STL "+ str(date)+" C DH0600/DC0"+str(date)+"700/HP/DRD+1/HPIF/DRD+2/HPIF/DRD+3/HPIF"
+        self.body = str(object_1[2].value5)+"  "+"{:.2f}".format(float(object_1[2].value3)/1000)+"/"+"{:.2f}".format(float(object_2[10].value3)/1000)+"/"+"{:.2f}".format(float(object_2[11].value3)/1000)+"/"+"{:.2f}".format(float(object_2[12].value3)/1000)+"/"
+        self.body += "{:.2f}".format(float(object_2[13].value3)/1000)+"/"+"{:.2f}".format(float(object_2[14].value3)/1000)+" : CLARKSVILLE LD 24 --> HINGE PT LOUSIANA "+"{:.1f}".format(float(object_3[4].value3))+" - "+"{:.1f}".format(float(object_3[5].value3))+" "+str(object_3[4].value2).upper()+"\n"
+        self.body += str(object_1[1].value5)+"  "+"{:.2f}".format(float(object_1[1].value3)/1000)+"/"+"{:.2f}".format(float(object_2[5].value3)/1000)+"/"+"{:.2f}".format(float(object_2[6].value3)/1000)+"/"+"{:.2f}".format(float(object_2[7].value3)/1000)+"/"
+        self.body += "{:.2f}".format(float(object_2[8].value3)/1000)+"/"+"{:.2f}".format(float(object_2[9].value3)/1000)+" : WINFIELD LD 25 --> HINGE PT MOSIER LDG "+"{:.1f}".format(float(object_3[2].value3))+" - "+"{:.1f}".format(float(object_3[3].value3))+" "+str(object_3[2].value2).upper()+"\n"
+        self.body += str(object_1[0].value5)+"  "+"{:.2f}".format(float(object_1[0].value3)/1000)+"/"+"{:.2f}".format(float(object_2[0].value3)/1000)+"/"+"{:.2f}".format(float(object_2[1].value3)/1000)+"/"+"{:.2f}".format(float(object_2[2].value3)/1000)+"/"
+        self.body += "{:.2f}".format(float(object_2[3].value3)/1000)+"/"+"{:.2f}".format(float(object_2[4].value3)/1000)+" : ALTON LD 26 --> HINGE PT GRAFTON "+"{:.1f}".format(float(object_3[0].value3))+" - "+"{:.1f}".format(float(object_3[1].value3))+" "+str(object_3[0].value2).upper()+"\n.END"
+
 class Object:
 
 	def __init__(self, lake, date_time, outflow, station):
@@ -308,18 +319,6 @@ def retrieveCarlyle(conn):
 	print "date_time type = " + str(type(day1.date_time))
 	print "outflow type = " + str(type(day1.outflow))
 
-	#text_file = TextFile(today_date, object_list)
-
-    #with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
-    #    f.write(text_file.text)
-    #    print("Text file created")
-
-	#C:\scripts\cwms\morning_shef		
-	## To save file in specific location
-	# with open(str(dial_directory), "w") as f:
-	#     f.write(text_file.text)
-	#     print("Text file created")
-	# root.destroy()
 
     finally :
         stmt.close()
@@ -384,18 +383,6 @@ def retrieveWappapello(conn):
 	print "date_time type = " + str(type(day1.date_time))
 	print "outflow type = " + str(type(day1.outflow))
 
-	#text_file = TextFile(today_date, object_list)
-
-	#with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
-    		#f.write(text_file.text)
-    		#print("Text file created")
-			
-	#C:\scripts\cwms\morning_shef		
-	## To save file in specific location
-	# with open(str(dial_directory), "w") as f:
-	#     f.write(text_file.text)
-	#     print("Text file created")
-	# root.destroy()
 
     finally :
         stmt.close()
@@ -460,18 +447,6 @@ def retrieveRend(conn):
 	print "date_time type = " + str(type(day1.date_time))
 	print "outflow type = " + str(type(day1.outflow))
 
-	#text_file = TextFile(today_date, object_list)
-
-	#with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
-    		#f.write(text_file.text)
-    		#print("Text file created")
-			
-	#C:\scripts\cwms\morning_shef		
-	## To save file in specific location
-	# with open(str(dial_directory), "w") as f:
-	#     f.write(text_file.text)
-	#     print("Text file created")
-	# root.destroy()
 
     finally :
         stmt.close()
@@ -670,6 +645,10 @@ try :
         second_text = TextFileMarkTwain(markTwain_list, today_date).second_text
         second_text += "\n\n"
         third_text = TextFileMarkTwain(markTwain_list, today_date).third_text
+        # third_text += "\n\n"
+        # fourth_text = TextFile(object_list_1, object_list_2, object_list_3, today_date).line1+"\n"
+        # fourth_text += TextFile(object_list_1, object_list_2, object_list_3, today_date).line2+"\n"
+        # fourth_text += TextFile(object_list_1, object_list_2, object_list_3, today_date).body
         f.write(text+second_text+third_text)
         print("Text file created")
     
