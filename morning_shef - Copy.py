@@ -54,15 +54,18 @@ class Object_LD:
         self.value7 = value7
 
 class TextFileLD:
-    def __init__(self, object_1, object_2, object_3, date):
+    def __init__(self, dictionary, date):
+        self.object_1 = dictionary["LD_1"]
+        self.object_2 = dictionary["LD_2"]
+        self.object_3 = dictionary["LD_3"]
         self.line1 = ": TODAYS OVSERVED POOL AND 5 DAY FORECAST ABOVE GAGE ZERO"
         self.line2 = ".B STL "+ str(date)+" C DH0600/DC0"+str(date)+"700/HP/DRD+1/HPIF/DRD+2/HPIF/DRD+3/HPIF"
-        self.body = str(object_1[2].value5)+"  "+"{:.2f}".format(float(object_1[2].value3)/1000)+"/"+"{:.2f}".format(float(object_2[10].value3)/1000)+"/"+"{:.2f}".format(float(object_2[11].value3)/1000)+"/"+"{:.2f}".format(float(object_2[12].value3)/1000)+"/"
-        self.body += "{:.2f}".format(float(object_2[13].value3)/1000)+"/"+"{:.2f}".format(float(object_2[14].value3)/1000)+" : CLARKSVILLE LD 24 --> HINGE PT LOUSIANA "+"{:.1f}".format(float(object_3[4].value3))+" - "+"{:.1f}".format(float(object_3[5].value3))+" "+str(object_3[4].value2).upper()+"\n"
-        self.body += str(object_1[1].value5)+"  "+"{:.2f}".format(float(object_1[1].value3)/1000)+"/"+"{:.2f}".format(float(object_2[5].value3)/1000)+"/"+"{:.2f}".format(float(object_2[6].value3)/1000)+"/"+"{:.2f}".format(float(object_2[7].value3)/1000)+"/"
-        self.body += "{:.2f}".format(float(object_2[8].value3)/1000)+"/"+"{:.2f}".format(float(object_2[9].value3)/1000)+" : WINFIELD LD 25 --> HINGE PT MOSIER LDG "+"{:.1f}".format(float(object_3[2].value3))+" - "+"{:.1f}".format(float(object_3[3].value3))+" "+str(object_3[2].value2).upper()+"\n"
-        self.body += str(object_1[0].value5)+"  "+"{:.2f}".format(float(object_1[0].value3)/1000)+"/"+"{:.2f}".format(float(object_2[0].value3)/1000)+"/"+"{:.2f}".format(float(object_2[1].value3)/1000)+"/"+"{:.2f}".format(float(object_2[2].value3)/1000)+"/"
-        self.body += "{:.2f}".format(float(object_2[3].value3)/1000)+"/"+"{:.2f}".format(float(object_2[4].value3)/1000)+" : ALTON LD 26 --> HINGE PT GRAFTON "+"{:.1f}".format(float(object_3[0].value3))+" - "+"{:.1f}".format(float(object_3[1].value3))+" "+str(object_3[0].value2).upper()+"\n.END"
+        self.body = str(self.object_1[2].value5)+"  "+"{:.2f}".format(float(self.object_1[2].value3)/1000)+"/"+"{:.2f}".format(float(self.object_2[10].value3)/1000)+"/"+"{:.2f}".format(float(self.object_2[11].value3)/1000)+"/"+"{:.2f}".format(float(self.object_2[12].value3)/1000)+"/"
+        self.body += "{:.2f}".format(float(self.object_2[13].value3)/1000)+"/"+"{:.2f}".format(float(self.object_2[14].value3)/1000)+" : CLARKSVILLE LD 24 --> HINGE PT LOUSIANA "+"{:.1f}".format(float(self.object_3[4].value3))+" - "+"{:.1f}".format(float(self.object_3[5].value3))+" "+str(self.object_3[4].value2).upper()+"\n"
+        self.body += str(self.object_1[1].value5)+"  "+"{:.2f}".format(float(self.object_1[1].value3)/1000)+"/"+"{:.2f}".format(float(self.object_2[5].value3)/1000)+"/"+"{:.2f}".format(float(self.object_2[6].value3)/1000)+"/"+"{:.2f}".format(float(self.object_2[7].value3)/1000)+"/"
+        self.body += "{:.2f}".format(float(self.object_2[8].value3)/1000)+"/"+"{:.2f}".format(float(self.object_2[9].value3)/1000)+" : WINFIELD LD 25 --> HINGE PT MOSIER LDG "+"{:.1f}".format(float(self.object_3[2].value3))+" - "+"{:.1f}".format(float(self.object_3[3].value3))+" "+str(self.object_3[2].value2).upper()+"\n"
+        self.body += str(self.object_1[0].value5)+"  "+"{:.2f}".format(float(self.object_1[0].value3)/1000)+"/"+"{:.2f}".format(float(self.object_2[0].value3)/1000)+"/"+"{:.2f}".format(float(self.object_2[1].value3)/1000)+"/"+"{:.2f}".format(float(self.object_2[2].value3)/1000)+"/"
+        self.body += "{:.2f}".format(float(self.object_2[3].value3)/1000)+"/"+"{:.2f}".format(float(self.object_2[4].value3)/1000)+" : ALTON LD 26 --> HINGE PT GRAFTON "+"{:.1f}".format(float(self.object_3[0].value3))+" - "+"{:.1f}".format(float(self.object_3[1].value3))+" "+str(self.object_3[0].value2).upper()+"\n.END"
 
 class Object:
 
@@ -118,6 +121,7 @@ txt_file_name = "morning_shef"
 
 # Dictionary to hold the data for all lakes
 lake_dict = {}
+dam_dict = {}
 markTwain_list = []
 
 
@@ -210,8 +214,9 @@ def retrieveLD_1(conn):
         while rs.next() : 
             # loop and append which data col to object list
             object_list_1.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)))
-                     
-        print object_list_1
+        
+        dam_dict["LD_1"] = object_list_1
+        print dam_dict
         
         for obj in object_list_1:
             print obj.value1
@@ -266,7 +271,8 @@ def retrieveLD_2(conn):
             # loop and append which data col to object list
             object_list_2.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),None,None))
                       
-        print object_list_2
+        dam_dict["LD_2"] = object_list_2
+        print dam_dict
             
         for obj in object_list_2:
             print obj.value1
@@ -297,7 +303,8 @@ def retrieveLD_3(conn):
             # loop and append which data col to object list
             object_list_3.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),None,None,None))
                      
-        print object_list_3
+        dam_dict["LD_3"] = object_list_3
+        print dam_dict
             
         for obj in object_list_3:
             print obj.value1
