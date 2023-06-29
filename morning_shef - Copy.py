@@ -1,6 +1,6 @@
 '''
 Author: IVAN H. NGUYEN USACE-MVS
-Last Updated: 06-29-2023
+Last Updated: 06-26-2023
 Version: 1.0
 Description: The purpose of this script is to import data from CWMS and other schema then convert them to SHEF file format.
 '''
@@ -28,7 +28,6 @@ from operator                                   import is_not
 from rma.services                               import ServiceLookup
 from subprocess                                 import Popen
 from time                                       import mktime, localtime
-from javax.swing                                import JOptionPane, JDialog, JButton, JPanel
 import inspect, math
 import DBAPI
 import os
@@ -37,26 +36,20 @@ import java
 import time,calendar,datetime
 import java.lang
 import os, sys, inspect, datetime, time, DBAPI
-
-#================================SAVE WINDOW TEST=======================================
 import gui
 
 
 chooser = gui.JFileChooser() 
 filename  = chooser.getSelectedFile().getName()
 print "Filename = {0}".format(filename)
-#=======================================================================================
 
 
 
-#==============================================================================================================================================================================================
-#==============================================================================================================================================================================================
-# OBJECT
-#==============================================================================================================================================================================================
-#==============================================================================================================================================================================================
+# Oscar NEW COMMENT
 
+#import tkinter
+#from tkinter import filedialog as fd
 
-# object class to store current lock and dam stage data. (required 7 data columns)
 class Object_LD:
     
     def __init__(self, value1, value2, value3, value4, value5, value6, value7):
@@ -67,46 +60,12 @@ class Object_LD:
         self.value5 = value5
         self.value6 = value6
         self.value7 = value7
-        
 
-# object class to store lake forecast flow data. (required 4 data columns)
-class Object:
-    def __init__(self, lake, date_time, outflow, station):
-        self.lake = lake
-        self.date_time = date_time
-        self.outflow = outflow
-        self.station = station
-
-#==============================================================================================================================================================================================
-#==============================================================================================================================================================================================
-# TEXT
-#==============================================================================================================================================================================================
-#==============================================================================================================================================================================================
-
-
-# text for 5 lakes
-class TextFileLake:
-    
-    def __init__(self, today_date):
-        self.line1 = ": TODAYS LAKE FLOW AND 5 DAY FORECAST"
-        self.line2 = ".B STL " + str(today_date) + " C DH0600/DC" + str(today_date) + "0600/QT/DRD+1/QTIF/DRD+2/QTIF/DRD+3/QTIF/DRD+4/QTIF/DRD+5/QTIF"
-        self.text = self.line1+"\n"+self.line2 
-
-# text for mark twain yesterday flow
-class TextFileMarkTwainYesterday:
-    
-    def __init__(self, object_list, today_date):
-        self.line1 = ": MARK TWAIN LAKE FLOW YESTERDAY"
-        self.line2 = ".E CDAM7 "+str(today_date)+" C DH0000/DC"+str(today_date)+"0000/QTD/DID1/"+"{:.2f}".format(float(object_list[0].outflow)/1000)
-        self.mark_twain_text = self.line1+"\n"+self.line2
-
-# text for lock and dam current and forecast data
-class TextFileLockDam:
-    
+class TextFileLD:
     def __init__(self, dictionary, date):
-        self.object_1 = dictionary["LockDamStage"]
-        self.object_2 = dictionary["LockDamNetmissForecast"]
-        self.object_3 = dictionary["HingePoint"]
+        self.object_1 = dictionary["LD_1"]
+        self.object_2 = dictionary["LD_2"]
+        self.object_3 = dictionary["LD_3"]
         self.line1 = ": TODAYS OVSERVED POOL AND 5 DAY FORECAST"
         self.line2 = ".B STL "+ str(date)+" C DH0600/DC0"+str(date)+"700/HP/DRD+1/HPIF/DRD+2/HPIF/DRD+3/HPIF"
         self.body = str(self.object_1[2].value7)+"  "+"{:.2f}".format(float(self.object_1[2].value3))+"/"+"{:.2f}".format(float(self.object_2[10].value3))+"/"+"{:.2f}".format(float(self.object_2[11].value3))+"/"+"{:.2f}".format(float(self.object_2[12].value3))+"/"
@@ -116,7 +75,21 @@ class TextFileLockDam:
         self.body += str(self.object_1[0].value7)+"  "+"{:.2f}".format(float(self.object_1[0].value3))+"/"+"{:.2f}".format(float(self.object_2[0].value3))+"/"+"{:.2f}".format(float(self.object_2[1].value3))+"/"+"{:.2f}".format(float(self.object_2[2].value3))+"/"
         self.body += "{:.2f}".format(float(self.object_2[3].value3))+"/"+"{:.2f}".format(float(self.object_2[4].value3))+" : ALTON LD 26 --> HINGE PT GRAFTON "+"{:.1f}".format(float(self.object_3[0].value3))+" - "+"{:.1f}".format(float(self.object_3[1].value3))+" "+str(self.object_3[0].value2).upper()+"\n.END"
 
-# text
+class Object:
+
+	def __init__(self, lake, date_time, outflow, station):
+		self.lake = lake
+		self.date_time = date_time
+		self.outflow = outflow
+		self.station = station
+
+class TextFileTop:
+    
+    def __init__(self, today_date):
+        self.line1 = ": TODAYS LAKE FLOW AND 5 DAY FORECAST"
+        self.line2 = ".B STL " + str(today_date) + " C DH0600/DC" + str(today_date) + "0600/QT/DRD+1/QTIF/DRD+2/QTIF/DRD+3/QTIF/DRD+4/QTIF/DRD+5/QTIF"
+        self.text = self.line1+"\n"+self.line2 
+
 class TextFileButton:
     
     def __init__(self, object_list):
@@ -130,44 +103,38 @@ class TextFileButton:
                 string += "/"
         self.text = self.first+string+self.last
 
+class TextFileMarkTwain:
+    
+    def __init__(self, object_list, today_date):
+        self.first = ": MARK TWAIN LAKE FLOW YESTERDAY"
+        self.second = ".E CDAM7 "+str(today_date)+" C DH0000/DC"+str(today_date)+"0000/QTD/DID1/"+"{:.2f}".format(float(object_list[0].outflow)/1000)
+        self.second_text = self.first+"\n"+self.second
 
-# set the name for the output shef file
-txt_file_name = "morning_shef"
+#def on_closing():
+#    root.destroy()
 
 today_date = datetime.datetime.now().strftime('%m%d')
-print "today_date = " + str(today_date)
 
-#===================================================================================
+# Name for the shef file
+txt_file_name = "morning_shef"
+
 ## Pop-up and pick location to save ##
 # root = tkinter.Tk()
 # data_type = [('Shef file', '*.shef')]
 # dial_directory = fd.asksaveasfilename(title="Save As", filetypes=data_type, initialfile="Outflow_text_file", defaultextension=("Shef file",".shef"))
 #root.protocol("WM_DELETE_WINDOW", on_closing())
-#===================================================================================
 
-#=======================================================================================================================
-#=======================================================================================================================
-# DICTIONARY
-#=======================================================================================================================
-#=======================================================================================================================
+# Dictionary to hold the data for all lakes
 lake_dict = {}
-
-# getLockDamStage, getHingePoint, getLockDamNetmissForecast
-lock_dam_dict = {}
-
+dam_dict = {}
 markTwain_list = []
-
 markTwainYesterday_list = []
 
-#=======================================================================================================================
-#=======================================================================================================================
-# QUERY
-#=======================================================================================================================
-#=======================================================================================================================
-def getLockDamStage(conn):
+
+def retrieveLD_1(conn):
     try :
-        print "getLockDamStage Query Start"
-        LockDamStage = None
+        print "Query LD_1 Start"
+        LD_1 = None
         stmt = conn.prepareStatement('''
                                     with cte_pool as 
                                     (select 'LD 24 Pool-Mississippi' as location_id, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time, value, unit_id, quality_code, 'CLKM7' as damlock
@@ -248,29 +215,29 @@ def getLockDamStage(conn):
         
         rs = stmt.executeQuery()
         
-        # create object list to store the data (3 columns by 6 rows)
-        object_list_lock_dam_stage = []
+        # create object list to store the data (3 cols by 6 rows)
+        object_list_1 = []
         while rs.next() : 
-            # loop and append which data column to object list
-            object_list_lock_dam_stage.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)))
+            # loop and append which data col to object list
+            object_list_1.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)))
         
-        lock_dam_dict["LockDamStage"] = object_list_lock_dam_stage
-        print lock_dam_dict
+        dam_dict["LD_1"] = object_list_1
+        print dam_dict
         
-        for obj in object_list_lock_dam_stage:
-            print str(obj.value1) + " - " + str(obj.value2) + " - " + str(obj.value3) + " - " + str(obj.value4) + " - " + str(obj.value5) + " - " + str(obj.value6) + " - " + str(obj.value7)
+        for obj in object_list_1:
+            print obj.value1
             
     finally :
-        print "getLockDamStage Query End"
+        print "Query LD_1 End"
         stmt.close()
         rs.close()
-    return LockDamStage
+    return LD_1
 
 
-def getLockDamNetmissForecast(conn):
+def retrieveLD_2(conn):
     try :
-        print "getLockDamNetmissForecast Query Start"
-        LockDamNetmissForecast = None
+        print "Query LD_2 Start"
+        LD_2 = None
         stmt = conn.prepareStatement('''
                                     select upper(cwms_util.split_text(cwms_ts_id, 1, '.')) as location_id
                                     ,date_time
@@ -310,23 +277,23 @@ def getLockDamNetmissForecast(conn):
             # loop and append which data col to object list
             object_list_2.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),None,None))
                       
-        lock_dam_dict["LockDamNetmissForecast"] = object_list_2
-        print lock_dam_dict
+        dam_dict["LD_2"] = object_list_2
+        print dam_dict
             
         for obj in object_list_2:
             print obj.value1
-
+	
     finally :
-        print "getLockDamNetmissForecast Query End"
+        print "Query LD_2 End"
         stmt.close()
         rs.close()
-    return LockDamNetmissForecast
+    return LD_2
 
 
-def getHingePoint(conn):
+def retrieveLD_3(conn):
     try :
-        print "getHingePoint Query Start"
-        HingePoint = None
+        print "Query LD_3 Start"
+        LD_3 = None
         stmt = conn.prepareStatement('''
                                     select location_level_id, level_unit, constant_level, specified_level_id
                                     from CWMS_20.AV_LOCATION_LEVEL 
@@ -336,25 +303,26 @@ def getHingePoint(conn):
                                     ''')
         rs = stmt.executeQuery()
         
-        # create object list to store the data (4 columns)
-        object_list_hinge_point = []
+        # create object list to store the data (3 cols by 6 rows)
+        object_list_3 = []
         while rs.next() : 
-            # loop and append data to object_list
-            object_list_hinge_point.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),None,None,None))
+            # loop and append which data col to object list
+            object_list_3.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),None,None,None))
                      
-        lock_dam_dict["HingePoint"] = object_list_hinge_point
-        print lock_dam_dict
+        dam_dict["LD_3"] = object_list_3
+        print dam_dict
             
-        for obj in object_list_hinge_point:
-            print str(obj.value1) + " - " + str(obj.value2) + " - " + str(obj.value3) + " - " + str(obj.value4)
+        for obj in object_list_3:
+            print obj.value1
+	
     finally :
-        print "getHingePoint Query End"
+        print "Query LD_3 End"
         stmt.close()
         rs.close()
-    return HingePoint
+    return LD_3
 
 
-def getCarlyle(conn):
+def retrieveCarlyle(conn):
     try :
         Carlyle = None
         stmt = conn.prepareStatement('''
@@ -375,45 +343,52 @@ def getCarlyle(conn):
                                     ''')
         rs = stmt.executeQuery()
 
-        # create object list to store the data (4 columns)
+        # create object list to store the data (3 cols by 6 rows)
         object_list = []
-        while rs.next() :
-            # loop and append data to object list. select the correct column number
-            object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-            print "test"
-           
-        # add object list to dictionary
+        while rs.next() : 
+           # loop and append which data col to object list
+           object_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
+                     
+           print "test"
+        
         lake_dict["Carlyle"] = object_list
         print lake_dict
-        
-        print object_list
-        
-        # create object for each row
-        day0 = object_list [0]
-        print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
-        
-        day1 = object_list [1]
-        print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
-        
-        day2 = object_list [2]
-        print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
-        
-        day3 = object_list [3]
-        print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
-        
-        day4 = object_list [4]
-        print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
-        
-        day5 = object_list [5]
-        print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
-       
+           
+	print object_list
+
+	
+	# create object for each row
+	day0 = object_list [0]
+	print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
+	
+	day1 = object_list [1]
+	print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
+
+	day2 = object_list [2]
+	print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
+
+	day3 = object_list [3]
+	print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
+
+	day4 = object_list [4]
+	print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
+
+	day5 = object_list [5]
+	print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
+	
+	# check data type
+	print "lake type = " + str(type(day1.lake))
+	print "date_time type = " + str(type(day1.date_time))
+	print "outflow type = " + str(type(day1.outflow))
+
+
     finally :
         stmt.close()
         rs.close()
     return Carlyle
 
 
-def getWappapello(conn):
+def retrieveWappapello(conn):
     try :
         Wappapello = None
         stmt = conn.prepareStatement('''
@@ -434,43 +409,50 @@ def getWappapello(conn):
                                     ''')
         rs = stmt.executeQuery()
 
-        # create object list to store the data (4 columns)
+        # create object list to store the data (3 cols by 6 rows)
         object_list = []
-        while rs.next() :
-            # loop and append data to object list. select the correct column number
-            object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-            print "test"
-           
+        while rs.next() : 
+           # loop and append which data col to object list
+           object_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
+           print "test"
         lake_dict["Wappapello"] = object_list
         print lake_dict
-        print object_list
-        
-        # create object for each row
-        day0 = object_list [0]
-        print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
-        
-        day1 = object_list [1]
-        print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
-        
-        day2 = object_list [2]
-        print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
-        
-        day3 = object_list [3]
-        print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
-        
-        day4 = object_list [4]
-        print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
-        
-        day5 = object_list [5]
-        print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
-        
+           
+	print object_list
+    
+    
+	# create object for each row
+	day0 = object_list [0]
+	print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
+	
+	day1 = object_list [1]
+	print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
+
+	day2 = object_list [2]
+	print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
+
+	day3 = object_list [3]
+	print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
+
+	day4 = object_list [4]
+	print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
+
+	day5 = object_list [5]
+	print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
+	
+	# check data type
+	print "lake type = " + str(type(day1.lake))
+	print "date_time type = " + str(type(day1.date_time))
+	print "outflow type = " + str(type(day1.outflow))
+
+
     finally :
         stmt.close()
         rs.close()
     return Wappapello
 
 
-def getRend(conn):
+def retrieveRend(conn):
     try :
         Rend = None
         stmt = conn.prepareStatement('''
@@ -491,36 +473,42 @@ def getRend(conn):
                                     ''')
         rs = stmt.executeQuery()
 
-        # create object list to store the data (4 columns)
+        # create object list to store the data (3 cols by 6 rows)
         object_list = []
         print "Rend Test"
-        while rs.next() :
-            # loop and append data to object list. select the correct column number
-            object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-            print "test"
-           
+        while rs.next() : 
+           # loop and append which data col to object list
+           object_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
+           print "test"
         lake_dict["Rend"] = object_list
         print lake_dict
-        print object_list
+           
+	print object_list
 
-        # create object for each row
-        day0 = object_list [0]
-        print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
-        
-        day1 = object_list [1]
-        print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
-        
-        day2 = object_list [2]
-        print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
-        
-        day3 = object_list [3]
-        print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
-        
-        day4 = object_list [4]
-        print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
-        
-        day5 = object_list [5]
-        print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
+	# create object for each row
+	day0 = object_list [0]
+	print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
+	
+	day1 = object_list [1]
+	print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
+
+	day2 = object_list [2]
+	print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
+
+	day3 = object_list [3]
+	print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
+
+	day4 = object_list [4]
+	print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
+
+	day5 = object_list [5]
+	print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
+	
+	# check data type
+	print "lake type = " + str(type(day1.lake))
+	print "date_time type = " + str(type(day1.date_time))
+	print "outflow type = " + str(type(day1.outflow))
+
 
     finally :
         stmt.close()
@@ -528,7 +516,7 @@ def getRend(conn):
     return Rend
 
 
-def getShelbyville(conn):
+def retrieveShelbyville(conn):
     try :
         Shelbyville = None
         stmt = conn.prepareStatement('''
@@ -549,35 +537,40 @@ def getShelbyville(conn):
                                     ''')
         rs = stmt.executeQuery()
 
-        # create object list to store the data (4 columns)
+        # create object list to store the data (3 cols by 6 rows)
         object_list = []
-        while rs.next() :
-            # loop and append data to object list. select the correct column number
-            object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-            print "test"
-           
+        while rs.next() : 
+           # loop and append which data col to object list
+           object_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
+           print "test"
         lake_dict["Shelbyville"] = object_list
         print lake_dict
-        print object_list
-        
-        # create object for each row
-        day0 = object_list [0]
-        print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
-        
-        day1 = object_list [1]
-        print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
-        
-        day2 = object_list [2]
-        print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
-        
-        day3 = object_list [3]
-        print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
-        
-        day4 = object_list [4]
-        print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
-        
-        day5 = object_list [5]
-        print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
+           
+	print object_list
+
+	# create object for each row
+	day0 = object_list [0]
+	print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
+	
+	day1 = object_list [1]
+	print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
+
+	day2 = object_list [2]
+	print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
+
+	day3 = object_list [3]
+	print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
+
+	day4 = object_list [4]
+	print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
+
+	day5 = object_list [5]
+	print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
+	
+	# check data type
+	print "lake type = " + str(type(day1.lake))
+	print "date_time type = " + str(type(day1.date_time))
+	print "outflow type = " + str(type(day1.outflow))
 
     finally :
         stmt.close()
@@ -585,7 +578,7 @@ def getShelbyville(conn):
     return Shelbyville
 
 
-def getMarkTwain(conn):
+def retrieveMarkTwain(conn):
     try :
         MarkTwain = None
         stmt = conn.prepareStatement('''
@@ -606,12 +599,12 @@ def getMarkTwain(conn):
                                     ''')
         rs = stmt.executeQuery()
 
-        # create object list to store the data (4 columns)
+        # create object list to store the data (3 cols by 6 rows)
         object_list = []
-        while rs.next() :
-            # loop and append data to object list. select the correct column number
-            object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-            print "test"  
+        while rs.next() : 
+           # loop and append which data col to object list
+           object_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
+           print "test"  
              
         lake_dict["MarkTwain"] = object_list
         print lake_dict
@@ -635,51 +628,51 @@ def getMarkTwain(conn):
         day5 = object_list [5]
         print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
 
+	    # check data type
+        print "lake type = " + str(type(day1.lake))
+        print "date_time type = " + str(type(day1.date_time))
+        print "outflow type = " + str(type(day1.outflow))
+
     finally :
         stmt.close()
         rs.close()
     return MarkTwain
 
 
-def getMarkTwainYesterday(conn):
+def retrieveMarkTwainYesterday(conn):
     try :
         MarkTwainYesterday = None
         stmt = conn.prepareStatement('''
-                                    select 'Mark Twain Lk-Salt' as location_id
-                                        , cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time
-                                        , value
-                                        , unit_id
-                                        , 'CDAM7' as station
-                                    from cwms_v_tsv_dqu  tsv
-                                    where 
-                                         tsv.cwms_ts_id = 'Mark Twain Lk-Salt.Flow-Turb.Ave.~1Day.1Day.lakerep-rev' 
-                                         and date_time  >= to_date( to_char(sysdate-2, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss') 
-                                         and date_time  <= to_date( to_char(sysdate-1, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
-                                         and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
-                                         and tsv.office_id = 'MVS' 
-                                         and tsv.aliased_item is null
+                                    select date_time, turb, spill, tot_q,'CDAM7' as station
+                                    from wm_mvs_lake.mt_gen 
+                                    where cwms_util.change_timezone(date_time, 'UTC', 'US/Central') < to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy hh24:mi:ss'),'mm-dd-yyyy hh24:mi:ss')- interval '1' DAY
+                                    and cwms_util.change_timezone(date_time, 'UTC', 'US/Central') > to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy hh24:mi:ss'),'mm-dd-yyyy hh24:mi:ss') - interval '2' DAY
+                                    order by date_time asc
                                     ''')
         rs = stmt.executeQuery()
 
-        # create object list to store the data (4 columns)
-        while rs.next() :
-            # loop and append data to object list. select the correct column number
-            markTwainYesterday_list.append(Object(None, None,rs.getString(3),rs.getString(5)))
-            print "test"  
+        # create object list to store the data (3 cols by 6 rows)
+        while rs.next() : 
+           # loop and append which data col to object list
+           markTwainYesterday_list.append(Object(None, None, rs.getString(2),rs.getString(5)))
+           print "test"  
              
         print markTwainYesterday_list
 
         # create object for each row
         day0 = markTwainYesterday_list [0]
-        print "day0 = " + str(day0.station) + " - " + str(day0.outflow)
+        print "day0 = " + str(day0.station) + " - " + str(day0.turb)
+
+        # check data type
+        print "station type = " + str(type(day1.station))
+        print "turb type = " + str(type(day1.turb))
 
     finally :
         stmt.close()
         rs.close()
     return MarkTwainYesterday
 
-
-
+        
 try :    
     NowTw  = datetime.datetime.now()
     print '='
@@ -698,86 +691,71 @@ try :
     CwmsDb.setOfficeId('MVS')
     CwmsDb.setTimeZone('GMT')
     
-    # create a java.sql.Connection
+    # Create a java.sql.Connection
     conn = CwmsDb.getConnection()
 
 
-    LockDamStage = getLockDamStage(conn)
-    print "LockDamStage = " +  str(LockDamStage)
+    print "test2"
+    print "retrieveLD test2"
+    print lake_dict
+
+    LD_1 = retrieveLD_1(conn)
+    print "LD" +  str(LD_1)
     
     print "==========================================================="
 
-    LockDamNetmissForecast = getLockDamNetmissForecast(conn)
-    print "LockDamNetmissForecast = " +  str(LockDamNetmissForecast)
+    LD_2 = retrieveLD_2(conn)
+    print "LD_2" +  str(LD_2)
     
     print "==========================================================="
     
-    Hinge = getHingePoint(conn)
-    print "Hinge = " +  str(Hinge)
+    LD_3 = retrieveLD_3(conn)
+    print "LD_3" +  str(LD_3)
     
     print "==========================================================="    
     
     # get Carlyle data
-    Carlyle = getCarlyle(conn)
-    print "Carlyle = " +  str(Carlyle)
+    Carlyle = retrieveCarlyle(conn)
+    print "Carlyle" +  str(Carlyle)
     
     print "==========================================================="
 
     # get Wappapello data
-    Wappapello = getWappapello(conn)
-    print "Wappapello = " +  str(Wappapello)
+    Wappapello = retrieveWappapello(conn)
+    print "Wappapello" +  str(Wappapello)
     
     print "==========================================================="
     
     # get Rend data
-    Rend = getRend(conn)
-    print "Rend = " +  str(Rend)
+    Rend = retrieveRend(conn)
+    print "Rend" +  str(Rend)
     
     print "==========================================================="
 
     # get Shelbyville data
-    Shelbyville = getShelbyville(conn)
-    print "Shelbyville = " +  str(Shelbyville)
+    Shelbyville = retrieveShelbyville(conn)
+    print "Shelbyville" +  str(Shelbyville)
     
     print "==========================================================="
     
     # get MarkTwain data
-    MarkTwain = getMarkTwain(conn)
-    print "MarkTwain = " +  str(MarkTwain)
+    MarkTwain = retrieveMarkTwain(conn)
+    print "MarkTwain" +  str(MarkTwain)
     
     print "==========================================================="
     
     # get MarkTwainYesterday data
-    MarkTwainYesterday = getMarkTwainYesterday(conn)
-    print "MarkTwainYesterday = " +  str(MarkTwainYesterday)
+    MarkTwainYesterday = retrieveMarkTwainYesterday(conn)
+    print "MarkTwainYesterday" +  str(MarkTwainYesterday)
     
     print "==========================================================="
     
-
-    noteCarlyle = JOptionPane.showInputDialog(None, 'Carlyle Lake Note', 'CEMVS Reservoir Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
-    print "noteCarlyle = " + str(noteCarlyle)
-    
-    noteShelbyville = JOptionPane.showInputDialog(None, 'Shelbyville Lake Note', 'CEMVS Reservoir Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
-    print "noteShelbyville = " + str(noteShelbyville)
-    
-    noteMarkTwain = JOptionPane.showInputDialog(None, 'MarkTwain Lake Note', 'CEMVS Reservoir Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
-    print "noteMarkTwain = " + str(noteMarkTwain)
-    
-    noteRend = JOptionPane.showInputDialog(None, 'Rend Lake Note', 'CEMVS Reservoir Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
-    print "noteRend = " + str(noteRend)
-    
-    noteWappapello = JOptionPane.showInputDialog(None, 'Wappapello Lake Note', 'CEMVS Reservoir Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
-    print "noteWappapello = " + str(noteWappapello)
-    
-    
-    #=======================================================================================================================
-    # CREATE TEXT FILE
-    #=======================================================================================================================
-
+        
+    # create shef file here
     with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
         
         # lakes current and forecast shef data block
-        text = TextFileLake(today_date).text+"\n"
+        text = TextFileTop(today_date).text+"\n"
         data_text = ""
         for key, value in lake_dict.items():
             data_text += TextFileButton(value).text+"\n"
@@ -787,20 +765,17 @@ try :
         text += "\n\n"
         
         # mark twain current shef data block
-        mark_twain_text = TextFileMarkTwainYesterday(markTwainYesterday_list, today_date).mark_twain_text
-        mark_twain_text += "\n\n"
+        second_text = TextFileMarkTwain(markTwainYesterday_list, today_date).second_text
+        second_text += "\n\n"
         
         # lock and dam current and forecast shef data block
-        lock_dam_text =  TextFileLockDam(lock_dam_dict, today_date).line1+"\n"
-        lock_dam_text += TextFileLockDam(lock_dam_dict, today_date).line2+"\n"
-        lock_dam_text += TextFileLockDam(lock_dam_dict, today_date).body
+        fourth_text =  TextFileLD(dam_dict, today_date).line1+"\n"
+        fourth_text += TextFileLD(dam_dict, today_date).line2+"\n"
+        fourth_text += TextFileLD(dam_dict, today_date).body
         
-        f.write(text+mark_twain_text+lock_dam_text)
+        f.write(text+second_text+third_text+fourth_text)
         
         print("Text file created")
-        
-        # pop-up message box
-        MessageBox.showInformation('Text file created', 'Alert')
     
         
     # close the database
