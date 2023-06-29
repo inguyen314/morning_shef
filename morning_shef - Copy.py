@@ -36,6 +36,14 @@ import java
 import time,calendar,datetime
 import java.lang
 import os, sys, inspect, datetime, time, DBAPI
+import gui
+
+
+chooser = gui.JFileChooser() 
+filename  = chooser.getSelectedFile().getName()
+print "Filename = {0}".format(filename)
+
+
 
 # Oscar NEW COMMENT
 
