@@ -770,6 +770,9 @@ try :
         f.write(text+mark_twain_text+lock_dam_text)
         
         print("Text file created")
+        
+        # pop-up message box
+        MessageBox.showInformation('Text file created', 'Alert')
     
         
     # close the database
