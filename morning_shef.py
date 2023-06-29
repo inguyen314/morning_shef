@@ -59,12 +59,11 @@ class Object_LD:
 
 # object class to store lake forecast flow data. (required 4 data columns)
 class Object:
-
-	def __init__(self, lake, date_time, outflow, station):
-		self.lake = lake
-		self.date_time = date_time
-		self.outflow = outflow
-		self.station = station
+    def __init__(self, lake, date_time, outflow, station):
+        self.lake = lake
+        self.date_time = date_time
+        self.outflow = outflow
+        self.station = station
 
 #==============================================================================================================================================================================================
 #==============================================================================================================================================================================================
@@ -304,7 +303,7 @@ def getLockDamNetmissForecast(conn):
             
         for obj in object_list_2:
             print obj.value1
-	
+
     finally :
         print "getLockDamNetmissForecast Query End"
         stmt.close()
@@ -336,7 +335,6 @@ def getHingePoint(conn):
             
         for obj in object_list_hinge_point:
             print str(obj.value1) + " - " + str(obj.value2) + " - " + str(obj.value3) + " - " + str(obj.value4)
-	
     finally :
         print "getHingePoint Query End"
         stmt.close()
@@ -367,35 +365,35 @@ def getCarlyle(conn):
 
         # create object list to store the data (4 columns)
         object_list = []
-        while rs.next() : 
-           # loop and append data to object list. select the correct column number
-           object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))      
-           print "test"
+        while rs.next() :
+            # loop and append data to object list. select the correct column number
+            object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
+            print "test"
            
         # add object list to dictionary
         lake_dict["Carlyle"] = object_list
         print lake_dict
-           
-	print object_list
-
-	# create object for each row
-	day0 = object_list [0]
-	print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
-	
-	day1 = object_list [1]
-	print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
-
-	day2 = object_list [2]
-	print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
-
-	day3 = object_list [3]
-	print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
-
-	day4 = object_list [4]
-	print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
-
-	day5 = object_list [5]
-	print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
+        
+        print object_list
+        
+        # create object for each row
+        day0 = object_list [0]
+        print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
+        
+        day1 = object_list [1]
+        print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
+        
+        day2 = object_list [2]
+        print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
+        
+        day3 = object_list [3]
+        print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
+        
+        day4 = object_list [4]
+        print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
+        
+        day5 = object_list [5]
+        print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
        
     finally :
         stmt.close()
@@ -426,35 +424,34 @@ def getWappapello(conn):
 
         # create object list to store the data (4 columns)
         object_list = []
-        while rs.next() : 
-           # loop and append data to object list. select the correct column number
-           object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-           print "test"
+        while rs.next() :
+            # loop and append data to object list. select the correct column number
+            object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
+            print "test"
            
         lake_dict["Wappapello"] = object_list
         print lake_dict
-           
-	print object_list
-    
-	# create object for each row
-	day0 = object_list [0]
-	print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
-	
-	day1 = object_list [1]
-	print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
-
-	day2 = object_list [2]
-	print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
-
-	day3 = object_list [3]
-	print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
-
-	day4 = object_list [4]
-	print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
-
-	day5 = object_list [5]
-	print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
-	
+        print object_list
+        
+        # create object for each row
+        day0 = object_list [0]
+        print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
+        
+        day1 = object_list [1]
+        print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
+        
+        day2 = object_list [2]
+        print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
+        
+        day3 = object_list [3]
+        print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
+        
+        day4 = object_list [4]
+        print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
+        
+        day5 = object_list [5]
+        print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
+        
     finally :
         stmt.close()
         rs.close()
@@ -485,35 +482,34 @@ def getRend(conn):
         # create object list to store the data (4 columns)
         object_list = []
         print "Rend Test"
-        while rs.next() : 
-           # loop and append data to object list. select the correct column number
-           object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-           print "test"
+        while rs.next() :
+            # loop and append data to object list. select the correct column number
+            object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
+            print "test"
            
         lake_dict["Rend"] = object_list
         print lake_dict
-           
-	print object_list
+        print object_list
 
-	# create object for each row
-	day0 = object_list [0]
-	print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
-	
-	day1 = object_list [1]
-	print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
+        # create object for each row
+        day0 = object_list [0]
+        print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
+        
+        day1 = object_list [1]
+        print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
+        
+        day2 = object_list [2]
+        print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
+        
+        day3 = object_list [3]
+        print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
+        
+        day4 = object_list [4]
+        print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
+        
+        day5 = object_list [5]
+        print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
 
-	day2 = object_list [2]
-	print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
-
-	day3 = object_list [3]
-	print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
-
-	day4 = object_list [4]
-	print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
-
-	day5 = object_list [5]
-	print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
-	
     finally :
         stmt.close()
         rs.close()
@@ -543,34 +539,33 @@ def getShelbyville(conn):
 
         # create object list to store the data (4 columns)
         object_list = []
-        while rs.next() : 
-           # loop and append data to object list. select the correct column number
-           object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-           print "test"
+        while rs.next() :
+            # loop and append data to object list. select the correct column number
+            object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
+            print "test"
            
         lake_dict["Shelbyville"] = object_list
         print lake_dict
-           
-	print object_list
-
-	# create object for each row
-	day0 = object_list [0]
-	print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
-	
-	day1 = object_list [1]
-	print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
-
-	day2 = object_list [2]
-	print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
-
-	day3 = object_list [3]
-	print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
-
-	day4 = object_list [4]
-	print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
-
-	day5 = object_list [5]
-	print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
+        print object_list
+        
+        # create object for each row
+        day0 = object_list [0]
+        print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
+        
+        day1 = object_list [1]
+        print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
+        
+        day2 = object_list [2]
+        print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
+        
+        day3 = object_list [3]
+        print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
+        
+        day4 = object_list [4]
+        print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
+        
+        day5 = object_list [5]
+        print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
 
     finally :
         stmt.close()
@@ -601,10 +596,10 @@ def getMarkTwain(conn):
 
         # create object list to store the data (4 columns)
         object_list = []
-        while rs.next() : 
-           # loop and append data to object list. select the correct column number
-           object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-           print "test"  
+        while rs.next() :
+            # loop and append data to object list. select the correct column number
+            object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
+            print "test"  
              
         lake_dict["MarkTwain"] = object_list
         print lake_dict
@@ -655,10 +650,10 @@ def getMarkTwainYesterday(conn):
         rs = stmt.executeQuery()
 
         # create object list to store the data (4 columns)
-        while rs.next() : 
-           # loop and append data to object list. select the correct column number
-           markTwainYesterday_list.append(Object(None, None,rs.getString(3),rs.getString(5)))
-           print "test"  
+        while rs.next() :
+            # loop and append data to object list. select the correct column number
+            markTwainYesterday_list.append(Object(None, None,rs.getString(3),rs.getString(5)))
+            print "test"  
              
         print markTwainYesterday_list
 
