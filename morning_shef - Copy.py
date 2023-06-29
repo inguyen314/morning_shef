@@ -666,7 +666,6 @@ def retrieveMarkTwainYesterday(conn):
     return MarkTwainYesterday
 
         
-
 try :    
     NowTw  = datetime.datetime.now()
     print '='
