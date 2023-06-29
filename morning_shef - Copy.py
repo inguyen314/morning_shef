@@ -58,7 +58,7 @@ class TextFileLD:
         self.object_1 = dictionary["LD_1"]
         self.object_2 = dictionary["LD_2"]
         self.object_3 = dictionary["LD_3"]
-        self.line1 = ": TODAYS OVSERVED POOL AND 5 DAY FORECAST ABOVE GAGE ZERO"
+        self.line1 = ": TODAYS OVSERVED POOL AND 5 DAY FORECAST"
         self.line2 = ".B STL "+ str(date)+" C DH0600/DC0"+str(date)+"700/HP/DRD+1/HPIF/DRD+2/HPIF/DRD+3/HPIF"
         self.body = str(self.object_1[2].value7)+"  "+"{:.2f}".format(float(self.object_1[2].value3))+"/"+"{:.2f}".format(float(self.object_2[10].value3))+"/"+"{:.2f}".format(float(self.object_2[11].value3))+"/"+"{:.2f}".format(float(self.object_2[12].value3))+"/"
         self.body += "{:.2f}".format(float(self.object_2[13].value3))+"/"+"{:.2f}".format(float(self.object_2[14].value3))+" : CLARKSVILLE LD 24 --> HINGE PT LOUSIANA "+"{:.1f}".format(float(self.object_3[4].value3))+" - "+"{:.1f}".format(float(self.object_3[5].value3))+" "+str(self.object_3[4].value2).upper()+"\n"
@@ -123,6 +123,7 @@ txt_file_name = "morning_shef"
 lake_dict = {}
 dam_dict = {}
 markTwain_list = []
+markTwainYesterday_list = []
 
 
 def retrieveLD_1(conn):
@@ -589,7 +590,7 @@ def retrieveMarkTwain(conn):
 									where lake = 'MT'
 									    and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
 									order by date_time asc
-									fetch next 7 row only
+									fetch next 6 row only
                                     ''')
         rs = stmt.executeQuery()
 
@@ -630,7 +631,41 @@ def retrieveMarkTwain(conn):
         rs.close()
     return MarkTwain
 
-    
+
+def retrieveMarkTwainYesterday(conn):
+    try :
+        MarkTwainYesterday = None
+        stmt = conn.prepareStatement('''
+                                    select date_time, turb, spill, tot_q,'CDAM7' as station
+                                    from wm_mvs_lake.mt_gen 
+                                    where cwms_util.change_timezone(date_time, 'UTC', 'US/Central') < to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy hh24:mi:ss'),'mm-dd-yyyy hh24:mi:ss')- interval '1' DAY
+                                    and cwms_util.change_timezone(date_time, 'UTC', 'US/Central') > to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy hh24:mi:ss'),'mm-dd-yyyy hh24:mi:ss') - interval '2' DAY
+                                    order by date_time asc
+                                    ''')
+        rs = stmt.executeQuery()
+
+        # create object list to store the data (3 cols by 6 rows)
+        while rs.next() : 
+           # loop and append which data col to object list
+           markTwainYesterday_list.append(Object(rs.getString(4),rs.getString(5)))
+           print "test"  
+             
+        print markTwainYesterday_list
+
+        # create object for each row
+        day0 = markTwainYesterday_list [0]
+        print "day0 = " + str(day0.station) + " - " + str(day0.turb)
+
+        # check data type
+        print "station type = " + str(type(day1.station))
+        print "turb type = " + str(type(day1.turb))
+
+    finally :
+        stmt.close()
+        rs.close()
+    return MarkTwainYesterday
+
+        
 
 try :    
     NowTw  = datetime.datetime.now()
@@ -703,7 +738,13 @@ try :
     
     print "==========================================================="
     
+    # get MarkTwainYesterday data
+    MarkTwainYesterday = retrieveMarkTwainYesterday(conn)
+    print "MarkTwainYesterday" +  str(MarkTwainYesterday)
     
+    print "==========================================================="
+    
+        
     # create shef file here
     with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
         

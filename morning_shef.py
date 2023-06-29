@@ -37,12 +37,33 @@ import time,calendar,datetime
 import java.lang
 import os, sys, inspect, datetime, time, DBAPI
 
-# Oscar Test Test Test Test Test
-
 #import tkinter
 #from tkinter import filedialog as fd
 
+class Object_LD:
+    
+    def __init__(self, value1, value2, value3, value4, value5, value6, value7):
+        self.value1 = value1
+        self.value2 = value2
+        self.value3 = value3
+        self.value4 = value4
+        self.value5 = value5
+        self.value6 = value6
+        self.value7 = value7
 
+class TextFileLD:
+    def __init__(self, dictionary, date):
+        self.object_1 = dictionary["LD_1"]
+        self.object_2 = dictionary["LD_2"]
+        self.object_3 = dictionary["LD_3"]
+        self.line1 = ": TODAYS OVSERVED POOL AND 5 DAY FORECAST"
+        self.line2 = ".B STL "+ str(date)+" C DH0600/DC0"+str(date)+"700/HP/DRD+1/HPIF/DRD+2/HPIF/DRD+3/HPIF"
+        self.body = str(self.object_1[2].value7)+"  "+"{:.2f}".format(float(self.object_1[2].value3))+"/"+"{:.2f}".format(float(self.object_2[10].value3))+"/"+"{:.2f}".format(float(self.object_2[11].value3))+"/"+"{:.2f}".format(float(self.object_2[12].value3))+"/"
+        self.body += "{:.2f}".format(float(self.object_2[13].value3))+"/"+"{:.2f}".format(float(self.object_2[14].value3))+" : CLARKSVILLE LD 24 --> HINGE PT LOUSIANA "+"{:.1f}".format(float(self.object_3[4].value3))+" - "+"{:.1f}".format(float(self.object_3[5].value3))+" "+str(self.object_3[4].value2).upper()+"\n"
+        self.body += str(self.object_1[1].value7)+"  "+"{:.2f}".format(float(self.object_1[1].value3))+"/"+"{:.2f}".format(float(self.object_2[5].value3))+"/"+"{:.2f}".format(float(self.object_2[6].value3))+"/"+"{:.2f}".format(float(self.object_2[7].value3))+"/"
+        self.body += "{:.2f}".format(float(self.object_2[8].value3))+"/"+"{:.2f}".format(float(self.object_2[9].value3))+" : WINFIELD LD 25 --> HINGE PT MOSIER LDG "+"{:.1f}".format(float(self.object_3[2].value3))+" - "+"{:.1f}".format(float(self.object_3[3].value3))+" "+str(self.object_3[2].value2).upper()+"\n"
+        self.body += str(self.object_1[0].value7)+"  "+"{:.2f}".format(float(self.object_1[0].value3))+"/"+"{:.2f}".format(float(self.object_2[0].value3))+"/"+"{:.2f}".format(float(self.object_2[1].value3))+"/"+"{:.2f}".format(float(self.object_2[2].value3))+"/"
+        self.body += "{:.2f}".format(float(self.object_2[3].value3))+"/"+"{:.2f}".format(float(self.object_2[4].value3))+" : ALTON LD 26 --> HINGE PT GRAFTON "+"{:.1f}".format(float(self.object_3[0].value3))+" - "+"{:.1f}".format(float(self.object_3[1].value3))+" "+str(self.object_3[0].value2).upper()+"\n.END"
 
 class Object:
 
@@ -98,7 +119,200 @@ txt_file_name = "morning_shef"
 
 # Dictionary to hold the data for all lakes
 lake_dict = {}
+dam_dict = {}
 markTwain_list = []
+
+
+def retrieveLD_1(conn):
+    try :
+        print "Query LD_1 Start"
+        LD_1 = None
+        stmt = conn.prepareStatement('''
+                                    with cte_pool as 
+                                    (select 'LD 24 Pool-Mississippi' as location_id, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time, value, unit_id, quality_code, 'CLKM7' as damlock
+                                    from cwms_v_tsv_dqu  tsv
+                                    where 
+                                         tsv.cwms_ts_id = 'LD 24 Pool-Mississippi.Stage.Inst.30Minutes.0.29' 
+                                         and date_time  >= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss') 
+                                         and date_time  <= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
+                                         and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
+                                         and tsv.office_id = 'MVS' 
+                                         and tsv.aliased_item is null
+                                    union all
+                                    select 'LD 25 Pool-Mississippi' as location_id, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time, value, unit_id, quality_code, 'CAGM7' as damlock
+                                    from cwms_v_tsv_dqu  tsv
+                                    where 
+                                         tsv.cwms_ts_id = 'LD 25 Pool-Mississippi.Stage.Inst.30Minutes.0.29' 
+                                         and date_time  >= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
+                                         and date_time  <= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
+                                         and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
+                                         and tsv.office_id = 'MVS' 
+                                         and tsv.aliased_item is null   
+                                    union all
+                                    select 'Mel Price Pool-Mississippi' as location_id, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time, value, unit_id, quality_code, 'ALNI2' as damlock
+                                    from cwms_v_tsv_dqu  tsv
+                                    where 
+                                         tsv.cwms_ts_id = 'Mel Price Pool-Mississippi.Stage.Inst.15Minutes.0.29' 
+                                         and date_time  >= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
+                                         and date_time  <= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
+                                         and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
+                                         and tsv.office_id = 'MVS' 
+                                         and tsv.aliased_item is null     
+                                    order by location_id asc 
+                                    FETCH FIRST 3 ROWS ONLY),
+                                    
+                                    tainter as 
+                                    (select 'LD 24 Pool-Mississippi' as location_id, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time, value, unit_id, quality_code, 'CLKM7' as damlock
+                                    from cwms_v_tsv_dqu  tsv
+                                    where 
+                                         tsv.cwms_ts_id = 'LD 24 Pool-Mississippi.Opening.Inst.~2Hours.0.lpmsShef-raw-Taint' 
+                                         and date_time  >= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss') 
+                                         and date_time  <= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
+                                         and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
+                                         and tsv.office_id = 'MVS' 
+                                         and tsv.aliased_item is null
+                                    union all
+                                    select 'LD 25 Pool-Mississippi' as location_id, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time, value, unit_id, quality_code, 'CAGM7' as damlock
+                                    from cwms_v_tsv_dqu  tsv
+                                    where 
+                                         tsv.cwms_ts_id = 'LD 25 Pool-Mississippi.Opening.Inst.~2Hours.0.lpmsShef-raw-Taint' 
+                                         and date_time  >= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
+                                         and date_time  <= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
+                                         and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
+                                         and tsv.office_id = 'MVS' 
+                                         and tsv.aliased_item is null   
+                                    union all
+                                    select 'Mel Price Pool-Mississippi' as location_id, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time, value, unit_id, quality_code, 'ALNI2' as damlock
+                                    from cwms_v_tsv_dqu  tsv
+                                    where 
+                                         tsv.cwms_ts_id = 'Mel Price Pool-Mississippi.Opening.Inst.~2Hours.0.lpmsShef-raw-Taint' 
+                                         and date_time  >= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
+                                         and date_time  <= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
+                                         and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
+                                         and tsv.office_id = 'MVS' 
+                                         and tsv.aliased_item is null     
+                                    order by location_id asc 
+                                    FETCH FIRST 3 ROWS ONLY)
+                                    
+                                    select cte_pool.location_id
+                                        ,cte_pool.date_time
+                                        ,cte_pool.value
+                                        ,cte_pool.unit_id
+                                        ,cte_pool.quality_code
+                                        ,tainter.value as tainter_value
+                                        ,cte_pool.damlock
+                                    from cte_pool
+                                    left join tainter on cte_pool.location_id = tainter.location_id
+                                    ''')
+        
+        rs = stmt.executeQuery()
+        
+        # create object list to store the data (3 cols by 6 rows)
+        object_list_1 = []
+        while rs.next() : 
+            # loop and append which data col to object list
+            object_list_1.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)))
+        
+        dam_dict["LD_1"] = object_list_1
+        print dam_dict
+        
+        for obj in object_list_1:
+            print obj.value1
+            
+    finally :
+        print "Query LD_1 End"
+        stmt.close()
+        rs.close()
+    return LD_1
+
+
+def retrieveLD_2(conn):
+    try :
+        print "Query LD_2 Start"
+        LD_2 = None
+        stmt = conn.prepareStatement('''
+                                    select upper(cwms_util.split_text(cwms_ts_id, 1, '.')) as location_id
+                                    ,date_time
+                                    ,value
+                                    ,quality_code
+                                    ,'CLKM7' as damlock
+                                from cwms_v_tsv_dqu
+                                where cwms_ts_id ='LD 24 Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-compv2' and unit_id = 'ft'
+                                and date_time > to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '0' DAY
+                                and date_time < to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '5' DAY
+                                union all
+                                select upper(cwms_util.split_text(cwms_ts_id, 1, '.')) as location_id
+                                    ,date_time
+                                    ,value
+                                    ,quality_code
+                                    ,'CAGM7' as damlock
+                                from cwms_v_tsv_dqu
+                                where cwms_ts_id ='LD 25 Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-compv2' and unit_id = 'ft'
+                                and date_time > to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '0' DAY
+                                and date_time < to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '5' DAY
+                                union all
+                                select upper(cwms_util.split_text(cwms_ts_id, 1, '.')) as location_id
+                                    ,date_time
+                                    ,value
+                                    ,quality_code
+                                    ,'ALNI2' as damlock
+                                from cwms_v_tsv_dqu
+                                where cwms_ts_id ='Mel Price Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-compv2' and unit_id = 'ft'
+                                and date_time > to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '0' DAY
+                                and date_time < to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '5' DAY
+                                    ''')
+        rs = stmt.executeQuery()
+        
+        # create object list to store the data (3 cols by 6 rows)
+        object_list_2 = []
+        while rs.next() : 
+            # loop and append which data col to object list
+            object_list_2.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),None,None))
+                      
+        dam_dict["LD_2"] = object_list_2
+        print dam_dict
+            
+        for obj in object_list_2:
+            print obj.value1
+	
+    finally :
+        print "Query LD_2 End"
+        stmt.close()
+        rs.close()
+    return LD_2
+
+
+def retrieveLD_3(conn):
+    try :
+        print "Query LD_3 Start"
+        LD_3 = None
+        stmt = conn.prepareStatement('''
+                                    select location_level_id, level_unit, constant_level, specified_level_id
+                                    from CWMS_20.AV_LOCATION_LEVEL 
+                                    where specified_level_id in ('Hinge Max','Hinge Min') 
+                                    and unit_system = 'EN' 
+                                    and location_id in ('Grafton-Mississippi','Louisiana-Mississippi','Mosier Ldg-Mississippi')
+                                    ''')
+        rs = stmt.executeQuery()
+        
+        # create object list to store the data (3 cols by 6 rows)
+        object_list_3 = []
+        while rs.next() : 
+            # loop and append which data col to object list
+            object_list_3.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),None,None,None))
+                     
+        dam_dict["LD_3"] = object_list_3
+        print dam_dict
+            
+        for obj in object_list_3:
+            print obj.value1
+	
+    finally :
+        print "Query LD_3 End"
+        stmt.close()
+        rs.close()
+    return LD_3
+
 
 def retrieveCarlyle(conn):
     try :
@@ -159,18 +373,6 @@ def retrieveCarlyle(conn):
 	print "date_time type = " + str(type(day1.date_time))
 	print "outflow type = " + str(type(day1.outflow))
 
-	#text_file = TextFile(today_date, object_list)
-
-    #with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
-    #    f.write(text_file.text)
-    #    print("Text file created")
-
-	#C:\scripts\cwms\morning_shef		
-	## To save file in specific location
-	# with open(str(dial_directory), "w") as f:
-	#     f.write(text_file.text)
-	#     print("Text file created")
-	# root.destroy()
 
     finally :
         stmt.close()
@@ -235,18 +437,6 @@ def retrieveWappapello(conn):
 	print "date_time type = " + str(type(day1.date_time))
 	print "outflow type = " + str(type(day1.outflow))
 
-	#text_file = TextFile(today_date, object_list)
-
-	#with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
-    		#f.write(text_file.text)
-    		#print("Text file created")
-			
-	#C:\scripts\cwms\morning_shef		
-	## To save file in specific location
-	# with open(str(dial_directory), "w") as f:
-	#     f.write(text_file.text)
-	#     print("Text file created")
-	# root.destroy()
 
     finally :
         stmt.close()
@@ -311,18 +501,6 @@ def retrieveRend(conn):
 	print "date_time type = " + str(type(day1.date_time))
 	print "outflow type = " + str(type(day1.outflow))
 
-	#text_file = TextFile(today_date, object_list)
-
-	#with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
-    		#f.write(text_file.text)
-    		#print("Text file created")
-			
-	#C:\scripts\cwms\morning_shef		
-	## To save file in specific location
-	# with open(str(dial_directory), "w") as f:
-	#     f.write(text_file.text)
-	#     print("Text file created")
-	# root.destroy()
 
     finally :
         stmt.close()
@@ -386,19 +564,6 @@ def retrieveShelbyville(conn):
 	print "date_time type = " + str(type(day1.date_time))
 	print "outflow type = " + str(type(day1.outflow))
 
-	#text_file = TextFile(today_date, object_list)
-
-	#with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
-    		#f.write(text_file.text)
-    		#print("Text file created")
-			
-	#C:\scripts\cwms\morning_shef		
-	## To save file in specific location
-	# with open(str(dial_directory), "w") as f:
-	#     f.write(text_file.text)
-	#     print("Text file created")
-	# root.destroy()
-
     finally :
         stmt.close()
         rs.close()
@@ -454,11 +619,9 @@ def retrieveMarkTwain(conn):
         print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
 
 	    # check data type
-	    #print "lake type = " + str(type(day1.lake))
-	    #print "date_time type = " + str(type(day1.date_time))
-	    #print "outflow type = " + str(type(day1.outflow))
-
-        # text_file = TextFile(today_date, object_list)
+        print "lake type = " + str(type(day1.lake))
+        print "date_time type = " + str(type(day1.date_time))
+        print "outflow type = " + str(type(day1.outflow))
 
     finally :
         stmt.close()
@@ -490,31 +653,59 @@ try :
 
 
     print "test2"
+    print "retrieveLD test2"
     print lake_dict
 
+    LD_1 = retrieveLD_1(conn)
+    print "LD" +  str(LD_1)
+    
+    print "==========================================================="
+
+    LD_2 = retrieveLD_2(conn)
+    print "LD_2" +  str(LD_2)
+    
+    print "==========================================================="
+    
+    LD_3 = retrieveLD_3(conn)
+    print "LD_3" +  str(LD_3)
+    
+    print "==========================================================="    
     
     # get Carlyle data
     Carlyle = retrieveCarlyle(conn)
     print "Carlyle" +  str(Carlyle)
+    
+    print "==========================================================="
 
     # get Wappapello data
     Wappapello = retrieveWappapello(conn)
     print "Wappapello" +  str(Wappapello)
     
+    print "==========================================================="
+    
     # get Rend data
     Rend = retrieveRend(conn)
     print "Rend" +  str(Rend)
+    
+    print "==========================================================="
 
     # get Shelbyville data
     Shelbyville = retrieveShelbyville(conn)
     print "Shelbyville" +  str(Shelbyville)
     
+    print "==========================================================="
+    
     # get MarkTwain data
     MarkTwain = retrieveMarkTwain(conn)
     print "MarkTwain" +  str(MarkTwain)
-
-    #Create Text File
+    
+    print "==========================================================="
+    
+    
+    # create shef file here
     with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
+        
+        # lakes current and forecast shef data block
         text = TextFileTop(today_date).text+"\n"
         data_text = ""
         for key, value in lake_dict.items():
@@ -523,10 +714,22 @@ try :
         text += data_text
         text += end_text
         text += "\n\n"
+        
+        # mark twain current shef data block
         second_text = TextFileMarkTwain(markTwain_list, today_date).second_text
         second_text += "\n\n"
+        
+        # mark twain forecast shef data block
         third_text = TextFileMarkTwain(markTwain_list, today_date).third_text
-        f.write(text+second_text+third_text)
+        third_text += "\n\n"
+        
+        # lock and dam current and forecast shef data block
+        fourth_text =  TextFileLD(dam_dict, today_date).line1+"\n"
+        fourth_text += TextFileLD(dam_dict, today_date).line2+"\n"
+        fourth_text += TextFileLD(dam_dict, today_date).body
+        
+        f.write(text+second_text+third_text+fourth_text)
+        
         print("Text file created")
     
         
@@ -543,6 +746,9 @@ try :
     print '='
     print '='
 
+#except: 
+    #print "error"
+ 
     
 finally :
     try : CwmsDb.done()
