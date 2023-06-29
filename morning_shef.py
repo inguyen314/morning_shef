@@ -28,6 +28,7 @@ from operator                                   import is_not
 from rma.services                               import ServiceLookup
 from subprocess                                 import Popen
 from time                                       import mktime, localtime
+from javax.swing                                import JOptionPane, JDialog, JButton, JPanel
 import inspect, math
 import DBAPI
 import os
@@ -742,6 +743,22 @@ try :
     print "==========================================================="
     
 
+    noteCarlyle = JOptionPane.showInputDialog(None, 'Carlyle Lake Note', 'CEMVS Reservoir Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
+    print "noteCarlyle = " + str(noteCarlyle)
+    
+    noteShelbyville = JOptionPane.showInputDialog(None, 'Shelbyville Lake Note', 'CEMVS Reservoir Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
+    print "noteShelbyville = " + str(noteShelbyville)
+    
+    noteMarkTwain = JOptionPane.showInputDialog(None, 'MarkTwain Lake Note', 'CEMVS Reservoir Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
+    print "noteMarkTwain = " + str(noteMarkTwain)
+    
+    noteRend = JOptionPane.showInputDialog(None, 'Rend Lake Note', 'CEMVS Reservoir Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
+    print "noteRend = " + str(noteRend)
+    
+    noteWappapello = JOptionPane.showInputDialog(None, 'Wappapello Lake Note', 'CEMVS Reservoir Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
+    print "noteWappapello = " + str(noteWappapello)
+    
+    
     #=======================================================================================================================
     # CREATE TEXT FILE
     #=======================================================================================================================
