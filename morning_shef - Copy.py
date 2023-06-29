@@ -101,9 +101,6 @@ class TextFileMarkTwain:
         self.first = ": MARK TWAIN LAKE FLOW YESTERDAY"
         self.second = ".E CDAM7 "+str(today_date)+" C DH0000/DC"+str(today_date)+"0000/QTD/DID1/"+"{:.2f}".format(float(object_list[0].outflow)/1000)
         self.second_text = self.first+"\n"+self.second
-        self.third = ": MARK TWAIN LAKE FLOW TODAY + 5 DAYS"
-        self.fourth = ".E CDAM7 "+str(today_date[0:2])+str(int(today_date[2:4])+1)+" C DH0000/DC"+str(today_date)+"0630/QTDF/DID1/"+"{:.2f}".format(float(object_list[1].outflow)/1000)+"/"+"{:.2f}".format(float(object_list[2].outflow)/1000)+"/"+"{:.2f}".format(float(object_list[3].outflow)/1000)+"/"+"{:.2f}".format(float(object_list[4].outflow)/1000)+"/"+"{:.2f}".format(float(object_list[5].outflow)/1000)+"/"+"{:.2f}".format(float(object_list[6].outflow)/1000)
-        self.third_text = self.third+"\n"+self.fourth
 
 #def on_closing():
 #    root.destroy()
@@ -595,30 +592,32 @@ def retrieveMarkTwain(conn):
         rs = stmt.executeQuery()
 
         # create object list to store the data (3 cols by 6 rows)
+        object_list = []
         while rs.next() : 
            # loop and append which data col to object list
-           markTwain_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
+           object_list.append( Object(  rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9) ) )
            print "test"  
              
-        print markTwain_list
+        lake_dict["MarkTwain"] = object_list
+        print lake_dict
 
         # create object for each row
-        day0 = markTwain_list [0]
+        day0 = object_list [0]
         print "day0 = " + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
 
-        day1 = markTwain_list [1]
+        day1 = object_list [1]
         print "day1 = " + str(day1.lake) + " - " + str(day1.date_time) + " - " + str(day1.outflow) + " - " + str(day0.station)
 
-        day2 = markTwain_list [2]
+        day2 = object_list [2]
         print "day2 = " + str(day2.lake) + " - " + str(day2.date_time) + " - " + str(day2.outflow) + " - " + str(day0.station)
 
-        day3 = markTwain_list [3]
+        day3 = object_list [3]
         print "day3 = " + str(day3.lake) + " - " + str(day3.date_time) + " - " + str(day3.outflow) + " - " + str(day0.station)
 
-        day4 = markTwain_list [4]
+        day4 = object_list [4]
         print "day4 = " + str(day4.lake) + " - " + str(day4.date_time) + " - " + str(day4.outflow) + " - " + str(day0.station)
 
-        day5 = markTwain_list [5]
+        day5 = object_list [5]
         print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
 
 	    # check data type
@@ -647,7 +646,7 @@ def retrieveMarkTwainYesterday(conn):
         # create object list to store the data (3 cols by 6 rows)
         while rs.next() : 
            # loop and append which data col to object list
-           markTwainYesterday_list.append(Object(rs.getString(4),rs.getString(5)))
+           markTwainYesterday_list.append(Object(None, None, rs.getString(2),rs.getString(5)))
            print "test"  
              
         print markTwainYesterday_list
@@ -758,12 +757,8 @@ try :
         text += "\n\n"
         
         # mark twain current shef data block
-        second_text = TextFileMarkTwain(markTwain_list, today_date).second_text
+        second_text = TextFileMarkTwain(markTwainYesterday_list, today_date).second_text
         second_text += "\n\n"
-        
-        # mark twain forecast shef data block
-        third_text = TextFileMarkTwain(markTwain_list, today_date).third_text
-        third_text += "\n\n"
         
         # lock and dam current and forecast shef data block
         fourth_text =  TextFileLD(dam_dict, today_date).line1+"\n"
