@@ -39,14 +39,13 @@ import java.lang
 import os, sys, inspect, datetime, time, DBAPI
 
 #================================SAVE WINDOW TEST=======================================
-import gui
+#import gui
 
 
-chooser = gui.JFileChooser() 
-filename  = chooser.getSelectedFile().getName()
-print "Filename = {0}".format(filename)
+#chooser = gui.JFileChooser() 
+#filename  = chooser.getSelectedFile().getName()
+#print "Filename = {0}".format(filename)
 #=======================================================================================
-
 
 
 #==============================================================================================================================================================================================
@@ -54,7 +53,6 @@ print "Filename = {0}".format(filename)
 # OBJECT
 #==============================================================================================================================================================================================
 #==============================================================================================================================================================================================
-
 
 # object class to store current lock and dam stage data. (required 7 data columns)
 class Object_LD:
@@ -83,7 +81,6 @@ class Object:
 #==============================================================================================================================================================================================
 #==============================================================================================================================================================================================
 
-
 # text for 5 lakes
 class TextFileLake:
     
@@ -107,7 +104,7 @@ class TextFileLockDam:
         self.object_1 = dictionary["LockDamStage"]
         self.object_2 = dictionary["LockDamNetmissForecast"]
         self.object_3 = dictionary["HingePoint"]
-        self.line1 = ": TODAYS OVSERVED POOL AND 5 DAY FORECAST"
+        self.line1 = ": TODAYS OVSERVED POOL AND 5 DAY FORECAST IN DATUM NGVD29"
         self.line2 = ".B STL "+ str(date)+" C DH0600/DC0"+str(date)+"700/HP/DRD+1/HPIF/DRD+2/HPIF/DRD+3/HPIF"
         self.body = str(self.object_1[2].value7)+"  "+"{:.2f}".format(float(self.object_1[2].value3))+"/"+"{:.2f}".format(float(self.object_2[10].value3))+"/"+"{:.2f}".format(float(self.object_2[11].value3))+"/"+"{:.2f}".format(float(self.object_2[12].value3))+"/"
         self.body += "{:.2f}".format(float(self.object_2[13].value3))+"/"+"{:.2f}".format(float(self.object_2[14].value3))+" : CLARKSVILLE LD 24 --> HINGE PT LOUSIANA "+"{:.1f}".format(float(self.object_3[4].value3))+" - "+"{:.1f}".format(float(self.object_3[5].value3))+" "+str(self.object_3[4].value2).upper()+"\n"
@@ -137,26 +134,19 @@ txt_file_name = "morning_shef"
 today_date = datetime.datetime.now().strftime('%m%d')
 print "today_date = " + str(today_date)
 
-#===================================================================================
-## Pop-up and pick location to save ##
-# root = tkinter.Tk()
-# data_type = [('Shef file', '*.shef')]
-# dial_directory = fd.asksaveasfilename(title="Save As", filetypes=data_type, initialfile="Outflow_text_file", defaultextension=("Shef file",".shef"))
-#root.protocol("WM_DELETE_WINDOW", on_closing())
-#===================================================================================
-
 #=======================================================================================================================
 #=======================================================================================================================
 # DICTIONARY
 #=======================================================================================================================
 #=======================================================================================================================
+
+# getCarlyle, getWappapello, getRend, getShelbyville, getMarkTwain
 lake_dict = {}
 
 # getLockDamStage, getHingePoint, getLockDamNetmissForecast
 lock_dam_dict = {}
 
-markTwain_list = []
-
+# getMarkTwainYesterday
 markTwainYesterday_list = []
 
 #=======================================================================================================================
@@ -679,7 +669,6 @@ def getMarkTwainYesterday(conn):
     return MarkTwainYesterday
 
 
-
 try :    
     NowTw  = datetime.datetime.now()
     print '='
@@ -819,7 +808,6 @@ try :
 #except: 
     #print "error"
  
-    
 finally :
     try : CwmsDb.done()
     except : pass
