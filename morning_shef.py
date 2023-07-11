@@ -37,7 +37,6 @@ import java
 import time,calendar,datetime
 import java.lang
 import os, sys, inspect, datetime, time, DBAPI
-import win32com.client as win32
 
 #================================SAVE WINDOW TEST=======================================
 #import gui
@@ -818,21 +817,6 @@ try :
     # close the database
     CwmsDb.close()
     
-    # Email Test
-    olApp = win32.Dispatch('Outlook.Application')
-    olNS = olApp.GetNameSpace('MAPI')
-
-    # construct email item object
-    mailItem = olApp.CreateItem(0)
-    mailItem.Subject = 'Test Email'
-    mailItem.BodyFormat = 1
-    mailItem.Body = 'Hello There'
-    mailItem.To = 'oscar.r.cordero-perez@usace.army.mil'
-    mailItem.Sensitivity  = 2
-
-    mailItem.Display()
-    # mailItem.Save()
-    # mailItem.Send()
 
     print '='
     print '='
