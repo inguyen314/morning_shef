@@ -128,6 +128,19 @@ class TextFileButton:
         self.text = self.first+string+self.last
 
 
+class Lake_comments:
+    
+    def __init__(self, value1, value2, value3, value4, value5):
+        self.text = ""
+        self.text = ": CEMVS RESERVOIR NOTES\n"
+        self.text += "CARLYLE - "+value1+"\n"
+        self.text += "SHELBYVILLE - "+value2+"\n"
+        self.text += "MARKTWAIN - "+value3+"\n"
+        self.text += "REND - "+value4+"\n"
+        self.text += "WAPPAPPELLO - "+value5
+        
+
+
 # set the name for the output shef file
 txt_file_name = "morning_shef"
 
@@ -783,8 +796,12 @@ try :
         lock_dam_text =  TextFileLockDam(lock_dam_dict, today_date).line1+"\n"
         lock_dam_text += TextFileLockDam(lock_dam_dict, today_date).line2+"\n"
         lock_dam_text += TextFileLockDam(lock_dam_dict, today_date).body
+        lock_dam_text += "\n\n"
         
-        f.write(text+mark_twain_text+lock_dam_text)
+        # Lake Comments
+        lakes_comments = Lake_comments("value1", "value2", "value3", "value4", "value5").text
+        
+        f.write(text+mark_twain_text+lock_dam_text+lakes_comments)
         
         print("Text file created")
         
