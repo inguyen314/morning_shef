@@ -803,10 +803,17 @@ try :
         
         f.write(text+mark_twain_text+lock_dam_text+lakes_comments)
         
+        txt_date = datetime.datetime.now().strftime('%Y%m%d')
+        
+        with open("C:/scripts/cwms/morning_shef/" + txt_file_name + txt_date + ".shef", "w") as new_file:
+            new_file.write(text+mark_twain_text+lock_dam_text+lakes_comments)
+        
         print("Text file created")
         
         # pop-up message box
         MessageBox.showInformation('Text file created', 'Alert')
+    
+    with
     
         
     # close the database
