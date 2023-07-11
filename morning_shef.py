@@ -799,7 +799,7 @@ try :
         lock_dam_text += "\n\n"
         
         # Lake Comments
-        lakes_comments = Lake_comments("value1", "value2", "value3", "value4", "value5").text
+        lakes_comments = Lake_comments(str(noteCarlyle), str(noteShelbyville), str(noteMarkTwain), str(noteRend), str(noteWappapello)).text
         
         f.write(text+mark_twain_text+lock_dam_text+lakes_comments)
         
