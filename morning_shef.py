@@ -29,6 +29,7 @@ from rma.services                               import ServiceLookup
 from subprocess                                 import Popen
 from time                                       import mktime, localtime
 from javax.swing                                import JOptionPane, JDialog, JButton, JPanel
+from com.jacob.com                              import Dispatch
 import inspect, math
 import DBAPI
 import os
@@ -816,6 +817,16 @@ try :
         
     # close the database
     CwmsDb.close()
+    
+    # Email test
+    def open_new_email():
+        outlook_app = Dispatch('Outlook.Application')
+        namespace = outlook_app.getNamespace("MAPI")
+        folder = namespace.getDefaultFolder('drafts')
+        mail_item = folder.Items.add()
+        mail_item.Display()
+    
+    open_new_email()
     
 
     print '='
