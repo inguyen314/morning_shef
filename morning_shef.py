@@ -7,7 +7,7 @@ Description: The purpose of this script is to import data from CWMS and other sc
 from ast                                        import IsNot
 from decimal                                    import Decimal
 from hec.data.cwmsRating                      	import RatingSet
-from hec.script                                 import MessageBox, Constants, AxisMarker
+from hec.script                                 import MessageBox, Constants, AxisMarker, Plot, Tabulate
 from hec.dataTable                              import HecDataTableToExcel      
 from hec.dssgui                                 import ListSelection
 from hec.data.tx                                import QualityTx
@@ -15,6 +15,8 @@ from hec.heclib.util                            import HecTime
 from hec.hecmath                                import TimeSeriesMath
 from hec.io                                     import TimeSeriesContainer
 from hec.script.Constants                       import TRUE, FALSE
+from hec.heclib.dss                             import HecDss
+from hec.heclib.util                            import HecTime
 from javax.swing                                import JOptionPane, JDialog, JButton, JPanel
 from java.awt.event                             import ActionListener, FocusListener
 from java.text                                  import SimpleDateFormat, NumberFormat
@@ -29,7 +31,7 @@ from rma.services                               import ServiceLookup
 from subprocess                                 import Popen
 from time                                       import mktime, localtime
 from javax.swing                                import JOptionPane, JDialog, JButton, JPanel
-from com.jacob.com                              import Dispatch
+from datetime                                   import timedelta
 import inspect, math
 import DBAPI
 import os
@@ -38,6 +40,8 @@ import java
 import time,calendar,datetime
 import java.lang
 import os, sys, inspect, datetime, time, DBAPI
+
+
 
 #================================SAVE WINDOW TEST=======================================
 #import gui
@@ -818,17 +822,41 @@ try :
     # close the database
     CwmsDb.close()
     
-    # Email test
-    def open_new_email():
-        outlook_app = Dispatch('Outlook.Application')
-        namespace = outlook_app.getNamespace("MAPI")
-        folder = namespace.getDefaultFolder('drafts')
-        mail_item = folder.Items.add()
-        mail_item.Display()
+    print "===================================================="
     
-    open_new_email()
+    # SEND EMAIL 
     
+    import smtplib
+    
+    print "send email"
 
+    if 10 > 0:
+        FROM = 'b3cwpa18@coe-mvsuwa04mvs.mvs.ds.usace.army.mil'
+        
+        # must be a list
+        TO = ["ivan.h.nguyen@usace.army.mil" , "allen.phillips@usace.army.mil"]
+        
+        SUBJECT = "MVS Morning Shef"
+        
+        #redefining MessageText1 frpm Elev for loop above
+        TEXT = noteWappapello
+        
+        #creating new variable called message which includes what we want to say and 
+        message = 'Subject: {}\n\n{}'.format(SUBJECT, TEXT)
+        
+        # Send the mail, not entirely sure but I would guess opening up the email server
+        server = smtplib.SMTP('localhost',587)
+        
+        #Sending an email using the From , To, and message line as defined above        
+        server.sendmail(FROM, TO, message)
+        
+        #quitting the server
+        server.quit()
+        
+        #Sending a print notification to the console output
+        print "Sent DO Email."
+        
+    
     print '='
     print '='
     print '='
