@@ -6,7 +6,7 @@ Description: The purpose of this script is to import data from CWMS and other sc
 '''
 from ast                                        import IsNot
 from decimal                                    import Decimal
-from hec.data.cwmsRating                      	import RatingSet
+from hec.data.cwmsRating                          import RatingSet
 from hec.script                                 import MessageBox, Constants, AxisMarker, Plot, Tabulate
 from hec.dataTable                              import HecDataTableToExcel      
 from hec.dssgui                                 import ListSelection
@@ -30,7 +30,7 @@ from operator                                   import is_not
 from rma.services                               import ServiceLookup
 from subprocess                                 import Popen
 from time                                       import mktime, localtime
-from javax.swing                                import JOptionPane, JDialog, JButton, JPanel
+from javax.swing                                import JOptionPane, JDialog, JButton, JPanel, JTextArea, JFrame
 from datetime                                   import timedelta
 import inspect, math
 import DBAPI
@@ -40,6 +40,7 @@ import java
 import time,calendar,datetime
 import java.lang
 import os, sys, inspect, datetime, time, DBAPI
+
 
 
 
@@ -426,19 +427,19 @@ def getWappapello(conn):
         Wappapello = None
         stmt = conn.prepareStatement('''
                                     select lake, 
-									    date_time,
-									    cwms_util.change_timezone(date_time, 'UTC', 'US/Central') as date_time_cst,
-									    fcst_date,
-									    cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') as fcst_date_cst,
-									    to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
-									    to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
-									    outflow,
-									    'WPPM7' as station
-									from wm_mvs_lake.qlev_fcst 
-									where lake = 'WAPPAPELLO'
-									    and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
-									order by date_time asc
-									fetch next 6 row only
+                                        date_time,
+                                        cwms_util.change_timezone(date_time, 'UTC', 'US/Central') as date_time_cst,
+                                        fcst_date,
+                                        cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') as fcst_date_cst,
+                                        to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
+                                        to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
+                                        outflow,
+                                        'WPPM7' as station
+                                    from wm_mvs_lake.qlev_fcst 
+                                    where lake = 'WAPPAPELLO'
+                                        and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
+                                    order by date_time asc
+                                    fetch next 6 row only
                                     ''')
         rs = stmt.executeQuery()
 
@@ -483,19 +484,19 @@ def getRend(conn):
         Rend = None
         stmt = conn.prepareStatement('''
                                     select lake, 
-									    date_time,
-									    cwms_util.change_timezone(date_time, 'UTC', 'US/Central') as date_time_cst,
-									    fcst_date,
-									    cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') as fcst_date_cst,
-									    to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
-									    to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
-									    outflow,
-									    'RNDI2' as station
-									from wm_mvs_lake.qlev_fcst 
-									where lake = 'REND'
-									    and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
-									order by date_time asc
-									fetch next 6 row only
+                                        date_time,
+                                        cwms_util.change_timezone(date_time, 'UTC', 'US/Central') as date_time_cst,
+                                        fcst_date,
+                                        cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') as fcst_date_cst,
+                                        to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
+                                        to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
+                                        outflow,
+                                        'RNDI2' as station
+                                    from wm_mvs_lake.qlev_fcst 
+                                    where lake = 'REND'
+                                        and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
+                                    order by date_time asc
+                                    fetch next 6 row only
                                     ''')
         rs = stmt.executeQuery()
 
@@ -541,19 +542,19 @@ def getShelbyville(conn):
         Shelbyville = None
         stmt = conn.prepareStatement('''
                                     select lake, 
-									    date_time,
-									    cwms_util.change_timezone(date_time, 'UTC', 'US/Central') as date_time_cst,
-									    fcst_date,
-									    cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') as fcst_date_cst,
-									    to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
-									    to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
-									    outflow,
-									    'SBYI2' as station
-									from wm_mvs_lake.qlev_fcst 
-									where lake = 'SHELBYVILLE'
-									    and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
-									order by date_time asc
-									fetch next 6 row only
+                                        date_time,
+                                        cwms_util.change_timezone(date_time, 'UTC', 'US/Central') as date_time_cst,
+                                        fcst_date,
+                                        cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') as fcst_date_cst,
+                                        to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
+                                        to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
+                                        outflow,
+                                        'SBYI2' as station
+                                    from wm_mvs_lake.qlev_fcst 
+                                    where lake = 'SHELBYVILLE'
+                                        and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
+                                    order by date_time asc
+                                    fetch next 6 row only
                                     ''')
         rs = stmt.executeQuery()
 
@@ -598,19 +599,19 @@ def getMarkTwain(conn):
         MarkTwain = None
         stmt = conn.prepareStatement('''
                                     select lake, 
-									    date_time,
-									    cwms_util.change_timezone(date_time, 'UTC', 'US/Central') as date_time_cst,
-									    fcst_date,
-									    cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') as fcst_date_cst,
-									    to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
-									    to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
-									    outflow,
-									    'CDAM7' as station
-									from wm_mvs_lake.qlev_fcst 
-									where lake = 'MT'
-									    and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
-									order by date_time asc
-									fetch next 6 row only
+                                        date_time,
+                                        cwms_util.change_timezone(date_time, 'UTC', 'US/Central') as date_time_cst,
+                                        fcst_date,
+                                        cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') as fcst_date_cst,
+                                        to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
+                                        to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
+                                        outflow,
+                                        'CDAM7' as station
+                                    from wm_mvs_lake.qlev_fcst 
+                                    where lake = 'MT'
+                                        and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
+                                    order by date_time asc
+                                    fetch next 6 row only
                                     ''')
         rs = stmt.executeQuery()
 
@@ -780,43 +781,74 @@ try :
     #=======================================================================================================================
     # CREATE TEXT FILE
     #=======================================================================================================================
-
-    with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
+    
+    #===================================================================================
+    # EDIT THE TEXT FILE
+    #==================================================================================
+    
+    # Variable to hold any changes for the text file
+    holdText = ""
+    
+    # Create text for the txt file
+    text = TextFileLake(today_date).text+"\n"
+    data_text = ""
+    for key, value in lake_dict.items():
+        data_text += TextFileButton(value).text+"\n"
+    end_text = ".END"
+    text += data_text
+    text += end_text
+    text += "\n\n"
+    
+    # mark twain current shef data block
+    mark_twain_text = TextFileMarkTwainYesterday(markTwainYesterday_list, today_date).mark_twain_text
+    mark_twain_text += "\n\n"
+    
+    # lock and dam current and forecast shef data block
+    lock_dam_text =  TextFileLockDam(lock_dam_dict, today_date).line1+"\n"
+    lock_dam_text += TextFileLockDam(lock_dam_dict, today_date).line2+"\n"
+    lock_dam_text += TextFileLockDam(lock_dam_dict, today_date).body
+    lock_dam_text += "\n\n"
+    
+    # Lake Comments
+    lakes_comments = Lake_comments(str(noteCarlyle), str(noteShelbyville), str(noteMarkTwain), str(noteRend), str(noteWappapello)).text
+    
+    # The complete text for the shef file
+    final_text = text+mark_twain_text+lock_dam_text+lakes_comments
+    
+    
+    # Window to show and modify the text file
+    class MyWindowListener(WindowAdapter):
+        def windowClosing(self, event):
+            global holdText
+            holdText = textArea.getText()
+            
+            # Save the text file
+            with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
+                f.write(final_text)
         
-        # lakes current and forecast shef data block
-        text = TextFileLake(today_date).text+"\n"
-        data_text = ""
-        for key, value in lake_dict.items():
-            data_text += TextFileButton(value).text+"\n"
-        end_text = ".END"
-        text += data_text
-        text += end_text
-        text += "\n\n"
-        
-        # mark twain current shef data block
-        mark_twain_text = TextFileMarkTwainYesterday(markTwainYesterday_list, today_date).mark_twain_text
-        mark_twain_text += "\n\n"
-        
-        # lock and dam current and forecast shef data block
-        lock_dam_text =  TextFileLockDam(lock_dam_dict, today_date).line1+"\n"
-        lock_dam_text += TextFileLockDam(lock_dam_dict, today_date).line2+"\n"
-        lock_dam_text += TextFileLockDam(lock_dam_dict, today_date).body
-        lock_dam_text += "\n\n"
-        
-        # Lake Comments
-        lakes_comments = Lake_comments(str(noteCarlyle), str(noteShelbyville), str(noteMarkTwain), str(noteRend), str(noteWappapello)).text
-        
-        f.write(text+mark_twain_text+lock_dam_text+lakes_comments)
-        
-        txt_date = datetime.datetime.now().strftime('%Y%m%d')
-        
-        with open("C:/scripts/cwms/morning_shef/" + txt_file_name + "_" + txt_date + ".shef", "w") as new_file:
-            new_file.write(text+mark_twain_text+lock_dam_text+lakes_comments)
-        
-        print("Text file created")
-        
-        # pop-up message box
-        MessageBox.showInformation('Text file created', 'Alert')
+                txt_date = datetime.datetime.now().strftime('%Y%m%d')
+                
+                with open("C:/scripts/cwms/morning_shef/" + txt_file_name + "_" + txt_date + ".shef", "w") as new_file:
+                    new_file.write(final_text)
+                
+                print("Text file created")
+                
+                # pop-up message box
+                MessageBox.showInformation('Text file created', 'Alert')
+            
+            
+    
+    # Window
+    frame = JFrame("GUI", size = (650, 350))
+    
+    textArea = JTextArea(final_text)
+    frame.add(textArea)
+    
+    window_listener = MyWindowListener()
+    
+    frame.addWindowListener(window_listener)
+    
+    frame.visible = True
     
         
     # close the database
