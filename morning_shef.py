@@ -6,7 +6,7 @@ Description: The purpose of this script is to import data from CWMS and other sc
 '''
 from ast                                        import IsNot
 from decimal                                    import Decimal
-from hec.data.cwmsRating                          import RatingSet
+from hec.data.cwmsRating                        import RatingSet
 from hec.script                                 import MessageBox, Constants, AxisMarker, Plot, Tabulate
 from hec.dataTable                              import HecDataTableToExcel      
 from hec.dssgui                                 import ListSelection
@@ -30,9 +30,11 @@ from operator                                   import is_not
 from rma.services                               import ServiceLookup
 from subprocess                                 import Popen
 from time                                       import mktime, localtime
-from javax.swing                                import JOptionPane, JDialog, JButton, JPanel, JTextArea, JFrame
+from javax.swing                                import JOptionPane, JDialog, JButton, JPanel, JTextArea, JFrame, JFileChooser 
 from datetime                                   import timedelta
 from java.awt.event                             import WindowEvent, WindowAdapter
+from javax.swing.filechooser                    import FileNameExtensionFilter
+from java.io                                    import File
 import inspect, math
 import DBAPI
 import os
@@ -822,6 +824,54 @@ try :
             global holdText
             holdText = textArea.getText()
             
+<<<<<<< HEAD
+            # Check if is in Server or Local 
+            print '=== Determine if OS is Windows or Unix ==='
+
+            OsName = System.getProperty("os.name").lower()
+            
+            print 'OS is Windows or Unix = ', OsName
+            
+            # Save Window
+            
+            # Default Directory
+            directory = "C:/scripts/cwms/morning_shef"
+            
+            save_file = JFileChooser()
+            save_file.setDialogTitle("Save Shef File")
+            
+            file_filter = FileNameExtensionFilter("Shef Files (*.shef)", ["shef"])
+            
+            save_file.setFileFilter(file_filter)
+            
+            default_name = File(txt_file_name)
+            save_file.setSelectedFile(default_name)
+            
+            default_directory = File(directory)
+            save_file.setCurrentDirectory(default_directory)
+            dialog_result = save_file.showSaveDialog(None)
+            
+            
+            if dialog_result == JFileChooser.APPROVE_OPTION:
+                selected_file = save_file.getSelectedFile()
+                
+            else:
+                MessageBox.showInformation('No path selected. File no created.', 'Alert')
+            
+            cut_name = str(selected_file).split('.')
+            new_name = cut_name[0].split('\\')[-1]
+            
+            directory = cut_name[0].split('\\')[:-1]
+            path = '\\'.join(directory)
+            
+            print "Path = "+path+"\\"+new_name
+            
+            # If OS is PC, else UNIX Server
+            
+            if OsName[ : 7] == 'windows' :
+                # PC pathnames
+                print "Local"
+=======
             # Save the text file
             with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
                 f.write(holdText)
@@ -830,11 +880,41 @@ try :
                 
                 with open("C:/scripts/cwms/morning_shef/" + txt_file_name + "_" + txt_date + ".shef", "w") as new_file:
                     new_file.write(holdText)
+>>>>>>> 24a1b652570a4c8cdfedebf61022dd1810661dd2
                 
-                print("Text file created")
+                # Save the text file
+                with open(path + "\\" + new_name + ".shef", "w") as f:
+                    f.write(holdText)
+            
+                    txt_date = datetime.datetime.now().strftime('%Y%m%d')
+                    
+                    with open(r"Z:\DailyOps\morning_shef" + "\\" + new_name + "_" + txt_date + ".shef", "w") as new_file:
+                        new_file.write(holdText)
+                    
+                    print("Text file created")
+                    
+                    # pop-up message box
+                    MessageBox.showInformation('Text file created', 'Alert')
                 
-                # pop-up message box
-                MessageBox.showInformation('Text file created', 'Alert')
+            else :
+            
+                # Server pathnames
+                print "Server"
+                ScriptDirectory = os.path.dirname(os.path.realpath(__file__))
+                
+                # Save the text file
+                with open(ScriptDirectory + ".shef", "w") as f:
+                    f.write(holdText)
+            
+                    txt_date = datetime.datetime.now().strftime('%Y%m%d')
+                    
+                    with open(ScriptDirectory + "_" + txt_date + ".shef", "w") as new_file:
+                        new_file.write(holdText)
+                    
+                    print("Text file created")
+                    
+                    # pop-up message box
+                    MessageBox.showInformation('Text file created', 'Alert')
             
             
     
