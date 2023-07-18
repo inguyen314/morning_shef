@@ -935,7 +935,7 @@ try :
     print "send email"
 
     if 10 > 0:
-        FROM = 'NoReply@coe-mvsuwa04mvs.mvs.ds.usace.army.mil'
+        FROM = "morning_shef@coe-mvsuwa04mvs.mvs.ds.usace.army.mil"
         
         # must be a list
         TO = ["ivan.h.nguyen@usace.army.mil" , "allen.phillips@usace.army.mil"]
@@ -958,7 +958,7 @@ try :
         server.quit()
         
         #Sending a print notification to the console output
-        print "Sent Morning Shef Email."
+        print "Sent DO Email."
       
     
     print '='
