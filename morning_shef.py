@@ -43,6 +43,8 @@ import java
 import time,calendar,datetime
 import java.lang
 import os, sys, inspect, datetime, time, DBAPI
+import smtplib
+from GUI_test import save_window
 
 
 #=================================================================================================================================================================
@@ -131,7 +133,70 @@ class Lake_comments:
         self.text += "MARKTWAIN - "+value3+"\n"
         self.text += "REND - "+value4+"\n"
         self.text += "WAPPAPPELLO - "+value5
+    
+def send_email(body):
+    print "Send email"
+
+    FROM = "morning_shef@coe-mvsuwa04mvs.mvs.ds.usace.army.mil"
+    
+    # must be a list
+    TO = ["ivan.h.nguyen@usace.army.mil" , "allen.phillips@usace.army.mil"]
+    
+    SUBJECT = "MVS Morning Shef"
+    
+    #redefining MessageText1 from Elev for loop above
+    TEXT = body
+    
+    #creating new variable called message which includes what we want to say and 
+    message = 'Subject: {}\n\n{}'.format(SUBJECT, TEXT)
+    
+    # Send the mail, not entirely sure but I would guess opening up the email server
+    server = smtplib.SMTP('gw1.usace.army.mil')
+    
+    #Sending an email using the From , To, and message line as defined above        
+    server.sendmail(FROM, TO, message)
+    
+    #quitting the server
+    server.quit()
+    
+    #Sending a print notification to the console output
+    print "Sent DO Email."
+
+def save_window(directory, file_name, date):
+    
+    # Default Directory    
+    save_file = JFileChooser()
+    save_file.setDialogTitle("Save in Server")
+    
+    file_filter = FileNameExtensionFilter("Shef Files (*.shef)", ["shef"])
+    
+    save_file.setFileFilter(file_filter)
+    
+    default_name = File(file_name + "_" + date + ".shef")
+    save_file.setSelectedFile(default_name)
+    
+    # Default Directory    
+    default_directory = File(directory)
+    save_file.setCurrentDirectory(default_directory)
+    dialog_result = save_file.showSaveDialog(None)
+    
+    
+    if dialog_result == JFileChooser.APPROVE_OPTION:
+        selected_file = save_file.getSelectedFile()
         
+    else:
+        MessageBox.showInformation('No path selected. File no created.', 'Alert')
+    
+    cut_name = str(selected_file).split('.')
+    new_name = cut_name[0].split('\\')[-1]
+    
+    directory = cut_name[0].split('\\')[:-1]
+    path = '\\'.join(directory)
+    
+    file_path = path+"\\"+new_name
+    print "File path created"
+    
+    return file_path
 
 #=======================================================================================================================
 # SET TEXT FILE NAME AND DATE
@@ -826,89 +891,57 @@ try :
             
             print 'OS is Windows or Unix = ', OsName
             
-            # Save Window
-            
+            # Save Window For C Drive
             # Default Directory
-            directory = "C:/scripts/cwms/morning_shef"
+            c_directory = "C:/scripts/cwms/morning_shef"
+            txt_date = datetime.datetime.now().strftime('%Y%m%d')
             
-            save_file = JFileChooser()
-            save_file.setDialogTitle("Save Shef File")
-            
-            file_filter = FileNameExtensionFilter("Shef Files (*.shef)", ["shef"])
-            
-            save_file.setFileFilter(file_filter)
-            
-            default_name = File(txt_file_name)
-            save_file.setSelectedFile(default_name)
-            
-            default_directory = File(directory)
-            save_file.setCurrentDirectory(default_directory)
-            dialog_result = save_file.showSaveDialog(None)
-            
-            
-            if dialog_result == JFileChooser.APPROVE_OPTION:
-                selected_file = save_file.getSelectedFile()
-                
-            else:
-                MessageBox.showInformation('No path selected. File no created.', 'Alert')
-            
-            cut_name = str(selected_file).split('.')
-            new_name = cut_name[0].split('\\')[-1]
-            
-            directory = cut_name[0].split('\\')[:-1]
-            path = '\\'.join(directory)
-            
-            print "Path = "+path+"\\"+new_name
+            first_save_path = save_window(c_directory, txt_file_name, txt_date)
             
             # If OS is PC, else UNIX Server
             
             if OsName[ : 7] == 'windows' :
                 # PC pathnames
                 print "Local"
-
-            # Save the text file
-                with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
+                txt_date = datetime.datetime.now().strftime('%Y%m%d')
+                
+            # Create Text File
+                with open(first_save_path + ".shef", "w") as f:
                     f.write(holdText)
-            
+                    
+                    # Send Email
+                    send_email(holdText)
+                    
+                    # Save Window For Z Drive
+                    # Default Directory
+                    z_directory = "Z:\DailyOps\morning_shef"
                     txt_date = datetime.datetime.now().strftime('%Y%m%d')
                     
-                    with open("C:/scripts/cwms/morning_shef/" + txt_file_name + "_" + txt_date + ".shef", "w") as new_file:
-                        new_file.write(holdText)
+                    second_save_path = save_window(z_directory, txt_file_name, txt_date)
                     
-                    
-                    # Save the text file
-                    with open(path + "\\" + new_name + ".shef", "w") as f:
-                        f.write(holdText)
-                
-                        txt_date = datetime.datetime.now().strftime('%Y%m%d')
+                    # Create Text File
+                    with open(second_save_path + ".shef", "w") as new_file:
+                        new_file.write(holdText) 
                         
-                        with open(r"Z:\DailyOps\morning_shef" + "\\" + new_name + "_" + txt_date + ".shef", "w") as new_file:
-                            new_file.write(holdText)
+                        MessageBox.showInformation('Text File Created', 'Alert') 
                         
-                        print("Text file created")
-                        
-                        # pop-up message box
-                        MessageBox.showInformation('Text file created', 'Alert')  
             else:
                 # Server pathnames
                 print "Server"
-                ScriptDirectory = os.path.dirname(os.path.realpath(__file__))
+                server_directory = "/wmdata/DailyOps/morning_shef"
+                txt_date = datetime.datetime.now().strftime('%Y%m%d')
+                
+                # Save Window For Server
+                server_save_path = save_window(server_directory, txt_file_name, txt_date)
                 
                 # Save the text file
-                with open(ScriptDirectory + ".shef", "w") as f:
+                with open(server_save_path + ".shef", "w") as f:
                     f.write(holdText)
-            
-                    txt_date = datetime.datetime.now().strftime('%Y%m%d')
-                    
-                    with open(ScriptDirectory + "_" + txt_date + ".shef", "w") as new_file:
-                        new_file.write(holdText)
                     
                     print("Text file created")
                     
                     # pop-up message box
                     MessageBox.showInformation('Text file created', 'Alert')
-            
-            
     
     # Window
     frame = JFrame("GUI", size = (1080, 650))
@@ -926,40 +959,7 @@ try :
     # close the database
     CwmsDb.close()
     
-    print "===================================================="
-    
-    # SEND EMAIL 
-    
-    import smtplib
-    
-    print "send email"
-
-    if 10 > 0:
-        FROM = "morning_shef@coe-mvsuwa04mvs.mvs.ds.usace.army.mil"
-        
-        # must be a list
-        TO = ["ivan.h.nguyen@usace.army.mil" , "allen.phillips@usace.army.mil"]
-        
-        SUBJECT = "MVS Morning Shef"
-        
-        #redefining MessageText1 frpm Elev for loop above
-        TEXT = holdText
-        
-        #creating new variable called message which includes what we want to say and 
-        message = 'Subject: {}\n\n{}'.format(SUBJECT, TEXT)
-        
-        # Send the mail, not entirely sure but I would guess opening up the email server
-        server = smtplib.SMTP('gw1.usace.army.mil')
-        
-        #Sending an email using the From , To, and message line as defined above        
-        server.sendmail(FROM, TO, message)
-        
-        #quitting the server
-        server.quit()
-        
-        #Sending a print notification to the console output
-        print "Sent DO Email."
-      
+    print "===================================================="    
     
     print '='
     print '='
