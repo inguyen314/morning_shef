@@ -45,22 +45,11 @@ import java.lang
 import os, sys, inspect, datetime, time, DBAPI
 
 
-
-#================================SAVE WINDOW TEST=======================================
-#import gui
-
-
-#chooser = gui.JFileChooser() 
-#filename  = chooser.getSelectedFile().getName()
-#print "Filename = {0}".format(filename)
-#=======================================================================================
-
-
-#==============================================================================================================================================================================================
-#==============================================================================================================================================================================================
-# OBJECT
-#==============================================================================================================================================================================================
-#==============================================================================================================================================================================================
+#=================================================================================================================================================================
+#=================================================================================================================================================================
+# OBJECT CLASSES
+#=================================================================================================================================================================
+#=================================================================================================================================================================
 
 # object class to store current lock and dam stage data. (required 7 data columns)
 class Object_LD:
@@ -77,21 +66,21 @@ class Object_LD:
 
 # object class to store lake forecast flow data. (required 4 data columns)
 class Object:
+    
     def __init__(self, lake, date_time, outflow, station):
         self.lake = lake
         self.date_time = date_time
         self.outflow = outflow
         self.station = station
 
-#==============================================================================================================================================================================================
-#==============================================================================================================================================================================================
-# TEXT
-#==============================================================================================================================================================================================
-#==============================================================================================================================================================================================
+#=================================================================================================================================================================
+#=================================================================================================================================================================
+# TEXT CLASSES
+#=================================================================================================================================================================
+#=================================================================================================================================================================
 
 # text for 5 lakes
 class TextFileLake:
-    
     def __init__(self, today_date):
         self.line1 = ": TODAYS LAKE FLOW AND 5 DAY FORECAST"
         self.line2 = ".B STL " + str(today_date) + " C DH0600/DC" + str(today_date) + "0600/QT/DRD+1/QTIF/DRD+2/QTIF/DRD+3/QTIF/DRD+4/QTIF/DRD+5/QTIF"
@@ -99,15 +88,13 @@ class TextFileLake:
 
 # text for mark twain yesterday flow
 class TextFileMarkTwainYesterday:
-    
     def __init__(self, object_list, today_date):
         self.line1 = ": MARK TWAIN LAKE FLOW YESTERDAY"
         self.line2 = ".E CDAM7 "+str(today_date)+" C DH0000/DC"+str(today_date)+"0000/QTD/DID1/"+"{:.2f}".format(float(object_list[0].outflow)/1000)
         self.mark_twain_text = self.line1+"\n"+self.line2
 
 # text for lock and dam current and forecast data
-class TextFileLockDam:
-    
+class TextFileLockDam: 
     def __init__(self, dictionary, date):
         self.object_1 = dictionary["LockDamStage"]
         self.object_2 = dictionary["LockDamNetmissForecast"]
@@ -122,8 +109,7 @@ class TextFileLockDam:
         self.body += "{:.2f}".format(float(self.object_2[3].value3))+"/"+"{:.2f}".format(float(self.object_2[4].value3))+" : ALTON LD 26 --> HINGE PT GRAFTON "+"{:.1f}".format(float(self.object_3[0].value3))+" - "+"{:.1f}".format(float(self.object_3[1].value3))+" "+str(self.object_3[0].value2).upper()+"\n.END"
 
 # text
-class TextFileButton:
-    
+class TextFileButton: 
     def __init__(self, object_list):
         self.first = str(object_list[0].station)+" "
         self.last = " : "+str(object_list[0].lake)
@@ -135,9 +121,8 @@ class TextFileButton:
                 string += "/"
         self.text = self.first+string+self.last
 
-
+# text for comments for five lakes
 class Lake_comments:
-    
     def __init__(self, value1, value2, value3, value4, value5):
         self.text = ""
         self.text = ": CEMVS RESERVOIR NOTES\n"
@@ -148,6 +133,9 @@ class Lake_comments:
         self.text += "WAPPAPPELLO - "+value5
         
 
+#=======================================================================================================================
+# SET TEXT FILE NAME AND DATE
+#=======================================================================================================================
 
 # set the name for the output shef file
 txt_file_name = "morning_shef"
@@ -711,17 +699,19 @@ try :
     # create a java.sql.Connection
     conn = CwmsDb.getConnection()
 
-
+    # get LockDamStage data
     LockDamStage = getLockDamStage(conn)
     print "LockDamStage = " +  str(LockDamStage)
     
     print "==========================================================="
 
+    # get LockDamNetmissForecast data
     LockDamNetmissForecast = getLockDamNetmissForecast(conn)
     print "LockDamNetmissForecast = " +  str(LockDamNetmissForecast)
     
     print "==========================================================="
     
+    # get HingePoint data
     Hinge = getHingePoint(conn)
     print "Hinge = " +  str(Hinge)
     
@@ -763,6 +753,11 @@ try :
     
     print "==========================================================="
     
+    #=======================================================================================================================
+    #=======================================================================================================================
+    # NOTE WINDOW FOR FIVE LAKES
+    #=======================================================================================================================
+    #=======================================================================================================================
 
     noteCarlyle = JOptionPane.showInputDialog(None, 'Carlyle Lake Note', 'CEMVS Reservoir Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
     print "noteCarlyle = " + str(noteCarlyle)
@@ -824,7 +819,6 @@ try :
             global holdText
             holdText = textArea.getText()
             
-<<<<<<< HEAD
             # Check if is in Server or Local 
             print '=== Determine if OS is Windows or Unix ==='
 
@@ -871,33 +865,31 @@ try :
             if OsName[ : 7] == 'windows' :
                 # PC pathnames
                 print "Local"
-=======
+
             # Save the text file
-            with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
-                f.write(holdText)
-        
-                txt_date = datetime.datetime.now().strftime('%Y%m%d')
-                
-                with open("C:/scripts/cwms/morning_shef/" + txt_file_name + "_" + txt_date + ".shef", "w") as new_file:
-                    new_file.write(holdText)
->>>>>>> 24a1b652570a4c8cdfedebf61022dd1810661dd2
-                
-                # Save the text file
-                with open(path + "\\" + new_name + ".shef", "w") as f:
+                with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
                     f.write(holdText)
             
                     txt_date = datetime.datetime.now().strftime('%Y%m%d')
                     
-                    with open(r"Z:\DailyOps\morning_shef" + "\\" + new_name + "_" + txt_date + ".shef", "w") as new_file:
+                    with open("C:/scripts/cwms/morning_shef/" + txt_file_name + "_" + txt_date + ".shef", "w") as new_file:
                         new_file.write(holdText)
                     
-                    print("Text file created")
                     
-                    # pop-up message box
-                    MessageBox.showInformation('Text file created', 'Alert')
+                    # Save the text file
+                    with open(path + "\\" + new_name + ".shef", "w") as f:
+                        f.write(holdText)
                 
-            else :
-            
+                        txt_date = datetime.datetime.now().strftime('%Y%m%d')
+                        
+                        with open(r"Z:\DailyOps\morning_shef" + "\\" + new_name + "_" + txt_date + ".shef", "w") as new_file:
+                            new_file.write(holdText)
+                        
+                        print("Text file created")
+                        
+                        # pop-up message box
+                        MessageBox.showInformation('Text file created', 'Alert')  
+            else:
                 # Server pathnames
                 print "Server"
                 ScriptDirectory = os.path.dirname(os.path.realpath(__file__))
@@ -943,7 +935,7 @@ try :
     print "send email"
 
     if 10 > 0:
-        FROM = 'b3cwpa18@coe-mvsuwa04mvs.mvs.ds.usace.army.mil'
+        FROM = 'NoReply@coe-mvsuwa04mvs.mvs.ds.usace.army.mil'
         
         # must be a list
         TO = ["ivan.h.nguyen@usace.army.mil" , "allen.phillips@usace.army.mil"]
@@ -951,13 +943,13 @@ try :
         SUBJECT = "MVS Morning Shef"
         
         #redefining MessageText1 frpm Elev for loop above
-        TEXT = noteWappapello
+        TEXT = holdText
         
         #creating new variable called message which includes what we want to say and 
         message = 'Subject: {}\n\n{}'.format(SUBJECT, TEXT)
         
         # Send the mail, not entirely sure but I would guess opening up the email server
-        server = smtplib.SMTP('localhost')
+        server = smtplib.SMTP('gw1.usace.army.mil')
         
         #Sending an email using the From , To, and message line as defined above        
         server.sendmail(FROM, TO, message)
@@ -966,7 +958,7 @@ try :
         server.quit()
         
         #Sending a print notification to the console output
-        print "Sent DO Email."
+        print "Sent Morning Shef Email."
       
     
     print '='
