@@ -877,7 +877,7 @@ try :
             
                     txt_date = datetime.datetime.now().strftime('%Y%m%d')
                     
-                    with open(path + "\\" + new_name + "_" + txt_date + ".shef", "w") as new_file:
+                    with open(r"Z:\DailyOps\morning_shef" + "\\" + new_name + "_" + txt_date + ".shef", "w") as new_file:
                         new_file.write(holdText)
                     
                     print("Text file created")
