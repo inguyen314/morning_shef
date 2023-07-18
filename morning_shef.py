@@ -32,6 +32,7 @@ from subprocess                                 import Popen
 from time                                       import mktime, localtime
 from javax.swing                                import JOptionPane, JDialog, JButton, JPanel, JTextArea, JFrame
 from datetime                                   import timedelta
+from java.awt.event                             import WindowEvent, WindowAdapter
 import inspect, math
 import DBAPI
 import os
@@ -40,7 +41,6 @@ import java
 import time,calendar,datetime
 import java.lang
 import os, sys, inspect, datetime, time, DBAPI
-
 
 
 
