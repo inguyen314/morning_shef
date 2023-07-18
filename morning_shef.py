@@ -824,6 +824,7 @@ try :
             global holdText
             holdText = textArea.getText()
             
+<<<<<<< HEAD
             # Check if is in Server or Local 
             print '=== Determine if OS is Windows or Unix ==='
 
@@ -870,6 +871,16 @@ try :
             if OsName[ : 7] == 'windows' :
                 # PC pathnames
                 print "Local"
+=======
+            # Save the text file
+            with open("C:/scripts/cwms/morning_shef/" + txt_file_name + ".shef", "w") as f:
+                f.write(holdText)
+        
+                txt_date = datetime.datetime.now().strftime('%Y%m%d')
+                
+                with open("C:/scripts/cwms/morning_shef/" + txt_file_name + "_" + txt_date + ".shef", "w") as new_file:
+                    new_file.write(holdText)
+>>>>>>> 24a1b652570a4c8cdfedebf61022dd1810661dd2
                 
                 # Save the text file
                 with open(path + "\\" + new_name + ".shef", "w") as f:
@@ -908,7 +919,7 @@ try :
             
     
     # Window
-    frame = JFrame("GUI", size = (650, 350))
+    frame = JFrame("GUI", size = (1080, 650))
     
     textArea = JTextArea(final_text)
     frame.add(textArea)
@@ -946,7 +957,7 @@ try :
         message = 'Subject: {}\n\n{}'.format(SUBJECT, TEXT)
         
         # Send the mail, not entirely sure but I would guess opening up the email server
-        server = smtplib.SMTP('localhost',587)
+        server = smtplib.SMTP('localhost')
         
         #Sending an email using the From , To, and message line as defined above        
         server.sendmail(FROM, TO, message)
@@ -956,7 +967,7 @@ try :
         
         #Sending a print notification to the console output
         print "Sent DO Email."
-        
+      
     
     print '='
     print '='
