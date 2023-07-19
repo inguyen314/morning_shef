@@ -912,20 +912,20 @@ try :
             
             print 'OS is Windows or Unix = ', OsName
             
-            # Save Window For C Drive
-            # Default Directory
-            c_directory = "C:/scripts/cwms/morning_shef"
-            txt_date = datetime.datetime.now().strftime('%Y%m%d')
-            
-            pop_name = "Save in C Drive"
-            first_save_path = save_window(c_directory, txt_file_name, txt_date, pop_name)
-            
             # If OS is PC, else UNIX Server
             
             if OsName[ : 7] == 'windows' :
                 # PC pathnames
                 print "Local"
                 txt_date = datetime.datetime.now().strftime('%Y%m%d')
+                
+                # Save Window For C Drive
+                # Default Directory
+                c_directory = "C:/scripts/cwms/morning_shef"
+                txt_date = datetime.datetime.now().strftime('%Y%m%d')
+                
+                pop_name = "Save in C Drive"
+                first_save_path = save_window(c_directory, txt_file_name, txt_date, pop_name)
                 
             # Create Text File
                 with open(first_save_path + ".shef", "w") as f:
