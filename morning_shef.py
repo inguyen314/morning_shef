@@ -153,11 +153,11 @@ def send_email(body):
     smtp.quit()
     print "Sent MVS Morning Shef Email."
 
-def save_window(directory, file_name, date):
+def save_window(directory, file_name, date, window_name):
     
     # Default Directory    
     save_file = JFileChooser()
-    save_file.setDialogTitle("Save in Server")
+    save_file.setDialogTitle(window_name)
     
     file_filter = FileNameExtensionFilter("Shef Files (*.shef)", ["shef"])
     
@@ -917,7 +917,8 @@ try :
             c_directory = "C:/scripts/cwms/morning_shef"
             txt_date = datetime.datetime.now().strftime('%Y%m%d')
             
-            first_save_path = save_window(c_directory, txt_file_name, txt_date)
+            pop_name = "Save in C Drive"
+            first_save_path = save_window(c_directory, txt_file_name, txt_date, pop_name)
             
             # If OS is PC, else UNIX Server
             
@@ -938,7 +939,8 @@ try :
                     z_directory = "Z:\DailyOps\morning_shef"
                     txt_date = datetime.datetime.now().strftime('%Y%m%d')
                     
-                    second_save_path = save_window(z_directory, txt_file_name, txt_date)
+                    pop_name_2 = "Save in Z Drive"
+                    second_save_path = save_window(z_directory, txt_file_name, txt_date, pop_name_2)
                     
                     # Create Text File
                     with open(second_save_path + ".shef", "w") as new_file:
@@ -953,7 +955,8 @@ try :
                 txt_date = datetime.datetime.now().strftime('%Y%m%d')
                 
                 # Save Window For Server
-                server_save_path = save_window(server_directory, txt_file_name, txt_date)
+                pop_server_name = "Save in Server"
+                server_save_path = save_window(server_directory, txt_file_name, txt_date, pop_server_name)
                 
                 # Save the text file
                 with open(server_save_path + ".shef", "w") as f:
