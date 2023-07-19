@@ -35,6 +35,7 @@ from datetime                                   import timedelta
 from java.awt.event                             import WindowEvent, WindowAdapter
 from javax.swing.filechooser                    import FileNameExtensionFilter
 from java.io                                    import File
+from email.mime.text                            import MIMEText
 import inspect, math
 import DBAPI
 import os
@@ -137,30 +138,20 @@ class Lake_comments:
 def send_email(body):
     print "Send email"
 
-    FROM = "morning_shef@coe-mvsuwa04mvs.mvs.ds.usace.army.mil"
+    bodymail = body
+    sender     = "NoReply@mvs.usace.army.mil"
+    recipients = "ivan.h.nguyen@usace.army.mil"
+    subject    = "MVS Morning Shef"
     
-    # must be a list
-    TO = ["ivan.h.nguyen@usace.army.mil" , "allen.phillips@usace.army.mil"]
+    message = MIMEText(bodymail)
+    message["From"]    = sender
+    message["To"]      = recipients
+    message["Subject"] = subject
     
-    SUBJECT = "MVS Morning Shef"
-    
-    #redefining MessageText1 from Elev for loop above
-    TEXT = body
-    
-    #creating new variable called message which includes what we want to say and 
-    message = 'Subject: {}\n\n{}'.format(SUBJECT, TEXT)
-    
-    # Send the mail, not entirely sure but I would guess opening up the email server
-    server = smtplib.SMTP('gw1.usace.army.mil')
-    
-    #Sending an email using the From , To, and message line as defined above        
-    server.sendmail(FROM, TO, message)
-    
-    #quitting the server
-    server.quit()
-    
-    #Sending a print notification to the console output
-    print "Sent DO Email."
+    smtp = smtplib.SMTP("gw2.usace.army.mil")
+    smtp.sendmail(sender, recipients, message.as_string())
+    smtp.quit()
+    print "Sent MVS Morning Shef Email."
 
 def save_window(directory, file_name, date):
     
@@ -234,66 +225,96 @@ def getLockDamStage(conn):
         LockDamStage = None
         stmt = conn.prepareStatement('''
                                     with cte_pool as 
-                                    (select 'LD 24 Pool-Mississippi' as location_id, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time, value, unit_id, quality_code, 'CLKM7' as damlock
+                                    (select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
+                                        ,date_time
+                                        ,value
+                                        ,unit_id
+                                        ,quality_code
+                                        ,'CLKM7' as damlock
                                     from cwms_v_tsv_dqu  tsv
                                     where 
-                                         tsv.cwms_ts_id = 'LD 24 Pool-Mississippi.Stage.Inst.30Minutes.0.29' 
-                                         and date_time  >= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss') 
-                                         and date_time  <= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
+                                         tsv.cwms_ts_id = 'LD 24 Pool-Mississippi.Stage.Inst.30Minutes.0.29'
                                          and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
+                                         and date_time  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and date_time  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
                                          and tsv.office_id = 'MVS' 
                                          and tsv.aliased_item is null
                                     union all
-                                    select 'LD 25 Pool-Mississippi' as location_id, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time, value, unit_id, quality_code, 'CAGM7' as damlock
+                                    select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
+                                        ,date_time
+                                        ,value
+                                        ,unit_id
+                                        ,quality_code
+                                        ,'CAGM7' as damlock
                                     from cwms_v_tsv_dqu  tsv
                                     where 
                                          tsv.cwms_ts_id = 'LD 25 Pool-Mississippi.Stage.Inst.30Minutes.0.29' 
-                                         and date_time  >= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
-                                         and date_time  <= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
                                          and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
+                                         and date_time  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and date_time  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
                                          and tsv.office_id = 'MVS' 
-                                         and tsv.aliased_item is null   
+                                         and tsv.aliased_item is null 
                                     union all
-                                    select 'Mel Price Pool-Mississippi' as location_id, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time, value, unit_id, quality_code, 'ALNI2' as damlock
+                                    select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
+                                        ,date_time
+                                        ,value
+                                        ,unit_id
+                                        ,quality_code
+                                        ,'ALNI2' as damlock
                                     from cwms_v_tsv_dqu  tsv
                                     where 
                                          tsv.cwms_ts_id = 'Mel Price Pool-Mississippi.Stage.Inst.15Minutes.0.29' 
-                                         and date_time  >= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
-                                         and date_time  <= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
                                          and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
+                                         and date_time  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and date_time  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
                                          and tsv.office_id = 'MVS' 
                                          and tsv.aliased_item is null     
                                     order by location_id asc 
                                     FETCH FIRST 3 ROWS ONLY),
                                     
                                     tainter as 
-                                    (select 'LD 24 Pool-Mississippi' as location_id, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time, value, unit_id, quality_code, 'CLKM7' as damlock
+                                    (select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
+                                        ,date_time
+                                        ,value
+                                        ,unit_id
+                                        ,quality_code
+                                        ,'CLKM7' as damlock
                                     from cwms_v_tsv_dqu  tsv
                                     where 
                                          tsv.cwms_ts_id = 'LD 24 Pool-Mississippi.Opening.Inst.~2Hours.0.lpmsShef-raw-Taint' 
-                                         and date_time  >= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss') 
-                                         and date_time  <= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
                                          and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
+                                         and date_time  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and date_time  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
                                          and tsv.office_id = 'MVS' 
                                          and tsv.aliased_item is null
                                     union all
-                                    select 'LD 25 Pool-Mississippi' as location_id, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time, value, unit_id, quality_code, 'CAGM7' as damlock
+                                    select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
+                                        ,date_time
+                                        ,value
+                                        ,unit_id
+                                        ,quality_code
+                                        ,'CAGM7' as damlock
                                     from cwms_v_tsv_dqu  tsv
                                     where 
                                          tsv.cwms_ts_id = 'LD 25 Pool-Mississippi.Opening.Inst.~2Hours.0.lpmsShef-raw-Taint' 
-                                         and date_time  >= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
-                                         and date_time  <= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
                                          and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
+                                         and date_time  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and date_time  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
                                          and tsv.office_id = 'MVS' 
                                          and tsv.aliased_item is null   
                                     union all
-                                    select 'Mel Price Pool-Mississippi' as location_id, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time, value, unit_id, quality_code, 'ALNI2' as damlock
+                                    select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
+                                        ,date_time
+                                        ,value
+                                        ,unit_id
+                                        ,quality_code
+                                        ,'ALNI2' as damlock
                                     from cwms_v_tsv_dqu  tsv
                                     where 
                                          tsv.cwms_ts_id = 'Mel Price Pool-Mississippi.Opening.Inst.~2Hours.0.lpmsShef-raw-Taint' 
-                                         and date_time  >= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
-                                         and date_time  <= to_date( to_char(sysdate, 'mm-dd-yyyy') || '12:00:00' ,'mm-dd-yyyy hh24:mi:ss')
                                          and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
+                                         and date_time  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and date_time  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
                                          and tsv.office_id = 'MVS' 
                                          and tsv.aliased_item is null     
                                     order by location_id asc 
@@ -336,7 +357,7 @@ def getLockDamNetmissForecast(conn):
         print "getLockDamNetmissForecast Query Start"
         LockDamNetmissForecast = None
         stmt = conn.prepareStatement('''
-                                    select upper(cwms_util.split_text(cwms_ts_id, 1, '.')) as location_id
+                                select upper(cwms_util.split_text(cwms_ts_id, 1, '.')) as location_id
                                     ,date_time
                                     ,value
                                     ,quality_code
