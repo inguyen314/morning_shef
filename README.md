@@ -3,7 +3,7 @@ Import forecast data from MVS's wm_mvs_lake schema then convert to SHEF file for
 
 ========================================================
 
-Step 01. Download the lastest release (link on the right side)
+Step 01. Download the lastest release and extract to your computer (link on the right side of this page)
 
 Step 02. Open CWMS-VUE and script editor
 
