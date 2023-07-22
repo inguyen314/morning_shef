@@ -1,23 +1,23 @@
 # morning_shef
 Import forecast data from MVS's wm_mvs_lake schema then convert to SHEF file format.
 
-Step 1. Download the lastest release (link on the right side)
+Step 01. Download the lastest release (link on the right side)
 
-Step 2. Open CWMS-VUE and script editor
+Step 02. Open CWMS-VUE and script editor
 
-Step 3. Copy the script from morning_shef.py to script editor
+Step 03. Copy the script from morning_shef.py to script editor
 
-Step 4. Name the script "morning_shef", save and run
+Step 04. Name the script "morning_shef", save and run
 
-Step 5. A popup window will ask for your note for every lakes
+Step 05. Type your note in the popup window for every lake
 
-Step 6. A preview of the morning shef will popup in a separate window
+Step 06. Verify the morning_shef via preview popup window
 
-Step 7. Click "X" if you like what you see, if not, you can make changes in the preview window, then click X. 
+Step 07. Click "X" if you like what you see, if not, you can make changes in the preview window, then click X. 
 
-Step 8. Save a copy of the morning shef to your local computer popup window
+Step 08. Save the morning_shef.shef file locally on your computer via popup window 
 
-Step 9. Save a copy of the morning shef to the Z drive for LDM
+Step 09. Save the morning_shef.shef file on the Z drive for LDM via popup window 
 
 Steo 10. Send out the email
 
