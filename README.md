@@ -1,5 +1,5 @@
 # morning_shef
-Import forecast data from MVS's wm_mvs_lake schema then convert to SHEF file format
+Import forecast data from Lake Sheets in WM_MVS_LAKE schema then convert to SHEF file format
 
 ========================================================
 
