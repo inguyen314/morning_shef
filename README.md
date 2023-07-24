@@ -9,7 +9,7 @@ Step 02. Open CWMS-VUE and script editor
 
 Step 03. Copy the script from morning_shef.py to script editor
 
-Step 04. Name the script "morning_shef", save and run
+Step 04. Name the script "morning_shef" and click "save and run"
 
 Step 05. Type your note in the popup window for every lake
 
