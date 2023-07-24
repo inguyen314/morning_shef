@@ -492,6 +492,9 @@ def getCarlyle(conn):
         day5 = object_list [5]
         print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
        
+    except IndexError:
+        MessageBox.showInformation('No data, you need to complete the lake sheets first', 'Error')
+    
     finally :
         stmt.close()
         rs.close()
@@ -549,6 +552,9 @@ def getWappapello(conn):
         day5 = object_list [5]
         print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
         
+    except IndexError:
+        MessageBox.showInformation('No data, you need to complete the lake sheets first', 'Error')
+    
     finally :
         stmt.close()
         rs.close()
@@ -607,6 +613,9 @@ def getRend(conn):
         day5 = object_list [5]
         print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
 
+    except IndexError:
+        MessageBox.showInformation('No data, you need to complete the lake sheets first', 'Error')    
+
     finally :
         stmt.close()
         rs.close()
@@ -664,6 +673,9 @@ def getShelbyville(conn):
         day5 = object_list [5]
         print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
 
+    except IndexError:
+        MessageBox.showInformation('No data, you need to complete the lake sheets first', 'Error')
+    
     finally :
         stmt.close()
         rs.close()
@@ -720,6 +732,9 @@ def getMarkTwain(conn):
         day5 = object_list [5]
         print "day5 = " + str(day5.lake) + " - " + str(day5.date_time) + " - " + str(day5.outflow) + " - " + str(day0.station)
 
+    except IndexError:
+        MessageBox.showInformation('No data, you need to complete the lake sheets first', 'Error')
+    
     finally :
         stmt.close()
         rs.close()
@@ -758,6 +773,9 @@ def getMarkTwainYesterday(conn):
         day0 = markTwainYesterday_list [0]
         print "day0 = " + str(day0.station) + " - " + str(day0.outflow)
 
+    except IndexError:
+        MessageBox.showInformation('No data, you need to complete the lake sheets first', 'Error')
+    
     finally :
         stmt.close()
         rs.close()
