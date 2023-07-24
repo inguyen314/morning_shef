@@ -3,7 +3,7 @@ Import forecast data from Lake Sheets (WM_MVS_LAKE schema) then convert to SHEF 
 
 ========================================================
 
-Step 01. Download the lastest release and extract to your computer (link on the right side of this page)
+Step 01. Download the lastest release and extract to your computer (link on the right side of this page). FYI, disconnect from VPN, and try again. 
 
 Step 02. Open CWMS-VUE and script editor
 
