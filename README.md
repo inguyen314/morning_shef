@@ -1,26 +1,26 @@
 # morning_shef
-Import forecast data from Lake Sheets (WM_MVS_LAKE schema) then convert to SHEF file format.
+Import Forecast Outflow Data From Lake Sheets (WM_MVS_LAKE Schemas) then convert to SHEF file format and Send Via Email
 
-========================================================
+Step 01. Download the latest release (zip format) from GitHub. You have to be off of VPN***
 
-Step 01. Download the lastest release and extract to your computer (link on the right side of this page)
+Step 02. Unzip "morning_shef" to your desktop
 
-Step 02. Open CWMS-VUE and script editor
+Step 03. Open CWMS-VUE > Tools > Script Editor
 
-Step 03. Copy the script from morning_shef.py to script editor
+Step 04. Map water control Z drive
 
-Step 04. Name the script "morning_shef", save and run
+Step 05. Right click on "HecDssVue" > "New Script"
 
-Step 05. Type your note in the popup window for every lake
+Step 06. Copy everything from morning_shef.py to "New Script" and name the label to "morning_shef"
 
-Step 06. Verify the morning_shef via preview popup window
+Step 07. Click "Save and Test"
 
-Step 07. Click "X" if you like what you see, if not, you can make changes in the preview window, then click X. 
+Step 08. Enter you notes for each lake when a window is prompted
 
-Step 08. Save the morning_shef.shef file locally on your computer via popup window 
+Step 09. Verify the morning_shef data is correct, make changes if needed
 
-Step 09. Save the morning_shef.shef file on the Z drive for LDM via popup window 
+Step 10. Save a copy on your local PC when a window is prompted 
 
-Steo 10. Send out the email
+Step 11. Save a copy on the Z drive when a window is prompted
 
-Step 11. Done (will push shef file to mvs public site)
+Step 12. Send email completed via pop-up message

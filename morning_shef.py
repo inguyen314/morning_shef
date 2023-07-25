@@ -48,11 +48,11 @@ import smtplib
 #from GUI_test import save_window
 
 
-#=================================================================================================================================================================
-#=================================================================================================================================================================
+#=======================================================================================================================
+#=======================================================================================================================
 # OBJECT CLASSES
-#=================================================================================================================================================================
-#=================================================================================================================================================================
+#=======================================================================================================================
+#=======================================================================================================================
 
 # object class to store current lock and dam stage data. (required 7 data columns)
 class Object_LD:
@@ -76,14 +76,15 @@ class Object:
         self.outflow = outflow
         self.station = station
 
-#=================================================================================================================================================================
-#=================================================================================================================================================================
+#=======================================================================================================================
+#=======================================================================================================================
 # TEXT CLASSES
-#=================================================================================================================================================================
-#=================================================================================================================================================================
+#=======================================================================================================================
+#=======================================================================================================================
 
 # text for 5 lakes
 class TextFileLake:
+    
     def __init__(self, today_date):
         self.line1 = ": TODAYS LAKE FLOW AND 5 DAY FORECAST"
         self.line2 = ".B STL " + str(today_date) + " C DH0600/DC" + str(today_date) + "0600/QT/DRD+1/QTIF/DRD+2/QTIF/DRD+3/QTIF/DRD+4/QTIF/DRD+5/QTIF"
@@ -91,28 +92,34 @@ class TextFileLake:
 
 # text for mark twain yesterday flow
 class TextFileMarkTwainYesterday:
+    
     def __init__(self, object_list, today_date):
-        self.line1 = ": MARK TWAIN LAKE FLOW YESTERDAY"
+        self.line1 = ": MARK TWAIN LAKE GENERATION YESTERDAY"
         self.line2 = ".E CDAM7 "+str(today_date)+" C DH0000/DC"+str(today_date)+"0000/QTD/DID1/"+"{:.2f}".format(float(object_list[0].outflow)/1000)
         self.mark_twain_text = self.line1+"\n"+self.line2
 
 # text for lock and dam current and forecast data
-class TextFileLockDam: 
+class TextFileLockDam:
+    
     def __init__(self, dictionary, date):
         self.object_1 = dictionary["LockDamStage"]
         self.object_2 = dictionary["LockDamNetmissForecast"]
         self.object_3 = dictionary["HingePoint"]
-        self.line1 = ": TODAYS OVSERVED POOL AND 5 DAY FORECAST IN DATUM NGVD29"
+        self.line1 = ": TODAYS OVSERVED POOL 6AM AND 5 DAY FORECAST IN DATUM NGVD29"
         self.line2 = ".B STL "+ str(date)+" C DH0600/DC0"+str(date)+"700/HP/DRD+1/HPIF/DRD+2/HPIF/DRD+3/HPIF"
-        self.body = str(self.object_1[2].value7)+"  "+"{:.2f}".format(float(self.object_1[2].value3))+"/"+"{:.2f}".format(float(self.object_2[10].value3))+"/"+"{:.2f}".format(float(self.object_2[11].value3))+"/"+"{:.2f}".format(float(self.object_2[12].value3))+"/"
-        self.body += "{:.2f}".format(float(self.object_2[13].value3))+"/"+"{:.2f}".format(float(self.object_2[14].value3))+" : CLARKSVILLE LD 24 --> HINGE PT LOUSIANA "+"{:.1f}".format(float(self.object_3[4].value3))+" - "+"{:.1f}".format(float(self.object_3[5].value3))+" "+str(self.object_3[4].value2).upper()+"\n"
+        
+        self.body = str(self.object_1[0].value7)+"  "+"{:.2f}".format(float(self.object_1[0].value3))+"/"+"{:.2f}".format(float(self.object_2[0].value3))+"/"+"{:.2f}".format(float(self.object_2[1].value3))+"/"+"{:.2f}".format(float(self.object_2[2].value3))+"/"
+        self.body += "{:.2f}".format(float(self.object_2[3].value3))+"/"+"{:.2f}".format(float(self.object_2[4].value3))+" : CLARKSVILLE LD 24 --> HINGE PT LOUSIANA "+"{:.1f}".format(float(self.object_3[3].value3))+" - "+"{:.1f}".format(float(self.object_3[2].value3))+" "+str(self.object_3[4].value2).upper()+"\n"
+        
         self.body += str(self.object_1[1].value7)+"  "+"{:.2f}".format(float(self.object_1[1].value3))+"/"+"{:.2f}".format(float(self.object_2[5].value3))+"/"+"{:.2f}".format(float(self.object_2[6].value3))+"/"+"{:.2f}".format(float(self.object_2[7].value3))+"/"
-        self.body += "{:.2f}".format(float(self.object_2[8].value3))+"/"+"{:.2f}".format(float(self.object_2[9].value3))+" : WINFIELD LD 25 --> HINGE PT MOSIER LDG "+"{:.1f}".format(float(self.object_3[2].value3))+" - "+"{:.1f}".format(float(self.object_3[3].value3))+" "+str(self.object_3[2].value2).upper()+"\n"
-        self.body += str(self.object_1[0].value7)+"  "+"{:.2f}".format(float(self.object_1[0].value3))+"/"+"{:.2f}".format(float(self.object_2[0].value3))+"/"+"{:.2f}".format(float(self.object_2[1].value3))+"/"+"{:.2f}".format(float(self.object_2[2].value3))+"/"
-        self.body += "{:.2f}".format(float(self.object_2[3].value3))+"/"+"{:.2f}".format(float(self.object_2[4].value3))+" : ALTON LD 26 --> HINGE PT GRAFTON "+"{:.1f}".format(float(self.object_3[0].value3))+" - "+"{:.1f}".format(float(self.object_3[1].value3))+" "+str(self.object_3[0].value2).upper()+"\n.END"
+        self.body += "{:.2f}".format(float(self.object_2[8].value3))+"/"+"{:.2f}".format(float(self.object_2[9].value3))+" : WINFIELD LD 25 --> HINGE PT MOSIER LDG "+"{:.1f}".format(float(self.object_3[5].value3))+" - "+"{:.1f}".format(float(self.object_3[4].value3))+" "+str(self.object_3[2].value2).upper()+"\n"
+        
+        self.body += str(self.object_1[2].value7)+"  "+"{:.2f}".format(float(self.object_1[2].value3))+"/"+"{:.2f}".format(float(self.object_2[10].value3))+"/"+"{:.2f}".format(float(self.object_2[11].value3))+"/"+"{:.2f}".format(float(self.object_2[12].value3))+"/"
+        self.body += "{:.2f}".format(float(self.object_2[13].value3))+"/"+"{:.2f}".format(float(self.object_2[14].value3))+" : ALTON LD 26 --> HINGE PT GRAFTON "+"{:.1f}".format(float(self.object_3[1].value3))+" - "+"{:.1f}".format(float(self.object_3[0].value3))+" "+str(self.object_3[0].value2).upper()+"\n.END"
 
 # text
-class TextFileButton: 
+class TextFileButton:
+    
     def __init__(self, object_list):
         self.first = str(object_list[0].station)+" "
         self.last = " : "+str(object_list[0].lake)
@@ -126,6 +133,7 @@ class TextFileButton:
 
 # text for comments for five lakes
 class Lake_comments:
+    
     def __init__(self, value1, value2, value3, value4, value5):
         self.text = ""
         self.text = ": CEMVS RESERVOIR NOTES\n"
@@ -134,21 +142,37 @@ class Lake_comments:
         self.text += "MARKTWAIN - "+value3+"\n"
         self.text += "REND - "+value4+"\n"
         self.text += "WAPPAPPELLO - "+value5
+
+# text for comments for five lakes
+class LD_comments:
     
+    def __init__(self, value1, value2, value3):
+        self.text = ""
+        self.text = ": CEMVS LD NOTES\n"
+        self.text += "LD24 - "+value1+"\n"
+        self.text += "LD25 - "+value2+"\n"
+        self.text += "MEL PRICE - "+value3+"\n"
+
+
+# send email setup  
 def send_email(body):
+    
     print "Send email"
 
     bodymail = body
     sender     = "NoReply@mvs.usace.army.mil"
-    recipients = "ivan.h.nguyen@usace.army.mil"
-    subject    = "MVS Morning Shef"
+    #recipients = ["DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil","oscar.r.cordero-perez@usace.army.mil"]
+    recipients = ["ivan.h.nguyen@usace.army.mil"]
+    subject    = "MVS Morning Shef Sent to NWS " + str(today_date_full)
+    
+    print "recipients = " + str(recipients)
     
     message = MIMEText(bodymail)
     message["From"]    = sender
-    message["To"]      = recipients
+    message["To"]      = ",".join(recipients)
     message["Subject"] = subject
     
-    smtp = smtplib.SMTP("gw2.usace.army.mil")
+    smtp = smtplib.SMTP("gw1.usace.army.mil")
     smtp.sendmail(sender, recipients, message.as_string())
     smtp.quit()
     print "Sent MVS Morning Shef Email."
@@ -189,15 +213,15 @@ def save_window(directory, file_name, date, window_name):
     
     return file_path
 
-#=======================================================================================================================
-# SET TEXT FILE NAME AND DATE
-#=======================================================================================================================
-
 # set the name for the output shef file
+
 txt_file_name = "morning_shef"
 
 today_date = datetime.datetime.now().strftime('%m%d')
 print "today_date = " + str(today_date)
+
+today_date_full = datetime.datetime.now().strftime('%Y%m%d')
+print "today_date_full = " + str(today_date_full)
 
 #=======================================================================================================================
 #=======================================================================================================================
@@ -226,7 +250,7 @@ def getLockDamStage(conn):
         stmt = conn.prepareStatement('''
                                     with cte_pool as 
                                     (select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
-                                        ,date_time
+                                        ,cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
                                         ,value
                                         ,unit_id
                                         ,quality_code
@@ -234,14 +258,14 @@ def getLockDamStage(conn):
                                     from cwms_v_tsv_dqu  tsv
                                     where 
                                          tsv.cwms_ts_id = 'LD 24 Pool-Mississippi.Stage.Inst.30Minutes.0.29'
-                                         and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
-                                         and date_time  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
-                                         and date_time  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and tsv.unit_id = 'ft'
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
                                          and tsv.office_id = 'MVS' 
                                          and tsv.aliased_item is null
                                     union all
                                     select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
-                                        ,date_time
+                                        ,cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
                                         ,value
                                         ,unit_id
                                         ,quality_code
@@ -249,14 +273,14 @@ def getLockDamStage(conn):
                                     from cwms_v_tsv_dqu  tsv
                                     where 
                                          tsv.cwms_ts_id = 'LD 25 Pool-Mississippi.Stage.Inst.30Minutes.0.29' 
-                                         and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
-                                         and date_time  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
-                                         and date_time  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and tsv.unit_id = 'ft'
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
                                          and tsv.office_id = 'MVS' 
                                          and tsv.aliased_item is null 
                                     union all
                                     select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
-                                        ,date_time
+                                        ,cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
                                         ,value
                                         ,unit_id
                                         ,quality_code
@@ -264,9 +288,9 @@ def getLockDamStage(conn):
                                     from cwms_v_tsv_dqu  tsv
                                     where 
                                          tsv.cwms_ts_id = 'Mel Price Pool-Mississippi.Stage.Inst.15Minutes.0.29' 
-                                         and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
-                                         and date_time  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
-                                         and date_time  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and tsv.unit_id = 'ft'
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
                                          and tsv.office_id = 'MVS' 
                                          and tsv.aliased_item is null     
                                     order by location_id asc 
@@ -274,7 +298,7 @@ def getLockDamStage(conn):
                                     
                                     tainter as 
                                     (select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
-                                        ,date_time
+                                        ,cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
                                         ,value
                                         ,unit_id
                                         ,quality_code
@@ -282,14 +306,14 @@ def getLockDamStage(conn):
                                     from cwms_v_tsv_dqu  tsv
                                     where 
                                          tsv.cwms_ts_id = 'LD 24 Pool-Mississippi.Opening.Inst.~2Hours.0.lpmsShef-raw-Taint' 
-                                         and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
-                                         and date_time  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
-                                         and date_time  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and tsv.unit_id = 'ft'
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
                                          and tsv.office_id = 'MVS' 
                                          and tsv.aliased_item is null
                                     union all
                                     select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
-                                        ,date_time
+                                        ,cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
                                         ,value
                                         ,unit_id
                                         ,quality_code
@@ -297,14 +321,14 @@ def getLockDamStage(conn):
                                     from cwms_v_tsv_dqu  tsv
                                     where 
                                          tsv.cwms_ts_id = 'LD 25 Pool-Mississippi.Opening.Inst.~2Hours.0.lpmsShef-raw-Taint' 
-                                         and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
-                                         and date_time  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
-                                         and date_time  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and tsv.unit_id = 'ft'
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
                                          and tsv.office_id = 'MVS' 
                                          and tsv.aliased_item is null   
                                     union all
                                     select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
-                                        ,date_time
+                                        ,cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
                                         ,value
                                         ,unit_id
                                         ,quality_code
@@ -312,9 +336,9 @@ def getLockDamStage(conn):
                                     from cwms_v_tsv_dqu  tsv
                                     where 
                                          tsv.cwms_ts_id = 'Mel Price Pool-Mississippi.Opening.Inst.~2Hours.0.lpmsShef-raw-Taint' 
-                                         and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 'ft' or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt')
-                                         and date_time  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
-                                         and date_time  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and tsv.unit_id = 'ft'
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
                                          and tsv.office_id = 'MVS' 
                                          and tsv.aliased_item is null     
                                     order by location_id asc 
@@ -329,6 +353,7 @@ def getLockDamStage(conn):
                                         ,cte_pool.damlock
                                     from cte_pool
                                     left join tainter on cte_pool.location_id = tainter.location_id
+                                    order by cte_pool.location_id asc
                                     ''')
         
         rs = stmt.executeQuery()
@@ -417,7 +442,7 @@ def getHingePoint(conn):
                                     from CWMS_20.AV_LOCATION_LEVEL 
                                     where specified_level_id in ('Hinge Max','Hinge Min') 
                                     and unit_system = 'EN' 
-                                    and location_id in ('Grafton-Mississippi','Louisiana-Mississippi','Mosier Ldg-Mississippi')
+                                    and location_id in ('Louisiana-Mississippi','Grafton-Mississippi','Mosier Ldg-Mississippi')
                                     ''')
         rs = stmt.executeQuery()
         
@@ -879,6 +904,17 @@ try :
     print "noteWappapello = " + str(noteWappapello)
     
     
+    
+    noteLD24 = JOptionPane.showInputDialog(None, 'LD 24 Note', 'CEMVS LD Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
+    print "noteLD24 = " + str(noteLD24)
+    
+    noteLD25 = JOptionPane.showInputDialog(None, 'LD 25 Note', 'CEMVS LD Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
+    print "noteLD25 = " + str(noteLD25)
+    
+    noteLDMelPrice = JOptionPane.showInputDialog(None, 'LD Mel Price Note', 'CEMVS LD Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
+    print "noteLDMelPrice = " + str(noteLDMelPrice)
+    
+    
     #=======================================================================================================================
     # CREATE TEXT FILE
     #=======================================================================================================================
@@ -912,13 +948,20 @@ try :
     
     # Lake Comments
     lakes_comments = Lake_comments(str(noteCarlyle), str(noteShelbyville), str(noteMarkTwain), str(noteRend), str(noteWappapello)).text
+    lakes_comments += "\n\n"
+    
+    
+    # LD Comments
+    ld_comments = LD_comments(str(noteLD24), str(noteLD25),str(noteLDMelPrice)).text
+    ld_comments += "\n\n"
     
     # The complete text for the shef file
-    final_text = text+mark_twain_text+lock_dam_text+lakes_comments
+    final_text = text+mark_twain_text+lakes_comments+lock_dam_text+ld_comments
     
     
     # Window to show and modify the text file
     class MyWindowListener(WindowAdapter):
+        
         def windowClosing(self, event):
             global holdText
             holdText = textArea.getText()
@@ -933,6 +976,18 @@ try :
             # If OS is PC, else UNIX Server
             
             if OsName[ : 7] == 'windows' :
+                
+                # get rid of the save popup for C and Z drive
+                
+                    # if z drive not mapped, give an error "please map the z drive"
+                
+                # after preview, save directly to the z drive
+                
+                # send out email
+                
+                
+                
+                
                 # PC pathnames
                 print "Local"
                 txt_date = datetime.datetime.now().strftime('%Y%m%d')
@@ -964,26 +1019,10 @@ try :
                     with open(second_save_path + ".shef", "w") as new_file:
                         new_file.write(holdText) 
                         
-                        MessageBox.showInformation('Text File Created', 'Alert') 
+                        MessageBox.showInformation('Text File Created and Email Was Sent', 'Alert') 
                         
             else:
-                # Server pathnames
-                print "Server"
-                server_directory = "/wmdata/DailyOps/morning_shef"
-                txt_date = datetime.datetime.now().strftime('%Y%m%d')
-                
-                # Save Window For Server
-                pop_server_name = "Save in Server"
-                server_save_path = save_window(server_directory, txt_file_name, txt_date, pop_server_name)
-                
-                # Save the text file
-                with open(server_save_path + ".shef", "w") as f:
-                    f.write(holdText)
-                    
-                    print("Text file created")
-                    
-                    # pop-up message box
-                    MessageBox.showInformation('Text file created', 'Alert')
+                MessageBox.showInformation('Error, Run the script in CWMS-VUE', 'Alert')
     
     # Window
     frame = JFrame("GUI", size = (1080, 650))
