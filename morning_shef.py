@@ -84,6 +84,7 @@ class Object:
 
 # text for 5 lakes
 class TextFileLake:
+    
     def __init__(self, today_date):
         self.line1 = ": TODAYS LAKE FLOW AND 5 DAY FORECAST"
         self.line2 = ".B STL " + str(today_date) + " C DH0600/DC" + str(today_date) + "0600/QT/DRD+1/QTIF/DRD+2/QTIF/DRD+3/QTIF/DRD+4/QTIF/DRD+5/QTIF"
@@ -142,6 +143,19 @@ class Lake_comments:
         self.text += "REND - "+value4+"\n"
         self.text += "WAPPAPPELLO - "+value5
 
+# text for comments for five lakes
+class LD_comments:
+    
+    def __init__(self, value1, value2, value3, value4, value5):
+        self.text = ""
+        self.text = ": CEMVS LD NOTES\n"
+        self.text += "LD24 - "+value1+"\n"
+        self.text += "LD25 - "+value2+"\n"
+        self.text += "MEL PRICE - "+value3+"\n"
+        self.text += "BLANK - "+value4+"\n"
+        self.text += "BLANK - "+value5+"\n"
+
+
 # send email setup  
 def send_email(body):
     
@@ -149,7 +163,8 @@ def send_email(body):
 
     bodymail = body
     sender     = "NoReply@mvs.usace.army.mil"
-    recipients = ["DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil","oscar.r.cordero-perez@usace.army.mil"]
+    #recipients = ["DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil","oscar.r.cordero-perez@usace.army.mil"]
+    recipients = ["ivan.h.nguyen@usace.army.mil"]
     subject    = "MVS Morning Shef Sent to NWS " + str(today_date_full)
     
     print "recipients = " + str(recipients)
@@ -873,6 +888,17 @@ try :
     print "noteWappapello = " + str(noteWappapello)
     
     
+    
+    noteLD24 = JOptionPane.showInputDialog(None, 'LD 24 Note', 'CEMVS LD Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
+    print "noteLD24 = " + str(noteLD24)
+    
+    noteLD25 = JOptionPane.showInputDialog(None, 'LD 25 Note', 'CEMVS LD Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
+    print "noteLD25 = " + str(noteLD25)
+    
+    noteLDMelPrice = JOptionPane.showInputDialog(None, 'LD Mel Price Note', 'CEMVS LD Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
+    print "noteLDMelPrice = " + str(noteLDMelPrice)
+    
+    
     #=======================================================================================================================
     # CREATE TEXT FILE
     #=======================================================================================================================
@@ -906,9 +932,15 @@ try :
     
     # Lake Comments
     lakes_comments = Lake_comments(str(noteCarlyle), str(noteShelbyville), str(noteMarkTwain), str(noteRend), str(noteWappapello)).text
+    lakes_comments += "\n\n"
+    
+    
+    # LD Comments
+    ld_comments = LD_comments(str(noteLD24), str(noteLD25),str(noteLDMelPrice),str(noteLDMelPrice), str(noteLDMelPrice)).text
+    ld_comments += "\n\n"
     
     # The complete text for the shef file
-    final_text = text+mark_twain_text+lock_dam_text+lakes_comments
+    final_text = text+mark_twain_text+lakes_comments+lock_dam_text+ld_comments
     
     
     # Window to show and modify the text file
