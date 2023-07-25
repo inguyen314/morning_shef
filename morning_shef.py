@@ -149,8 +149,7 @@ def send_email(body):
 
     bodymail = body
     sender     = "NoReply@mvs.usace.army.mil"
-    recipients = "ivan.h.nguyen@usace.army.mil,allen.phillips@usace.army.mil,DLL-CEMVS-WATER-MANAGERS@usace.army.mil,oscar.r.cordero-perez@usace.army.mil"
-    #recipients = ["DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil","oscar.r.cordero-perez@usace.army.mil"]
+    recipients = ["DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil","oscar.r.cordero-perez@usace.army.mil"]
     subject    = "MVS Morning Shef Sent to NWS " + str(today_date_full)
     
     print "recipients = " + str(recipients)
