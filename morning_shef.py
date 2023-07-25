@@ -146,14 +146,12 @@ class Lake_comments:
 # text for comments for five lakes
 class LD_comments:
     
-    def __init__(self, value1, value2, value3, value4, value5):
+    def __init__(self, value1, value2, value3):
         self.text = ""
         self.text = ": CEMVS LD NOTES\n"
         self.text += "LD24 - "+value1+"\n"
         self.text += "LD25 - "+value2+"\n"
         self.text += "MEL PRICE - "+value3+"\n"
-        self.text += "BLANK - "+value4+"\n"
-        self.text += "BLANK - "+value5+"\n"
 
 
 # send email setup  
@@ -936,7 +934,7 @@ try :
     
     
     # LD Comments
-    ld_comments = LD_comments(str(noteLD24), str(noteLD25),str(noteLDMelPrice),str(noteLDMelPrice), str(noteLDMelPrice)).text
+    ld_comments = LD_comments(str(noteLD24), str(noteLD25),str(noteLDMelPrice)).text
     ld_comments += "\n\n"
     
     # The complete text for the shef file
@@ -960,6 +958,18 @@ try :
             # If OS is PC, else UNIX Server
             
             if OsName[ : 7] == 'windows' :
+                
+                # get rid of the save popup for C and Z drive
+                
+                    # if z drive not mapped, give an error "please map the z drive"
+                
+                # after preview, save directly to the z drive
+                
+                # send out email
+                
+                
+                
+                
                 # PC pathnames
                 print "Local"
                 txt_date = datetime.datetime.now().strftime('%Y%m%d')
@@ -994,23 +1004,7 @@ try :
                         MessageBox.showInformation('Text File Created and Email Was Sent', 'Alert') 
                         
             else:
-                # Server pathnames
-                print "Server"
-                server_directory = "/wmdata/DailyOps/morning_shef"
-                txt_date = datetime.datetime.now().strftime('%Y%m%d')
-                
-                # Save Window For Server
-                pop_server_name = "Save in Server"
-                server_save_path = save_window(server_directory, txt_file_name, txt_date, pop_server_name)
-                
-                # Save the text file
-                with open(server_save_path + ".shef", "w") as f:
-                    f.write(holdText)
-                    
-                    print("Text file created")
-                    
-                    # pop-up message box
-                    MessageBox.showInformation('Text file created', 'Alert')
+                MessageBox.showInformation('Error, Run the script in CWMS-VUE', 'Alert')
     
     # Window
     frame = JFrame("GUI", size = (1080, 650))
