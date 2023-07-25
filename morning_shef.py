@@ -46,7 +46,6 @@ import java.lang
 import os, sys, inspect, datetime, time, DBAPI
 import smtplib
 #from GUI_test import save_window
-# 
 
 #=======================================================================================================================
 #=======================================================================================================================
@@ -994,11 +993,11 @@ try :
                     z_directory = "Z:\DailyOps\morning_shef"
                     txt_date = datetime.datetime.now().strftime('%Y%m%d')
                     
-                    pop_name_2 = "Save in Z Drive"
-                    second_save_path = save_window(z_directory, txt_file_name, txt_date, pop_name_2)
+                    # pop_name_2 = "Save in Z Drive"
+                    # second_save_path = save_window(z_directory, txt_file_name, txt_date, pop_name_2)
                     
                     # Create Text File
-                    with open(second_save_path + ".shef", "w") as new_file:
+                    with open(z_directory + "\\" + txt_file_name + ".shef", "w") as new_file:
                         new_file.write(holdText) 
                         
                         MessageBox.showInformation('Text File Created and Email Was Sent', 'Alert') 
