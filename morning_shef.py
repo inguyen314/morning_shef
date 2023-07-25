@@ -966,41 +966,30 @@ try :
                 
                 # send out email
                 
-                
-                
-                
-                # PC pathnames
-                print "Local"
                 txt_date = datetime.datetime.now().strftime('%Y%m%d')
                 
+                '''
                 # Save Window For C Drive
                 # Default Directory
                 c_directory = "C:/scripts/cwms/morning_shef"
-                txt_date = datetime.datetime.now().strftime('%Y%m%d')
                 
                 pop_name = "Save in C Drive"
                 first_save_path = save_window(c_directory, txt_file_name, txt_date, pop_name)
                 
-            # Create Text File
                 with open(first_save_path + ".shef", "w") as f:
+                    f.write(holdText)
+                '''
+                
+                # Create Text File
+                # directory setup
+                z_directory = "Z:\DailyOps\morning_shef"
+                with open(z_directory + "\\" + txt_file_name + "_" + txt_date + ".shef", "w") as f:
                     f.write(holdText)
                     
                     # Send Email
                     send_email(holdText)
-                    
-                    # Save Window For Z Drive
-                    # Default Directory
-                    z_directory = "Z:\DailyOps\morning_shef"
-                    txt_date = datetime.datetime.now().strftime('%Y%m%d')
-                    
-                    # pop_name_2 = "Save in Z Drive"
-                    # second_save_path = save_window(z_directory, txt_file_name, txt_date, pop_name_2)
-                    
-                    # Create Text File
-                    with open(z_directory + "\\" + txt_file_name + ".shef", "w") as new_file:
-                        new_file.write(holdText) 
-                        
-                        MessageBox.showInformation('Text File Created and Email Was Sent', 'Alert') 
+                             
+                    MessageBox.showInformation('Text File Created and Email Was Sent', 'Alert') 
                         
             else:
                 MessageBox.showInformation('Error, Run the script in CWMS-VUE', 'Alert')
