@@ -29,6 +29,7 @@ from javax.swing.border                         import EmptyBorder
 from operator                                   import is_not
 from rma.services                               import ServiceLookup
 from subprocess                                 import Popen
+from subprocess                                 import check_call
 from time                                       import mktime, localtime
 from javax.swing                                import JOptionPane, JDialog, JButton, JPanel, JTextArea, JFrame, JFileChooser 
 from datetime                                   import timedelta
@@ -160,8 +161,9 @@ def send_email(body):
 
     bodymail = body
     sender     = "NoReply@mvs.usace.army.mil"
-    #recipients = ["DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil","oscar.r.cordero-perez@usace.army.mil"]
-    recipients = ["ivan.h.nguyen@usace.army.mil"]
+    recipients = ["DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil","oscar.r.cordero-perez@usace.army.mil"]
+    #recipients = ["sr-orn.all@noaa.gov","DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil"]
+    #recipients = ["ivan.h.nguyen@usace.army.mil"]
     subject    = "MVS Morning Shef Sent to NWS " + str(today_date_full)
     
     print "recipients = " + str(recipients)
@@ -982,15 +984,32 @@ try :
                 
                 # Create Text File
                 # directory setup
-                z_directory = "Z:\DailyOps\morning_shef"
-                with open(z_directory + "\\" + txt_file_name + "_" + txt_date + ".shef", "w") as f:
+                z_directory = "Z:\\DailyOps\\morning_shef"
+                file_name = txt_file_name + ".shef"
+                file_name_with_date = txt_file_name + "_" + txt_date + ".shef"
+                
+                # save file to z drive
+                with open(z_directory + "\\" + file_name, "w") as f:
+                    f.write(holdText)
+                
+                with open(z_directory + "\\" + file_name_with_date, "w") as f:
                     f.write(holdText)
                     
-                    # Send Email
-                    send_email(holdText)
-                             
-                    MessageBox.showInformation('Text File Created and Email Was Sent', 'Alert') 
-                        
+                # Send Email
+                # NOTE: Eclipse will give error if email function used
+                send_email(holdText)
+
+                # push shef to public site
+                cmd = "pscp -i C:\\wc\\ssh\\id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name
+                print(cmd)
+                check_call(cmd, shell=True)
+                
+                cmd2 = "pscp -i C:\\wc\\ssh\\id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name + ".txt"
+                print(cmd2)
+                check_call(cmd2, shell=True)
+                
+                MessageBox.showInformation('Text File Created and Email Was Sent', 'Alert') 
+
             else:
                 MessageBox.showInformation('Error, Run the script in CWMS-VUE', 'Alert')
     
@@ -1006,7 +1025,6 @@ try :
     
     frame.visible = True
     
-        
     # close the database
     CwmsDb.close()
     
