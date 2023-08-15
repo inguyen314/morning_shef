@@ -515,7 +515,7 @@ def getCarlyle(conn):
         
         for x in range(0, list_index):
             # create object for each row
-            day = object_list [x]
+            day0 = object_list [x]
             print "day{} = ".format(x) + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
        
     finally :
@@ -563,7 +563,7 @@ def getWappapello(conn):
         
         for x in range(0, list_index):
             # create object for each row
-            day = object_list [x]
+            day0 = object_list [x]
             print "day{} = ".format(x) + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
     
     finally :
@@ -612,7 +612,7 @@ def getRend(conn):
         
         for x in range(0, list_index):
             # create object for each row
-            day = object_list [x]
+            day0 = object_list [x]
             print "day{} = ".format(x) + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
             
     finally :
@@ -660,7 +660,7 @@ def getShelbyville(conn):
         
         for x in range(0, list_index):
             # create object for each row
-            day = object_list [x]
+            day0 = object_list [x]
             print "day{} = ".format(x) + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
             
     finally :
@@ -708,7 +708,7 @@ def getMarkTwain(conn):
         
         for x in range(0, list_index):
             # create object for each row
-            day = object_list [x]
+            day0 = object_list [x]
             print "day{} = ".format(x) + str(day0.lake) + " - " + str(day0.date_time) + " - " + str(day0.outflow) + " - " + str(day0.station)
             
     finally :
