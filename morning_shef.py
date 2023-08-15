@@ -362,8 +362,11 @@ def getLockDamStage(conn):
         # create object list to store the data (3 columns by 6 rows)
         object_list_lock_dam_stage = []
         while rs.next() : 
-            # loop and append which data column to object list
-            object_list_lock_dam_stage.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)))
+            if rs.getString(1) == None or rs.getString(2) == None or rs.getString(3) == None or rs.getString(4) == None or rs.getString(5) == None or rs.getString(6) == None or rs.getString(7) == None:
+                print "No data for LockDamStage."
+            else:
+                # loop and append which data column to object list
+                object_list_lock_dam_stage.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)))
         
         lock_dam_dict["LockDamStage"] = object_list_lock_dam_stage
         print lock_dam_dict
@@ -418,8 +421,11 @@ def getLockDamNetmissForecast(conn):
         # create object list to store the data (3 cols by 6 rows)
         object_list_2 = []
         while rs.next() : 
-            # loop and append which data col to object list
-            object_list_2.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),None,None))
+            if rs.getString(1) == None or rs.getString(2) == None or rs.getString(3) == None or rs.getString(4) == None or rs.getString(5) == None:
+                print "No data for LockDamNetmissForecast."
+            else:
+                # loop and append which data col to object list
+                object_list_2.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),None,None))
                       
         lock_dam_dict["LockDamNetmissForecast"] = object_list_2
         print lock_dam_dict
@@ -450,8 +456,11 @@ def getHingePoint(conn):
         # create object list to store the data (4 columns)
         object_list_hinge_point = []
         while rs.next() : 
-            # loop and append data to object_list
-            object_list_hinge_point.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),None,None,None))
+            if rs.getString(1) == None or rs.getString(2) == None or rs.getString(3) == None or rs.getString(4) == None:
+                print "No data for HingePoint."
+            else:
+                # loop and append data to object_list
+                object_list_hinge_point.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),None,None,None))
                      
         lock_dam_dict["HingePoint"] = object_list_hinge_point
         print lock_dam_dict
@@ -489,9 +498,12 @@ def getCarlyle(conn):
         # create object list to store the data (4 columns)
         object_list = []
         while rs.next() :
-            # loop and append data to object list. select the correct column number
-            object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-            print "test"
+            if rs.getString(1) == None or rs.getString(2) == None or rs.getString(8) == None or rs.getString(9) == None:
+                print "No data for Carlyle."
+            else:
+                # loop and append data to object list. select the correct column number
+                object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
+                print "test"
            
         # add object list to dictionary
         lake_dict["Carlyle"] = object_list
@@ -548,9 +560,12 @@ def getWappapello(conn):
         # create object list to store the data (4 columns)
         object_list = []
         while rs.next() :
-            # loop and append data to object list. select the correct column number
-            object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-            print "test"
+            if rs.getString(1) == None or rs.getString(2) == None or rs.getString(8) == None or rs.getString(9) == None:
+                print "No data for Wappappello."
+            else:
+                # loop and append data to object list. select the correct column number
+                object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
+                print "test"
            
         lake_dict["Wappapello"] = object_list
         print lake_dict
@@ -606,9 +621,12 @@ def getRend(conn):
         object_list = []
         print "Rend Test"
         while rs.next() :
-            # loop and append data to object list. select the correct column number
-            object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-            print "test"
+            if rs.getString(1) == None or rs.getString(2) == None or rs.getString(8) == None or rs.getString(9) == None:
+                print "No data for Rend."
+            else:
+                # loop and append data to object list. select the correct column number
+                object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
+                print "test"
            
         lake_dict["Rend"] = object_list
         print lake_dict
@@ -663,9 +681,12 @@ def getShelbyville(conn):
         # create object list to store the data (4 columns)
         object_list = []
         while rs.next() :
-            # loop and append data to object list. select the correct column number
-            object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-            print "test"
+            if rs.getString(1) == None or rs.getString(2) == None or rs.getString(8) == None or rs.getString(9) == None:
+                print "No data for Shelbyville."
+            else:
+                # loop and append data to object list. select the correct column number
+                object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
+                print "test"
            
         lake_dict["Shelbyville"] = object_list
         print lake_dict
@@ -720,9 +741,12 @@ def getMarkTwain(conn):
         # create object list to store the data (4 columns)
         object_list = []
         while rs.next() :
-            # loop and append data to object list. select the correct column number
-            object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-            print "test"  
+            if rs.getString(1) == None or rs.getString(2) == None or rs.getString(8) == None or rs.getString(9) == None:
+                print "No data for MarkTwian."
+            else:
+                # loop and append data to object list. select the correct column number
+                object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
+                print "test"  
              
         lake_dict["MarkTwain"] = object_list
         print lake_dict
@@ -774,9 +798,12 @@ def getMarkTwainYesterday(conn):
 
         # create object list to store the data (4 columns)
         while rs.next() :
-            # loop and append data to object list. select the correct column number
-            markTwainYesterday_list.append(Object(None, None,rs.getString(3),rs.getString(5)))
-            print "test"  
+            if rs.getString(1) == None or rs.getString(2) == None or rs.getString(8) == None or rs.getString(9) == None:
+                print "No data for MarkTwainYesterday."
+            else:
+                # loop and append data to object list. select the correct column number
+                markTwainYesterday_list.append(Object(None, None,rs.getString(3),rs.getString(5)))
+                print "test"  
              
         print markTwainYesterday_list
 
