@@ -739,7 +739,7 @@ def getMarkTwainYesterday(conn):
 
         # create object list to store the data (4 columns)
         while rs.next() :
-            if rs.getString(1) == None or rs.getString(2) == None or rs.getString(8) == None or rs.getString(9) == None:
+            if rs.getString(3) == None or rs.getString(5) == None:
                 print "No data for MarkTwainYesterday."
             else:
                 # loop and append data to object list. select the correct column number
@@ -747,10 +747,13 @@ def getMarkTwainYesterday(conn):
                 print "test"  
              
         print markTwainYesterday_list
-
-        # create object for each row
-        day0 = markTwainYesterday_list [0]
-        print "day0 = " + str(day0.station) + " - " + str(day0.outflow)
+        
+        list_index = len(markTwainYesterday_list)
+        
+        for x in range(0, list_index):
+            # create object for each row
+            day0 = object_list [x]
+            print "day{} = ".format(x) + str(day0.station) + " - " + str(day0.outflow)        
 
     finally :
         stmt.close()
