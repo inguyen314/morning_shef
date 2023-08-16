@@ -1,7 +1,7 @@
 '''
 Author: IVAN H. NGUYEN USACE-MVS
 Last Updated: 06-29-2023
-Version: 1.0
+Version: 1.5
 Description: The purpose of this script is to import data from CWMS and other schema then convert them to SHEF file format.
 '''
 from ast                                        import IsNot
@@ -50,7 +50,7 @@ import smtplib
 
 #=======================================================================================================================
 #=======================================================================================================================
-# OBJECT CLASSES
+# OBJECTS
 #=======================================================================================================================
 #=======================================================================================================================
 
@@ -78,7 +78,7 @@ class Object:
 
 #=======================================================================================================================
 #=======================================================================================================================
-# TEXT CLASSES
+# CLASSES
 #=======================================================================================================================
 #=======================================================================================================================
 
@@ -214,7 +214,6 @@ def save_window(directory, file_name, date, window_name):
     
     return file_path
 
-# set the name for the output shef file
 
 txt_file_name = "morning_shef"
 
@@ -223,6 +222,7 @@ print "today_date = " + str(today_date)
 
 today_date_full = datetime.datetime.now().strftime('%Y%m%d')
 print "today_date_full = " + str(today_date_full)
+
 
 #=======================================================================================================================
 #=======================================================================================================================
@@ -361,9 +361,14 @@ def getLockDamStage(conn):
         
         # create object list to store the data (3 columns by 6 rows)
         object_list_lock_dam_stage = []
-        while rs.next() : 
-            if rs.getString(1) == None or rs.getString(2) == None or rs.getString(3) == None or rs.getString(4) == None or rs.getString(5) == None or rs.getString(6) == None or rs.getString(7) == None:
-                print "No data for LockDamStage."
+        while rs.next() :
+            # ignore tainter value rs.getString(6)
+            # exit if you have incomplete forecast data
+            # TODO: check to have 3 rows
+            if rs.getString(1) == None or rs.getString(2) == None or rs.getString(3) == None or rs.getString(4) == None or rs.getString(5) == None or rs.getString(7) == None:
+                print "No data for Current LockDamStage"
+                MessageBox.showInformation('No data for Current LockDamStage', 'Alert')
+                sys.exit()
             else:
                 # loop and append which data column to object list
                 object_list_lock_dam_stage.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)))
@@ -421,8 +426,12 @@ def getLockDamNetmissForecast(conn):
         # create object list to store the data (3 cols by 6 rows)
         object_list_2 = []
         while rs.next() : 
+            # exit if you have incomplete forecast data
+            # TODO: check to have 15 rows, five for each. ld24, ld25, and mp
             if rs.getString(1) == None or rs.getString(2) == None or rs.getString(3) == None or rs.getString(4) == None or rs.getString(5) == None:
                 print "No data for LockDamNetmissForecast."
+                MessageBox.showInformation('No data for Current LockDamNetmissForecast', 'Alert')
+                sys.exit()
             else:
                 # loop and append which data col to object list
                 object_list_2.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),None,None))
@@ -456,8 +465,12 @@ def getHingePoint(conn):
         # create object list to store the data (4 columns)
         object_list_hinge_point = []
         while rs.next() : 
+            # exit if you have incomplete forecast data
+            # TODO: check to have 3 rows
             if rs.getString(1) == None or rs.getString(2) == None or rs.getString(3) == None or rs.getString(4) == None:
                 print "No data for HingePoint."
+                MessageBox.showInformation('No data for HingePoint', 'Alert')
+                sys.exit()
             else:
                 # loop and append data to object_list
                 object_list_hinge_point.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),None,None,None))
@@ -498,12 +511,16 @@ def getCarlyle(conn):
         # create object list to store the data (4 columns)
         object_list = []
         while rs.next() :
+            # exit if you have incomplete forecast data
+            # TODO: check to have 6 rows
             if rs.getString(1) == None or rs.getString(2) == None or rs.getString(8) == None or rs.getString(9) == None:
-                print "No data for Carlyle."
+                print "No data for Carlyle"
+                MessageBox.showInformation('No data for Carlyle, System Exit', 'Alert')
+                sys.exit()
             else:
                 # loop and append data to object list. select the correct column number
                 object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-                print "test"
+                print "Carlyle: append data to object_list"
            
         # add object list to dictionary
         lake_dict["Carlyle"] = object_list
@@ -548,12 +565,16 @@ def getWappapello(conn):
         # create object list to store the data (4 columns)
         object_list = []
         while rs.next() :
+            # exit if you have incomplete forecast data
+            # TODO: check to have 6 rows
             if rs.getString(1) == None or rs.getString(2) == None or rs.getString(8) == None or rs.getString(9) == None:
-                print "No data for Wappappello."
+                print "No data for Wappappello"
+                MessageBox.showInformation('No data for Wappappello, System Exit', 'Alert')
+                sys.exit()
             else:
                 # loop and append data to object list. select the correct column number
                 object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-                print "test"
+                print "Wappappello: append data to object_list"
            
         lake_dict["Wappapello"] = object_list
         print lake_dict
@@ -595,14 +616,17 @@ def getRend(conn):
 
         # create object list to store the data (4 columns)
         object_list = []
-        print "Rend Test"
         while rs.next() :
+            # exit if you have incomplete forecast data
+            # TODO: check to have 6 rows
             if rs.getString(1) == None or rs.getString(2) == None or rs.getString(8) == None or rs.getString(9) == None:
-                print "No data for Rend."
+                print "No data for Rend"
+                MessageBox.showInformation('No data for Rend, System Exit', 'Alert')
+                sys.exit()
             else:
                 # loop and append data to object list. select the correct column number
                 object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-                print "test"
+                print "Rend: append data to object_list"
            
         lake_dict["Rend"] = object_list
         print lake_dict
@@ -645,12 +669,16 @@ def getShelbyville(conn):
         # create object list to store the data (4 columns)
         object_list = []
         while rs.next() :
+            # exit if you have incomplete forecast data
+            # TODO: check to have 6 rows
             if rs.getString(1) == None or rs.getString(2) == None or rs.getString(8) == None or rs.getString(9) == None:
-                print "No data for Shelbyville."
+                print "No data for Shelbyville"
+                MessageBox.showInformation('No data for Shelbyville, System Exit', 'Alert') 
+                sys.exit()
             else:
                 # loop and append data to object list. select the correct column number
                 object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-                print "test"
+                print "Shelbyville: append data to object_list"
            
         lake_dict["Shelbyville"] = object_list
         print lake_dict
@@ -685,20 +713,25 @@ def getMarkTwain(conn):
                                     from wm_mvs_lake.qlev_fcst 
                                     where lake = 'MT'
                                         and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
+                                        and cwms_util.change_timezone(date_time, 'UTC', 'US/Central') >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
                                     order by date_time asc
-                                    fetch next 6 row only
+                                    fetch next 7 row only
                                     ''')
         rs = stmt.executeQuery()
 
         # create object list to store the data (4 columns)
         object_list = []
         while rs.next() :
+            # exit if you have incomplete forecast data
+            # TODO: check to have 6 rows
             if rs.getString(1) == None or rs.getString(2) == None or rs.getString(8) == None or rs.getString(9) == None:
-                print "No data for MarkTwian."
+                print "No data for MarkTwain"
+                MessageBox.showInformation('No data for MarkTwain, System Exit', 'Alert') 
+                sys.exit()
             else:
                 # loop and append data to object list. select the correct column number
                 object_list.append(Object(rs.getString(1),rs.getString(2),rs.getString(8),rs.getString(9)))
-                print "test"  
+                print "MarkTwain: append data to object_list" 
              
         lake_dict["MarkTwain"] = object_list
         print lake_dict
@@ -739,8 +772,12 @@ def getMarkTwainYesterday(conn):
 
         # create object list to store the data (4 columns)
         while rs.next() :
+            # exit if you have incomplete forecast data
+            # TODO: check to have 1 rows
             if rs.getString(3) == None or rs.getString(5) == None:
                 print "No data for MarkTwainYesterday."
+                MessageBox.showInformation('No data for MarkTwainYesterday, System Exit', 'Alert') 
+                sys.exit()
             else:
                 # loop and append data to object list. select the correct column number
                 markTwainYesterday_list.append(Object(None, None,rs.getString(3),rs.getString(5)))
@@ -752,7 +789,7 @@ def getMarkTwainYesterday(conn):
         
         for x in range(0, list_index):
             # create object for each row
-            day0 = object_list [x]
+            day0 = markTwainYesterday_list [x]
             print "day{} = ".format(x) + str(day0.station) + " - " + str(day0.outflow)        
 
     finally :
@@ -872,11 +909,7 @@ try :
     #=======================================================================================================================
     # CREATE TEXT FILE
     #=======================================================================================================================
-    
-    #===================================================================================
-    # EDIT THE TEXT FILE
-    #==================================================================================
-    
+     
     # Variable to hold any changes for the text file
     holdText = ""
     
@@ -920,24 +953,27 @@ try :
             global holdText
             holdText = textArea.getText()
             
+            #===================================================================================
+            # SEND, UPLOAD, AND PUBLISH
+            #==================================================================================
+            print '='
+            print '='
+            print '='
+            print '=================================================================================='
+            print '============================== SEND, UPLOAD, AND PUBLISH'
+            print '================================================================================== '
+            print '='
+            print '='
+            print '='
+            
             # Check if is in Server or Local 
             print '=== Determine if OS is Windows or Unix ==='
-
             OsName = System.getProperty("os.name").lower()
-            
+    
             print 'OS is Windows or Unix = ', OsName
             
             # If OS is PC, else UNIX Server
-            
             if OsName[ : 7] == 'windows' :
-                
-                # get rid of the save popup for C and Z drive
-                
-                    # if z drive not mapped, give an error "please map the z drive"
-                
-                # after preview, save directly to the z drive
-                
-                # send out email
                 
                 txt_date = datetime.datetime.now().strftime('%Y%m%d')
                 
@@ -953,8 +989,7 @@ try :
                     f.write(holdText)
                 '''
                 
-                # Create Text File
-                # directory setup
+                # Create Text File, directory setup
                 z_directory = "Z:\\DailyOps\\morning_shef"
                 file_name = txt_file_name + ".shef"
                 file_name_with_date = txt_file_name + "_" + txt_date + ".shef"
@@ -966,9 +1001,8 @@ try :
                 with open(z_directory + "\\" + file_name_with_date, "w") as f:
                     f.write(holdText)
                     
-                # Send Email
-                # NOTE: Eclipse will give error if email function used
-                send_email(holdText)
+                # Send Email function will give error when run in Eclipse. Comment out send_email when run 
+                # send_email(holdText)
 
                 # push shef to public site
                 cmd = "pscp -i C:\\wc\\ssh\\id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name
@@ -980,6 +1014,16 @@ try :
                 check_call(cmd2, shell=True)
                 
                 MessageBox.showInformation('Text File Created and Email Was Sent', 'Alert') 
+                
+                print '='
+                print '='
+                print '='
+                print '=================================================================================='
+                print '============================== SCRIPT END'
+                print '================================================================================== '
+                print '='
+                print '='
+                print '='
 
             else:
                 MessageBox.showInformation('Error, Run the script in CWMS-VUE', 'Alert')
