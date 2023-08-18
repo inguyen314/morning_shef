@@ -953,80 +953,89 @@ try :
             global holdText
             holdText = textArea.getText()
             
-            #===================================================================================
-            # SEND, UPLOAD, AND PUBLISH
-            #==================================================================================
-            print '='
-            print '='
-            print '='
-            print '=================================================================================='
-            print '============================== SEND, UPLOAD, AND PUBLISH'
-            print '================================================================================== '
-            print '='
-            print '='
-            print '='
+            dialogButton = JOptionPane.showConfirmDialog(None, "Do you want to send it?")
             
-            # Check if is in Server or Local 
-            print '=== Determine if OS is Windows or Unix ==='
-            OsName = System.getProperty("os.name").lower()
-    
-            print 'OS is Windows or Unix = ', OsName
-            
-            # If OS is PC, else UNIX Server
-            if OsName[ : 7] == 'windows' :
+            if dialogButton == 2:
+                print "Decision: 'Cancel'\nClosing window"
+            elif dialogButton == 1:
+                print "Decision: 'No'\nClosing window"
+            else:
+                print "Decision: 'Yes'\nClosing window"
                 
-                txt_date = datetime.datetime.now().strftime('%Y%m%d')
-                
-                '''
-                # Save Window For C Drive
-                # Default Directory
-                c_directory = "C:/scripts/cwms/morning_shef"
-                
-                pop_name = "Save in C Drive"
-                first_save_path = save_window(c_directory, txt_file_name, txt_date, pop_name)
-                
-                with open(first_save_path + ".shef", "w") as f:
-                    f.write(holdText)
-                '''
-                
-                # Create Text File, directory setup
-                z_directory = "Z:\\DailyOps\\morning_shef"
-                file_name = txt_file_name + ".shef"
-                file_name_with_date = txt_file_name + "_" + txt_date + ".shef"
-                
-                # save file to z drive
-                with open(z_directory + "\\" + file_name, "w") as f:
-                    f.write(holdText)
-                
-                with open(z_directory + "\\" + file_name_with_date, "w") as f:
-                    f.write(holdText)
-                    
-                # Send Email function will give error when run in Eclipse. Comment out send_email when run 
-                # send_email(holdText)
-
-                # push shef to public site
-                cmd = "pscp -i C:\\wc\\ssh\\id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name
-                print(cmd)
-                check_call(cmd, shell=True)
-                
-                cmd2 = "pscp -i C:\\wc\\ssh\\id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name + ".txt"
-                print(cmd2)
-                check_call(cmd2, shell=True)
-                
-                MessageBox.showInformation('Text File Created and Email Was Sent', 'Alert') 
-                
+                #===================================================================================
+                # SEND, UPLOAD, AND PUBLISH
+                #==================================================================================
                 print '='
                 print '='
                 print '='
                 print '=================================================================================='
-                print '============================== SCRIPT END'
+                print '============================== SEND, UPLOAD, AND PUBLISH'
                 print '================================================================================== '
                 print '='
                 print '='
                 print '='
-
-            else:
-                MessageBox.showInformation('Error, Run the script in CWMS-VUE', 'Alert')
+                
+                # Check if is in Server or Local 
+                print '=== Determine if OS is Windows or Unix ==='
+                OsName = System.getProperty("os.name").lower()
+        
+                print 'OS is Windows or Unix = ', OsName
+                
+                # If OS is PC, else UNIX Server
+                if OsName[ : 7] == 'windows' :
+                    
+                    txt_date = datetime.datetime.now().strftime('%Y%m%d')
+                    
+                    '''
+                    # Save Window For C Drive
+                    # Default Directory
+                    c_directory = "C:/scripts/cwms/morning_shef"
+                    
+                    pop_name = "Save in C Drive"
+                    first_save_path = save_window(c_directory, txt_file_name, txt_date, pop_name)
+                    
+                    with open(first_save_path + ".shef", "w") as f:
+                        f.write(holdText)
+                    '''
+                    
+                    # Create Text File, directory setup
+                    z_directory = "Z:\\DailyOps\\morning_shef"
+                    file_name = txt_file_name + ".shef"
+                    file_name_with_date = txt_file_name + "_" + txt_date + ".shef"
+                    
+                    # save file to z drive
+                    with open(z_directory + "\\" + file_name, "w") as f:
+                        f.write(holdText)
+                    
+                    with open(z_directory + "\\" + file_name_with_date, "w") as f:
+                        f.write(holdText)
+                        
+                    # Send Email function will give error when run in Eclipse. Comment out send_email when run 
+                    # send_email(holdText)
+    
+                    # push shef to public site
+                    cmd = "pscp -i C:\\wc\\ssh\\id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name
+                    print(cmd)
+                    check_call(cmd, shell=True)
+                    
+                    cmd2 = "pscp -i C:\\wc\\ssh\\id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name + ".txt"
+                    print(cmd2)
+                    check_call(cmd2, shell=True)
+                    
+                    MessageBox.showInformation('Text File Created and Email Was Sent', 'Alert') 
+                    
+                    print '='
+                    print '='
+                    print '='
+                    print '=================================================================================='
+                    print '============================== SCRIPT END'
+                    print '================================================================================== '
+                    print '='
+                    print '='
+                    print '='
+    
+                else:
+                    MessageBox.showInformation('Error, Run the script in CWMS-VUE', 'Alert')
     
     # Window
     frame = JFrame("GUI", size = (1080, 650))
