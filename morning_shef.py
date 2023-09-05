@@ -1009,6 +1009,32 @@ try :
                     
                     with open(z_directory + "\\" + file_name_with_date, "w") as f:
                         f.write(holdText)
+                    
+                    ## File Permissions                    
+                    # stat.S_ISUID − Set user ID on execution.
+                    # stat.S_ISGID − Set group ID on execution.
+                    # stat.S_ENFMT − Record locking enforced.
+                    # stat.S_ISVTX − Save text image after execution.
+                    # stat.S_IREAD − Read by owner.
+                    # stat.S_IWRITE − Write by owner.
+                    # stat.S_IEXEC − Execute by owner.
+                    # stat.S_IRWXU − Read, write, and execute by owner.
+                    # stat.S_IRUSR − Read by owner.
+                    # stat.S_IWUSR − Write by owner.
+                    # stat.S_IXUSR − Execute by owner.
+                    # stat.S_IRWXG − Read, write, and execute by group.
+                    # stat.S_IRGRP − Read by group.
+                    # stat.S_IWGRP − Write by group.
+                    # stat.S_IXGRP − Execute by group.
+                    # stat.S_IRWXO − Read, write, and execute by others.
+                    # stat.S_IROTH − Read by others.
+                    # stat.S_IWOTH − Write by others.
+                    # stat.S_IXOTH − Execute by others.
+                    
+                    # Set file permissions
+                    os.chmod(z_directory + "\\" + file_name, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+                    os.chmod(z_directory + "\\" + file_name_with_date, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+                    
                         
                     # Send Email function will give error when run in Eclipse. Comment out send_email when run 
                     # send_email(holdText)
