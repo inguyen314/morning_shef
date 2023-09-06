@@ -5,13 +5,13 @@ REQUIRED: Map the Z Drive
 REQUIRED: Install Putty from App Portal (Simon Tatham PuTTY 0.78 (64-bit))
 
 
-Step 01. Download the latest release (zip format) from GitHub. You have to be off of VPN***
+Step 01. Open CWMS-VUE > Tools > Script Editor
 
-Step 02. Unzip "morning_shef" to your desktop
+Step 02. Right click on "HecDssVue" > "New Script"
 
-Step 03. Open CWMS-VUE > Tools > Script Editor
+Step 03. Go to repository https://github.com/inguyen314/morning_shef
 
-Step 04. Right click on "HecDssVue" > "New Script"
+Step 04. Click and Open "morning_shef.py" file in the repository
 
 Step 05. Copy everything from morning_shef.py to "New Script" and name the label to "morning_shef"
 
