@@ -161,7 +161,7 @@ def send_email(body):
 
     bodymail = body
     sender     = "NoReply@mvs.usace.army.mil"
-    recipients = ["DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil","oscar.r.cordero-perez@usace.army.mil"]
+    recipients = ["DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil","oscar.r.cordero-perez@usace.army.mil","jonathon.thornburg@noaa.gov","scott.stockhaus@noaa.gov","brian.connelly@noaa.gov"]
     #recipients = ["sr-orn.all@noaa.gov","DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil"]
     #recipients = ["ivan.h.nguyen@usace.army.mil"]
     subject    = "MVS Morning Shef Sent to NWS " + str(today_date_full)
@@ -173,7 +173,7 @@ def send_email(body):
     message["To"]      = ",".join(recipients)
     message["Subject"] = subject
     
-    smtp = smtplib.SMTP("gw1.usace.army.mil")
+    smtp = smtplib.SMTP("gw2.usace.army.mil")
     smtp.sendmail(sender, recipients, message.as_string())
     smtp.quit()
     print "Sent MVS Morning Shef Email."
@@ -1011,7 +1011,7 @@ try :
                         f.write(holdText)
                         
                     # Send Email function will give error when run in Eclipse. Comment out send_email when run 
-                    # send_email(holdText)
+                    send_email(holdText)
     
                     # push shef to public site
                     cmd = "pscp -i C:\\wc\\ssh\\id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name
