@@ -1,7 +1,7 @@
 '''
 Author: IVAN H. NGUYEN USACE-MVS
-Last Updated: 06-29-2023
-Version: 1.5
+Last Updated: 09-08-2023
+Version: 2.0
 Description: The purpose of this script is to import data from CWMS and other schema then convert them to SHEF file format.
 '''
 from ast                                        import IsNot
@@ -46,7 +46,6 @@ import time,calendar,datetime
 import java.lang
 import os, sys, inspect, datetime, time, DBAPI
 import smtplib
-#from GUI_test import save_window
 
 #=======================================================================================================================
 #=======================================================================================================================
@@ -90,6 +89,7 @@ class TextFileLake:
         self.line2 = ".B STL " + str(today_date) + " C DH0600/DC" + str(today_date) + "0600/QT/DRD+1/QTIF/DRD+2/QTIF/DRD+3/QTIF/DRD+4/QTIF/DRD+5/QTIF"
         self.text = self.line1+"\n"+self.line2 
 
+
 # text for mark twain yesterday flow
 class TextFileMarkTwainYesterday:
     
@@ -97,6 +97,7 @@ class TextFileMarkTwainYesterday:
         self.line1 = ": MARK TWAIN LAKE GENERATION YESTERDAY"
         self.line2 = ".E CDAM7 "+str(today_date)+" C DH0000/DC"+str(today_date)+"0000/QTD/DID1/"+"{:.2f}".format(float(object_list[0].outflow)/1000)
         self.mark_twain_text = self.line1+"\n"+self.line2
+
 
 # text for lock and dam current and forecast data
 class TextFileLockDam:
@@ -117,6 +118,27 @@ class TextFileLockDam:
         self.body += str(self.object_1[2].value7)+"  "+"{:.2f}".format(float(self.object_1[2].value3))+"/"+"{:.2f}".format(float(self.object_2[10].value3))+"/"+"{:.2f}".format(float(self.object_2[11].value3))+"/"+"{:.2f}".format(float(self.object_2[12].value3))+"/"
         self.body += "{:.2f}".format(float(self.object_2[13].value3))+"/"+"{:.2f}".format(float(self.object_2[14].value3))+" : ALTON LD 26 --> HINGE PT GRAFTON "+"{:.1f}".format(float(self.object_3[1].value3))+" - "+"{:.1f}".format(float(self.object_3[0].value3))+" "+str(self.object_3[0].value2).upper()+"\n.END"
 
+
+# text for lock and dam current and forecast data
+class TextFileLockDamTW:
+    
+    def __init__(self, dictionary, date):
+        self.object_1 = dictionary["LockDamStageTW"]
+        self.object_2 = dictionary["LockDamNetmissForecastTW"]
+        self.object_3 = dictionary["HingePoint"]
+        self.line1 = ": TODAYS OVSERVED TW 6AM IN DATUM NGVD29 AND 5 DAY FORECAST IN STAGE"
+        self.line2 = ".B STL "+ str(date)+" C DH0600/DC0"+str(date)+"700/HP/DRD+1/HPIF/DRD+2/HPIF/DRD+3/HPIF"
+        
+        self.body = str(self.object_1[0].value7)+"  "+"{:.2f}".format(float(self.object_1[0].value3))+"/"+"{:.2f}".format(float(self.object_2[0].value3))+"/"+"{:.2f}".format(float(self.object_2[1].value3))+"/"+"{:.2f}".format(float(self.object_2[2].value3))+"/"
+        self.body += "{:.2f}".format(float(self.object_2[3].value3))+"/"+"{:.2f}".format(float(self.object_2[4].value3))+" : CLARKSVILLE LD 24 --> HINGE PT LOUSIANA "+"{:.1f}".format(float(self.object_3[3].value3))+" - "+"{:.1f}".format(float(self.object_3[2].value3))+" "+str(self.object_3[4].value2).upper()+"\n"
+        
+        self.body += str(self.object_1[1].value7)+"  "+"{:.2f}".format(float(self.object_1[1].value3))+"/"+"{:.2f}".format(float(self.object_2[5].value3))+"/"+"{:.2f}".format(float(self.object_2[6].value3))+"/"+"{:.2f}".format(float(self.object_2[7].value3))+"/"
+        self.body += "{:.2f}".format(float(self.object_2[8].value3))+"/"+"{:.2f}".format(float(self.object_2[9].value3))+" : WINFIELD LD 25 --> HINGE PT MOSIER LDG "+"{:.1f}".format(float(self.object_3[5].value3))+" - "+"{:.1f}".format(float(self.object_3[4].value3))+" "+str(self.object_3[2].value2).upper()+"\n"
+        
+        self.body += str(self.object_1[2].value7)+"  "+"{:.2f}".format(float(self.object_1[2].value3))+"/"+"{:.2f}".format(float(self.object_2[10].value3))+"/"+"{:.2f}".format(float(self.object_2[11].value3))+"/"+"{:.2f}".format(float(self.object_2[12].value3))+"/"
+        self.body += "{:.2f}".format(float(self.object_2[13].value3))+"/"+"{:.2f}".format(float(self.object_2[14].value3))+" : ALTON LD 26 --> HINGE PT GRAFTON "+"{:.1f}".format(float(self.object_3[1].value3))+" - "+"{:.1f}".format(float(self.object_3[0].value3))+" "+str(self.object_3[0].value2).upper()+"\n.END"
+
+
 # text
 class TextFileButton:
     
@@ -131,6 +153,7 @@ class TextFileButton:
                 string += "/"
         self.text = self.first+string+self.last
 
+
 # text for comments for five lakes
 class Lake_comments:
     
@@ -142,6 +165,7 @@ class Lake_comments:
         self.text += "MARKTWAIN - "+value3+"\n"
         self.text += "REND - "+value4+"\n"
         self.text += "WAPPAPPELLO - "+value5
+
 
 # text for comments for five lakes
 class LD_comments:
@@ -161,7 +185,8 @@ def send_email(body):
 
     bodymail = body
     sender     = "NoReply@mvs.usace.army.mil"
-    recipients = ["DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil","oscar.r.cordero-perez@usace.army.mil","jonathon.thornburg@noaa.gov","scott.stockhaus@noaa.gov","brian.connelly@noaa.gov"]
+    #recipients = ["DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil","oscar.r.cordero-perez@usace.army.mil","jonathon.thornburg@noaa.gov","scott.stockhaus@noaa.gov","brian.connelly@noaa.gov"]
+    recipients = ["DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil"]
     #recipients = ["sr-orn.all@noaa.gov","DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil"]
     #recipients = ["ivan.h.nguyen@usace.army.mil"]
     subject    = "MVS Morning Shef Sent to NWS " + str(today_date_full)
@@ -177,6 +202,7 @@ def send_email(body):
     smtp.sendmail(sender, recipients, message.as_string())
     smtp.quit()
     print "Sent MVS Morning Shef Email."
+
 
 def save_window(directory, file_name, date, window_name):
     
@@ -217,12 +243,13 @@ def save_window(directory, file_name, date, window_name):
 
 txt_file_name = "morning_shef"
 
+
 today_date = datetime.datetime.now().strftime('%m%d')
 print "today_date = " + str(today_date)
 
+
 today_date_full = datetime.datetime.now().strftime('%Y%m%d')
 print "today_date_full = " + str(today_date_full)
-
 
 #=======================================================================================================================
 #=======================================================================================================================
@@ -233,8 +260,10 @@ print "today_date_full = " + str(today_date_full)
 # getCarlyle, getWappapello, getRend, getShelbyville, getMarkTwain
 lake_dict = {}
 
+
 # getLockDamStage, getHingePoint, getLockDamNetmissForecast
 lock_dam_dict = {}
+
 
 # getMarkTwainYesterday
 markTwainYesterday_list = []
@@ -295,54 +324,6 @@ def getLockDamStage(conn):
                                          and tsv.office_id = 'MVS' 
                                          and tsv.aliased_item is null     
                                     order by location_id asc 
-                                    FETCH FIRST 3 ROWS ONLY),
-                                    
-                                    tainter as 
-                                    (select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
-                                        ,cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
-                                        ,value
-                                        ,unit_id
-                                        ,quality_code
-                                        ,'CLKM7' as damlock
-                                    from cwms_v_tsv_dqu  tsv
-                                    where 
-                                         tsv.cwms_ts_id = 'LD 24 Pool-Mississippi.Opening.Inst.~2Hours.0.lpmsShef-raw-Taint' 
-                                         and tsv.unit_id = 'ft'
-                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
-                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
-                                         and tsv.office_id = 'MVS' 
-                                         and tsv.aliased_item is null
-                                    union all
-                                    select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
-                                        ,cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
-                                        ,value
-                                        ,unit_id
-                                        ,quality_code
-                                        ,'CAGM7' as damlock
-                                    from cwms_v_tsv_dqu  tsv
-                                    where 
-                                         tsv.cwms_ts_id = 'LD 25 Pool-Mississippi.Opening.Inst.~2Hours.0.lpmsShef-raw-Taint' 
-                                         and tsv.unit_id = 'ft'
-                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
-                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
-                                         and tsv.office_id = 'MVS' 
-                                         and tsv.aliased_item is null   
-                                    union all
-                                    select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
-                                        ,cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
-                                        ,value
-                                        ,unit_id
-                                        ,quality_code
-                                        ,'ALNI2' as damlock
-                                    from cwms_v_tsv_dqu  tsv
-                                    where 
-                                         tsv.cwms_ts_id = 'Mel Price Pool-Mississippi.Opening.Inst.~2Hours.0.lpmsShef-raw-Taint' 
-                                         and tsv.unit_id = 'ft'
-                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
-                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '07:00:00','mm-dd-yyyy hh24:mi:ss')
-                                         and tsv.office_id = 'MVS' 
-                                         and tsv.aliased_item is null     
-                                    order by location_id asc 
                                     FETCH FIRST 3 ROWS ONLY)
                                     
                                     select cte_pool.location_id
@@ -350,10 +331,9 @@ def getLockDamStage(conn):
                                         ,cte_pool.value
                                         ,cte_pool.unit_id
                                         ,cte_pool.quality_code
-                                        ,tainter.value as tainter_value
+                                        ,'null' as tainter_value
                                         ,cte_pool.damlock
                                     from cte_pool
-                                    left join tainter on cte_pool.location_id = tainter.location_id
                                     order by cte_pool.location_id asc
                                     ''')
         
@@ -384,6 +364,99 @@ def getLockDamStage(conn):
         stmt.close()
         rs.close()
     return LockDamStage
+
+
+def getLockDamStageTW(conn):
+    try :
+        print "getLockDamStageTW Query Start"
+        LockDamStageTW = None
+        stmt = conn.prepareStatement('''
+                                    with cte_pool as 
+                                    (select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
+                                        ,cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
+                                        ,value
+                                        ,unit_id
+                                        ,quality_code
+                                        ,'CLKM7' as damlock
+                                    from cwms_v_tsv_dqu  tsv
+                                    where 
+                                         tsv.cwms_ts_id = 'LD 24 TW-Mississippi.Stage.Inst.30Minutes.0.29'
+                                         and tsv.unit_id = 'ft'
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and tsv.office_id = 'MVS' 
+                                         and tsv.aliased_item is null
+                                    union all
+                                    select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
+                                        ,cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
+                                        ,value
+                                        ,unit_id
+                                        ,quality_code
+                                        ,'CAGM7' as damlock
+                                    from cwms_v_tsv_dqu  tsv
+                                    where 
+                                         tsv.cwms_ts_id = 'LD 25 TW-Mississippi.Stage.Inst.30Minutes.0.29' 
+                                         and tsv.unit_id = 'ft'
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and tsv.office_id = 'MVS' 
+                                         and tsv.aliased_item is null 
+                                    union all
+                                    select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
+                                        ,cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
+                                        ,value
+                                        ,unit_id
+                                        ,quality_code
+                                        ,'ALNI2' as damlock
+                                    from cwms_v_tsv_dqu  tsv
+                                    where 
+                                         tsv.cwms_ts_id = 'Mel Price TW-Mississippi.Stage.Inst.30Minutes.0.29' 
+                                         and tsv.unit_id = 'ft'
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+                                         and tsv.office_id = 'MVS' 
+                                         and tsv.aliased_item is null     
+                                    order by location_id asc 
+                                    FETCH FIRST 3 ROWS ONLY)
+                                    
+                                    select cte_pool.location_id
+                                        ,cte_pool.date_time
+                                        ,cte_pool.value
+                                        ,cte_pool.unit_id
+                                        ,cte_pool.quality_code
+                                        ,'null' as tainter_value
+                                        ,cte_pool.damlock
+                                    from cte_pool
+                                    order by cte_pool.location_id asc
+                                    ''')
+        
+        rs = stmt.executeQuery()
+        
+        # create object list to store the data (3 columns by 6 rows)
+        object_list_lock_dam_stage = []
+        while rs.next() :
+            # ignore tainter value rs.getString(6)
+            # exit if you have incomplete forecast data
+            # TODO: check to have 3 rows
+            if rs.getString(1) == None or rs.getString(2) == None or rs.getString(3) == None or rs.getString(4) == None or rs.getString(5) == None or rs.getString(7) == None:
+                print "No data for Current LockDamStageTW"
+                MessageBox.showInformation('No data for Current LockDamStageTW', 'Alert')
+                sys.exit()
+            else:
+                # loop and append which data column to object list
+                object_list_lock_dam_stage.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)))
+        
+        lock_dam_dict["LockDamStageTW"] = object_list_lock_dam_stage
+        print lock_dam_dict
+        
+        for obj in object_list_lock_dam_stage:
+            print str(obj.value1) + " - " + str(obj.value2) + " - " + str(obj.value3) + " - " + str(obj.value4) + " - " + str(obj.value5) + " - " + str(obj.value6) + " - " + str(obj.value7)
+            
+    finally :
+        print "getLockDamStageTW Query End"
+        stmt.close()
+        rs.close()
+    return LockDamStageTW
 
 
 def getLockDamNetmissForecast(conn):
@@ -447,6 +520,69 @@ def getLockDamNetmissForecast(conn):
         stmt.close()
         rs.close()
     return LockDamNetmissForecast
+
+
+def getLockDamNetmissForecastTW(conn):
+    try :
+        print "getLockDamNetmissForecastTW Query Start"
+        LockDamNetmissForecastTW = None
+        stmt = conn.prepareStatement('''
+                                select upper(cwms_util.split_text(cwms_ts_id, 1, '.')) as location_id
+                                    ,date_time
+                                    ,value
+                                    ,quality_code
+                                    ,'CLKM7' as damlock
+                                from cwms_v_tsv_dqu
+                                where cwms_ts_id ='LD 24 TW-Mississippi.Stage.Inst.~1Day.0.netmiss-fcst' and unit_id = 'ft'
+                                and date_time > to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '0' DAY
+                                and date_time < to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '5' DAY
+                                union all
+                                select upper(cwms_util.split_text(cwms_ts_id, 1, '.')) as location_id
+                                    ,date_time
+                                    ,value
+                                    ,quality_code
+                                    ,'CAGM7' as damlock
+                                from cwms_v_tsv_dqu
+                                where cwms_ts_id ='LD 25 TW-Mississippi.Stage.Inst.~1Day.0.netmiss-fcst' and unit_id = 'ft'
+                                and date_time > to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '0' DAY
+                                and date_time < to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '5' DAY
+                                union all
+                                select upper(cwms_util.split_text(cwms_ts_id, 1, '.')) as location_id
+                                    ,date_time
+                                    ,value
+                                    ,quality_code
+                                    ,'ALNI2' as damlock
+                                from cwms_v_tsv_dqu
+                                where cwms_ts_id ='Mel Price TW-Mississippi.Stage.Inst.~1Day.0.netmiss-fcst' and unit_id = 'ft'
+                                and date_time > to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '0' DAY
+                                and date_time < to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '5' DAY
+                                    ''')
+        rs = stmt.executeQuery()
+        
+        # create object list to store the data (3 columns by 6 rows)
+        object_list_2 = []
+        while rs.next() : 
+            # exit if you have incomplete forecast data
+            # TODO: check to have 15 rows, five for each. ld24, ld25, and mp
+            if rs.getString(1) == None or rs.getString(2) == None or rs.getString(3) == None or rs.getString(4) == None or rs.getString(5) == None:
+                print "No data for LockDamNetmissForecastTW."
+                MessageBox.showInformation('No data for Current LockDamNetmissForecastTW', 'Alert')
+                sys.exit()
+            else:
+                # loop and append which data columns to object list
+                object_list_2.append(Object_LD(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),None,None))
+                      
+        lock_dam_dict["LockDamNetmissForecastTW"] = object_list_2
+        print lock_dam_dict
+            
+        for obj in object_list_2:
+            print obj.value1
+
+    finally :
+        print "getLockDamNetmissForecastTW Query End"
+        stmt.close()
+        rs.close()
+    return LockDamNetmissForecastTW
 
 
 def getHingePoint(conn):
@@ -810,7 +946,6 @@ try :
     print '='
     print '='
     
-
     # connect to database
     CwmsDb = DBAPI.open()
     CwmsDb.setOfficeId('MVS')
@@ -822,55 +957,56 @@ try :
     # get LockDamStage data
     LockDamStage = getLockDamStage(conn)
     print "LockDamStage = " +  str(LockDamStage)
+    print "==========================================================="
     
+    # get LockDamStageTW data
+    LockDamStageTW = getLockDamStageTW(conn)
+    print "LockDamStageTW = " +  str(LockDamStageTW)
     print "==========================================================="
 
     # get LockDamNetmissForecast data
     LockDamNetmissForecast = getLockDamNetmissForecast(conn)
     print "LockDamNetmissForecast = " +  str(LockDamNetmissForecast)
+    print "==========================================================="
     
+        # get LockDamNetmissForecast data
+    LockDamNetmissForecastTW = getLockDamNetmissForecastTW(conn)
+    print "LockDamNetmissForecastTW = " +  str(LockDamNetmissForecastTW)
     print "==========================================================="
     
     # get HingePoint data
     Hinge = getHingePoint(conn)
     print "Hinge = " +  str(Hinge)
-    
     print "==========================================================="    
     
     # get Carlyle data
     Carlyle = getCarlyle(conn)
     print "Carlyle = " +  str(Carlyle)
-    
     print "==========================================================="
 
     # get Wappapello data
     Wappapello = getWappapello(conn)
     print "Wappapello = " +  str(Wappapello)
-    
     print "==========================================================="
     
     # get Rend data
     Rend = getRend(conn)
     print "Rend = " +  str(Rend)
-    
     print "==========================================================="
 
     # get Shelbyville data
     Shelbyville = getShelbyville(conn)
     print "Shelbyville = " +  str(Shelbyville)
-    
     print "==========================================================="
     
     # get MarkTwain data
     MarkTwain = getMarkTwain(conn)
     print "MarkTwain = " +  str(MarkTwain)
-    
     print "==========================================================="
     
     # get MarkTwainYesterday data
     MarkTwainYesterday = getMarkTwainYesterday(conn)
     print "MarkTwainYesterday = " +  str(MarkTwainYesterday)
-    
     print "==========================================================="
     
     #=======================================================================================================================
@@ -878,7 +1014,8 @@ try :
     # NOTE WINDOW FOR FIVE LAKES
     #=======================================================================================================================
     #=======================================================================================================================
-
+    
+    # Lake Note
     noteCarlyle = JOptionPane.showInputDialog(None, 'Carlyle Lake Note', 'CEMVS Reservoir Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
     print "noteCarlyle = " + str(noteCarlyle)
     
@@ -895,7 +1032,7 @@ try :
     print "noteWappapello = " + str(noteWappapello)
     
     
-    
+    # LD Note
     noteLD24 = JOptionPane.showInputDialog(None, 'LD 24 Note', 'CEMVS LD Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
     print "noteLD24 = " + str(noteLD24)
     
@@ -904,7 +1041,6 @@ try :
     
     noteLDMelPrice = JOptionPane.showInputDialog(None, 'LD Mel Price Note', 'CEMVS LD Notes', JOptionPane.PLAIN_MESSAGE, None, None, 'Nothing to report')
     print "noteLDMelPrice = " + str(noteLDMelPrice)
-    
     
     #=======================================================================================================================
     # CREATE TEXT FILE
@@ -927,11 +1063,17 @@ try :
     mark_twain_text = TextFileMarkTwainYesterday(markTwainYesterday_list, today_date).mark_twain_text
     mark_twain_text += "\n\n"
     
-    # lock and dam current and forecast shef data block
+    # lock and dam current and forecast SHEF data block
     lock_dam_text =  TextFileLockDam(lock_dam_dict, today_date).line1+"\n"
     lock_dam_text += TextFileLockDam(lock_dam_dict, today_date).line2+"\n"
     lock_dam_text += TextFileLockDam(lock_dam_dict, today_date).body
     lock_dam_text += "\n\n"
+    
+    # TW lock and dam current and forecast SHEF data block
+    lock_dam_text_tw =  TextFileLockDamTW(lock_dam_dict, today_date).line1+"\n"
+    lock_dam_text_tw += TextFileLockDamTW(lock_dam_dict, today_date).line2+"\n"
+    lock_dam_text_tw += TextFileLockDamTW(lock_dam_dict, today_date).body
+    lock_dam_text_tw += "\n\n"
     
     # Lake Comments
     lakes_comments = Lake_comments(str(noteCarlyle), str(noteShelbyville), str(noteMarkTwain), str(noteRend), str(noteWappapello)).text
@@ -942,8 +1084,8 @@ try :
     ld_comments = LD_comments(str(noteLD24), str(noteLD25),str(noteLDMelPrice)).text
     ld_comments += "\n\n"
     
-    # The complete text for the shef file
-    final_text = text+mark_twain_text+lakes_comments+lock_dam_text+ld_comments
+    # The complete text for the SHEF file order
+    final_text = text+mark_twain_text+lakes_comments+lock_dam_text+lock_dam_text_tw+ld_comments
     
     
     # Window to show and modify the text file
@@ -1013,7 +1155,7 @@ try :
                     # Send Email function will give error when run in Eclipse. Comment out send_email when run 
                     send_email(holdText)
     
-                    # push shef to public site
+                    # push SHEF to public site
                     cmd = "pscp -i C:\\wc\\ssh\\id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name
                     print(cmd)
                     check_call(cmd, shell=True)
@@ -1038,7 +1180,7 @@ try :
                     MessageBox.showInformation('Error, Run the script in CWMS-VUE', 'Alert')
     
     # Window
-    frame = JFrame("GUI", size = (1080, 650))
+    frame = JFrame("GUI", size = (1080, 750))
     
     textArea = JTextArea(final_text)
     frame.add(textArea)
