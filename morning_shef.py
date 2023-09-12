@@ -125,18 +125,17 @@ class TextFileLockDamTW:
     def __init__(self, dictionary, date):
         self.object_1 = dictionary["LockDamStageTW"]
         self.object_2 = dictionary["LockDamNetmissForecastTW"]
-        self.object_3 = dictionary["HingePoint"]
-        self.line1 = ": TODAYS OVSERVED TW 6AM IN DATUM NGVD29 AND 5 DAY FORECAST IN STAGE"
+        self.line1 = ": TODAYS OVSERVED TW 6AM AND 5 DAY FORECAST IN STAGE DATUM NAV88"
         self.line2 = ".B STL "+ str(date)+" C DH0600/DC0"+str(date)+"700/HP/DRD+1/HPIF/DRD+2/HPIF/DRD+3/HPIF"
         
         self.body = str(self.object_1[0].value7)+"  "+"{:.2f}".format(float(self.object_1[0].value3))+"/"+"{:.2f}".format(float(self.object_2[0].value3))+"/"+"{:.2f}".format(float(self.object_2[1].value3))+"/"+"{:.2f}".format(float(self.object_2[2].value3))+"/"
-        self.body += "{:.2f}".format(float(self.object_2[3].value3))+"/"+"{:.2f}".format(float(self.object_2[4].value3))+" : CLARKSVILLE LD 24 --> HINGE PT LOUSIANA "+"{:.1f}".format(float(self.object_3[3].value3))+" - "+"{:.1f}".format(float(self.object_3[2].value3))+" "+str(self.object_3[4].value2).upper()+"\n"
+        self.body += "{:.2f}".format(float(self.object_2[3].value3))+"/"+"{:.2f}".format(float(self.object_2[4].value3))+"\n"
         
         self.body += str(self.object_1[1].value7)+"  "+"{:.2f}".format(float(self.object_1[1].value3))+"/"+"{:.2f}".format(float(self.object_2[5].value3))+"/"+"{:.2f}".format(float(self.object_2[6].value3))+"/"+"{:.2f}".format(float(self.object_2[7].value3))+"/"
-        self.body += "{:.2f}".format(float(self.object_2[8].value3))+"/"+"{:.2f}".format(float(self.object_2[9].value3))+" : WINFIELD LD 25 --> HINGE PT MOSIER LDG "+"{:.1f}".format(float(self.object_3[5].value3))+" - "+"{:.1f}".format(float(self.object_3[4].value3))+" "+str(self.object_3[2].value2).upper()+"\n"
+        self.body += "{:.2f}".format(float(self.object_2[8].value3))+"/"+"{:.2f}".format(float(self.object_2[9].value3))+"\n"
         
         self.body += str(self.object_1[2].value7)+"  "+"{:.2f}".format(float(self.object_1[2].value3))+"/"+"{:.2f}".format(float(self.object_2[10].value3))+"/"+"{:.2f}".format(float(self.object_2[11].value3))+"/"+"{:.2f}".format(float(self.object_2[12].value3))+"/"
-        self.body += "{:.2f}".format(float(self.object_2[13].value3))+"/"+"{:.2f}".format(float(self.object_2[14].value3))+" : ALTON LD 26 --> HINGE PT GRAFTON "+"{:.1f}".format(float(self.object_3[1].value3))+" - "+"{:.1f}".format(float(self.object_3[0].value3))+" "+str(self.object_3[0].value2).upper()+"\n.END"
+        self.body += "{:.2f}".format(float(self.object_2[13].value3))+"/"+"{:.2f}".format(float(self.object_2[14].value3))+"\n.END"
 
 
 # text
@@ -380,7 +379,7 @@ def getLockDamStageTW(conn):
                                         ,'CLKM7' as damlock
                                     from cwms_v_tsv_dqu  tsv
                                     where 
-                                         tsv.cwms_ts_id = 'LD 24 TW-Mississippi.Stage.Inst.30Minutes.0.29'
+                                         tsv.cwms_ts_id = 'LD 24 TW-Mississippi.Stage.Inst.30Minutes.0.lrgsShef-rev'
                                          and tsv.unit_id = 'ft'
                                          and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
                                          and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
@@ -395,7 +394,7 @@ def getLockDamStageTW(conn):
                                         ,'CAGM7' as damlock
                                     from cwms_v_tsv_dqu  tsv
                                     where 
-                                         tsv.cwms_ts_id = 'LD 25 TW-Mississippi.Stage.Inst.30Minutes.0.29' 
+                                         tsv.cwms_ts_id = 'LD 25 TW-Mississippi.Stage.Inst.30Minutes.0.lrgsShef-rev' 
                                          and tsv.unit_id = 'ft'
                                          and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
                                          and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
@@ -410,7 +409,7 @@ def getLockDamStageTW(conn):
                                         ,'ALNI2' as damlock
                                     from cwms_v_tsv_dqu  tsv
                                     where 
-                                         tsv.cwms_ts_id = 'Mel Price TW-Mississippi.Stage.Inst.30Minutes.0.29' 
+                                         tsv.cwms_ts_id = 'Mel Price TW-Mississippi.Stage.Inst.30Minutes.0.lrgsShef-rev' 
                                          and tsv.unit_id = 'ft'
                                          and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  >= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
                                          and cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')  <= to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'), 'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
@@ -1156,13 +1155,13 @@ try :
                     send_email(holdText)
     
                     # push SHEF to public site
-                    cmd = "pscp -i C:\\wc\\ssh\\id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name
-                    print(cmd)
-                    check_call(cmd, shell=True)
+                    #cmd = "pscp -i Z:/DailyOps/morning_shef/id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name
+                    #print(cmd)
+                    #check_call(cmd, shell=True)
                     
-                    cmd2 = "pscp -i C:\\wc\\ssh\\id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name + ".txt"
-                    print(cmd2)
-                    check_call(cmd2, shell=True)
+                    #cmd2 = "pscp -i Z:/DailyOps/morning_shef/id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name + ".txt"
+                    #print(cmd2)
+                    #check_call(cmd2, shell=True)
                     
                     MessageBox.showInformation('Text File Created and Email Was Sent', 'Alert') 
                     
