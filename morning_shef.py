@@ -1155,13 +1155,13 @@ try :
                     send_email(holdText)
     
                     # push SHEF to public site
-                    #cmd = "pscp -i Z:/DailyOps/morning_shef/id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name
-                    #print(cmd)
-                    #check_call(cmd, shell=True)
+                    cmd = "pscp -i Z:/DailyOps/morning_shef/id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name
+                    print(cmd)
+                    check_call(cmd, shell=True)
                     
-                    #cmd2 = "pscp -i Z:/DailyOps/morning_shef/id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name + ".txt"
-                    #print(cmd2)
-                    #check_call(cmd2, shell=True)
+                    cmd2 = "pscp -i Z:/DailyOps/morning_shef/id_rsa.ppk Z:/DailyOps/morning_shef/" + file_name + " " + "d1wm1a95@199.124.16.152:/I:/web/mvs-wc/inetpub/wwwroot/" + file_name + ".txt"
+                    print(cmd2)
+                    check_call(cmd2, shell=True)
                     
                     MessageBox.showInformation('Text File Created and Email Was Sent', 'Alert') 
                     
