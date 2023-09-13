@@ -106,7 +106,7 @@ class TextFileLockDam:
         self.object_1 = dictionary["LockDamStage"]
         self.object_2 = dictionary["LockDamNetmissForecast"]
         self.object_3 = dictionary["HingePoint"]
-        self.line1 = ": TODAYS OVSERVED POOL 6AM AND 5 DAY FORECAST IN DATUM NGVD29"
+        self.line1 = ": TODAYS OBSERVED POOL 6AM AND 5 DAY FORECAST IN DATUM NGVD29"
         self.line2 = ".B STL "+ str(date)+" C DH0600/DC0"+str(date)+"700/HP/DRD+1/HPIF/DRD+2/HPIF/DRD+3/HPIF"
         
         self.body = str(self.object_1[0].value7)+"  "+"{:.2f}".format(float(self.object_1[0].value3))+"/"+"{:.2f}".format(float(self.object_2[0].value3))+"/"+"{:.2f}".format(float(self.object_2[1].value3))+"/"+"{:.2f}".format(float(self.object_2[2].value3))+"/"
@@ -125,7 +125,7 @@ class TextFileLockDamTW:
     def __init__(self, dictionary, date):
         self.object_1 = dictionary["LockDamStageTW"]
         self.object_2 = dictionary["LockDamNetmissForecastTW"]
-        self.line1 = ": TODAYS OVSERVED TW 6AM AND 5 DAY FORECAST IN STAGE DATUM NAV88"
+        self.line1 = ": TODAYS OBSERVED TW 6AM AND 5 DAY FORECAST IN STAGE DATUM NAV88"
         self.line2 = ".B STL "+ str(date)+" C DH0600/DC0"+str(date)+"700/HP/DRD+1/HPIF/DRD+2/HPIF/DRD+3/HPIF"
         
         self.body = str(self.object_1[0].value7)+"  "+"{:.2f}".format(float(self.object_1[0].value3))+"/"+"{:.2f}".format(float(self.object_2[0].value3))+"/"+"{:.2f}".format(float(self.object_2[1].value3))+"/"+"{:.2f}".format(float(self.object_2[2].value3))+"/"
@@ -187,7 +187,7 @@ def send_email(body):
     #recipients = ["DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil","oscar.r.cordero-perez@usace.army.mil","jonathon.thornburg@noaa.gov","scott.stockhaus@noaa.gov","brian.connelly@noaa.gov"]
     recipients = ["DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil"]
     #recipients = ["sr-orn.all@noaa.gov","DLL-CEMVS-WATER-MANAGERS@usace.army.mil","allen.phillips@usace.army.mil"]
-    #recipients = ["ivan.h.nguyen@usace.army.mil"]
+    #recipients = ["ivan.h.nguyen@usace.army.mil","allen.phillips@usace.army.mil"]
     subject    = "MVS Morning Shef Sent to NWS " + str(today_date_full)
     
     print "recipients = " + str(recipients)
@@ -1049,14 +1049,14 @@ try :
     holdText = ""
     
     # Create text for the txt file
-    text = TextFileLake(today_date).text+"\n"
+    lake_text = TextFileLake(today_date).text+"\n"
     data_text = ""
     for key, value in lake_dict.items():
         data_text += TextFileButton(value).text+"\n"
     end_text = ".END"
-    text += data_text
-    text += end_text
-    text += "\n\n"
+    lake_text += data_text
+    lake_text += end_text
+    lake_text += "\n\n"
     
     # mark twain current shef data block
     mark_twain_text = TextFileMarkTwainYesterday(markTwainYesterday_list, today_date).mark_twain_text
@@ -1084,7 +1084,7 @@ try :
     ld_comments += "\n\n"
     
     # The complete text for the SHEF file order
-    final_text = text+mark_twain_text+lakes_comments+lock_dam_text+lock_dam_text_tw+ld_comments
+    final_text = lock_dam_text + lock_dam_text_tw + ld_comments + lake_text + mark_twain_text + lakes_comments
     
     
     # Window to show and modify the text file
