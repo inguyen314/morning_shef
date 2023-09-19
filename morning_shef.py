@@ -85,8 +85,15 @@ class Object:
 class TextFileLake:
     
     def __init__(self, today_date):
-        self.line1 = ": TODAYS LAKE FLOW AND 5 DAY FORECAST"
+        self.line1 = ": TODAYS LAKE FLOW AND 5 DAY FORECAST (6AM INSTANTANEOUS FORECAST VALUE)"
         self.line2 = ".B STL " + str(today_date) + " C DH0600/DC" + str(today_date) + "0600/QT/DRD+1/QTIF/DRD+2/QTIF/DRD+3/QTIF/DRD+4/QTIF/DRD+5/QTIF"
+        self.text = self.line1+"\n"+self.line2 
+        
+class TextFileMarkTwain:
+    
+    def __init__(self, today_date):
+        self.line1 = ": MARK TWAIN FLOW AND 5 DAY FORECAST (6AM DAILY AVERAGE FORECAST VALUE)"
+        self.line2 = ".B STL " + str(today_date) + " C DH0600/DC" + str(today_date) + "0600/QTD/DRD+1/QTIF/DRD+2/QTIF/DRD+3/QTIF/DRD+4/QTIF/DRD+5/QTIF"
         self.text = self.line1+"\n"+self.line2 
 
 
@@ -94,7 +101,7 @@ class TextFileLake:
 class TextFileMarkTwainYesterday:
     
     def __init__(self, object_list, today_date):
-        self.line1 = ": MARK TWAIN LAKE GENERATION YESTERDAY"
+        self.line1 = ": MARK TWAIN LAKE FLOW YESTERDAY (MIDNIGHT DAILY AVERAGE FORECAST VALUE)"
         self.line2 = ".E CDAM7 "+str(today_date)+" C DH0000/DC"+str(today_date)+"0000/QTD/DID1/"+"{:.2f}".format(float(object_list[0].outflow)/1000)
         self.mark_twain_text = self.line1+"\n"+self.line2
 
@@ -106,8 +113,8 @@ class TextFileLockDam:
         self.object_1 = dictionary["LockDamStage"]
         self.object_2 = dictionary["LockDamNetmissForecast"]
         self.object_3 = dictionary["HingePoint"]
-        self.line1 = ": TODAYS OBSERVED POOL 6AM AND 5 DAY FORECAST IN DATUM NGVD29"
-        self.line2 = ".B STL "+ str(date)+" C DH0600/DC0"+str(date)+"700/HP/DRD+1/HPIF/DRD+2/HPIF/DRD+3/HPIF"
+        self.line1 = ": TODAYS OBSERVED POOL AT 6AM AND 5 DAY FORECAST IN PROJECT STAGE AT 6AM"
+        self.line2 = ".B STL "+ str(date)+" C DH0600/DC0"+str(date)+"700/HP/DRD+1/HPIF/DRD+2/HPIF/DRD+3/HPIF/DRD+4/HPIF/DRD+5/HPIF"
         
         self.body = str(self.object_1[0].value7)+"  "+"{:.2f}".format(float(self.object_1[0].value3))+"/"+"{:.2f}".format(float(self.object_2[0].value3))+"/"+"{:.2f}".format(float(self.object_2[1].value3))+"/"+"{:.2f}".format(float(self.object_2[2].value3))+"/"
         self.body += "{:.2f}".format(float(self.object_2[3].value3))+"/"+"{:.2f}".format(float(self.object_2[4].value3))+" : CLARKSVILLE LD 24 --> HINGE PT LOUSIANA "+"{:.1f}".format(float(self.object_3[3].value3))+" - "+"{:.1f}".format(float(self.object_3[2].value3))+" "+str(self.object_3[4].value2).upper()+"\n"
@@ -125,8 +132,8 @@ class TextFileLockDamTW:
     def __init__(self, dictionary, date):
         self.object_1 = dictionary["LockDamStageTW"]
         self.object_2 = dictionary["LockDamNetmissForecastTW"]
-        self.line1 = ": TODAYS OBSERVED TW 6AM AND 5 DAY FORECAST IN STAGE DATUM NAV88"
-        self.line2 = ".B STL "+ str(date)+" C DH0600/DC0"+str(date)+"700/HP/DRD+1/HPIF/DRD+2/HPIF/DRD+3/HPIF"
+        self.line1 = ": TODAYS OBSERVED TW AT 6AM AND 5 DAY FORECAST IN STAGE AT 6AM"
+        self.line2 = ".B STL "+ str(date)+" C DH0600/DC0"+str(date)+"700/HT/DRD+1/HTIF/DRD+2/HTIF/DRD+3/HTIF/DRD+4/HTIF/DRD+5/HTIF"
         
         self.body = str(self.object_1[0].value7)+"  "+"{:.2f}".format(float(self.object_1[0].value3))+"/"+"{:.2f}".format(float(self.object_2[0].value3))+"/"+"{:.2f}".format(float(self.object_2[1].value3))+"/"+"{:.2f}".format(float(self.object_2[2].value3))+"/"
         self.body += "{:.2f}".format(float(self.object_2[3].value3))+"/"+"{:.2f}".format(float(self.object_2[4].value3))+"\n"
@@ -159,11 +166,11 @@ class Lake_comments:
     def __init__(self, value1, value2, value3, value4, value5):
         self.text = ""
         self.text = ": CEMVS RESERVOIR NOTES\n"
-        self.text += "CARLYLE - "+value1+"\n"
-        self.text += "SHELBYVILLE - "+value2+"\n"
-        self.text += "MARKTWAIN - "+value3+"\n"
-        self.text += "REND - "+value4+"\n"
-        self.text += "WAPPAPPELLO - "+value5
+        self.text += ":CARLYLE - "+value1+"\n"
+        self.text += ":SHELBYVILLE - "+value2+"\n"
+        self.text += ":MARKTWAIN - "+value3+"\n"
+        self.text += ":REND - "+value4+"\n"
+        self.text += ":WAPPAPPELLO - "+value5
 
 
 # text for comments for five lakes
@@ -172,9 +179,9 @@ class LD_comments:
     def __init__(self, value1, value2, value3):
         self.text = ""
         self.text = ": CEMVS LD NOTES\n"
-        self.text += "LD24 - "+value1+"\n"
-        self.text += "LD25 - "+value2+"\n"
-        self.text += "MEL PRICE - "+value3+"\n"
+        self.text += ":LD24 - "+value1+"\n"
+        self.text += ":LD25 - "+value2+"\n"
+        self.text += ":MEL PRICE - "+value3+"\n"
 
 
 # send email setup  
@@ -1048,17 +1055,48 @@ try :
     # Variable to hold any changes for the text file
     holdText = ""
     
-    # Create text for the txt file
+    # Create text for the text file (CARLYLE, SHELBYVILLE, WAPPAPPELLO, REND)
     lake_text = TextFileLake(today_date).text+"\n"
     data_text = ""
-    for key, value in lake_dict.items():
-        data_text += TextFileButton(value).text+"\n"
+    empty_lake = ""
+    try:
+        for key, value in lake_dict.items():
+            if key == "MarkTwain":
+                pass
+            else:
+                data_text += TextFileButton(value).text+"\n"
+                if not value: 
+                    empty_lake = key
+    except IndexError:
+        MessageBox.showInformation(key + ' IS EMPTY, GO DO YOUR LAKE SHEET', 'Alert') 
+        sys.exit()    
     end_text = ".END"
     lake_text += data_text
     lake_text += end_text
     lake_text += "\n\n"
     
-    # mark twain current shef data block
+    
+    # Create text for the text file (MARK TWAIN)
+    lake_text_mt = TextFileMarkTwain(today_date).text+"\n"
+    data_text = ""
+    empty_lake = ""
+    try:
+        for key, value in lake_dict.items():
+            if key != "MarkTwain":
+                pass
+            else:
+                data_text += TextFileButton(value).text+"\n"
+                if not value: 
+                    empty_lake = key
+    except IndexError:
+        MessageBox.showInformation(key + ' IS EMPTY, GO DO YOUR LAKE SHEET', 'Alert') 
+        sys.exit()    
+    end_text = ".END"
+    lake_text_mt += data_text
+    lake_text_mt += end_text
+    lake_text_mt += "\n\n"
+    
+    # mark twain current SHEF data block
     mark_twain_text = TextFileMarkTwainYesterday(markTwainYesterday_list, today_date).mark_twain_text
     mark_twain_text += "\n\n"
     
@@ -1084,7 +1122,7 @@ try :
     ld_comments += "\n\n"
     
     # The complete text for the SHEF file order
-    final_text = lock_dam_text + lock_dam_text_tw + ld_comments + lake_text + mark_twain_text + lakes_comments
+    final_text = lock_dam_text + lock_dam_text_tw + ld_comments + lake_text + lake_text_mt + mark_twain_text + lakes_comments
     
     
     # Window to show and modify the text file
@@ -1179,7 +1217,7 @@ try :
                     MessageBox.showInformation('Error, Run the script in CWMS-VUE', 'Alert')
     
     # Window
-    frame = JFrame("GUI", size = (1080, 750))
+    frame = JFrame("GUI", size = (1080, 800))
     
     textArea = JTextArea(final_text)
     frame.add(textArea)
